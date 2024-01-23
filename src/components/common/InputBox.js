@@ -46,11 +46,11 @@ const InputBox = ({
   label,
   placeholder,
   inputValue,
-  setInputValue,
+  setInputValue = () => {},
   onChangeText = () => {},
   keyboardType,
-  error,
-  setError,
+  error = '',
+  setError = () => {},
   ...textInputProps
 }) => {
   const handleInputChange = text => {

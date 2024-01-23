@@ -20,7 +20,6 @@ const Button = ({
       // Allow the button to be pressed again after the debounce time
       setTimeout(() => {
         setIsDisabled(false);
-        console.log('Button pressed Debounce');
       }, debounceTime);
     }
   }, [isDisabled, onPress, debounceTime]);

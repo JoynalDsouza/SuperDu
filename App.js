@@ -11,7 +11,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Navigation from './src/Navigation/navigation';
 import {RealmProvider} from '@realm/react';
 
-import {Profile} from './src/realm/models';
+import {GoalsItem, Plan, Profile} from './src/realm/models';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/LoginScreen';
@@ -27,18 +27,8 @@ function App() {
 
   return (
     <>
-      <RealmProvider schema={[Profile]} schemaVersion={3}>
+      <RealmProvider schema={[Profile, Plan, GoalsItem]} schemaVersion={4}>
         <Navigation />
-        {/* <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Login"
-            screenOptions={{
-              headerShown: false,
-            }}>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-          </Stack.Navigator>
-        </NavigationContainer> */}
       </RealmProvider>
     </>
   );
