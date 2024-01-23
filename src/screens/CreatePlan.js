@@ -14,6 +14,32 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {useRealm} from '@realm/react';
 import Plan from '../realm/models/Plan';
 import {BSON} from 'realm';
+import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
+
+async function onCreateTriggerNotification(time, plan) {
+  const [hours, minutes] = time.split(':');
+  const date = new Date();
+  date.setHours(hours);
+  date.setMinutes(minutes);
+
+  // Create a time-based trigger
+  const trigger = {
+    type: TriggerType.TIMESTAMP,
+    timestamp: date.getTime(), // fire at 11:10am (10 minutes before meeting)
+  };
+
+  // Create a trigger notification
+  await notifee.createTriggerNotification(
+    {
+      title: 'Plan Reminder : ' + plan.title,
+      body: `Your plan is about to start at ${getAMPMTime(time)}`,
+      android: {
+        channelId: 'default',
+      },
+    },
+    trigger,
+  );
+}
 
 export const getAMPMTime = time => {
   if (!time) return time;
@@ -228,8 +254,10 @@ const CreatePlan = ({navigation}) => {
       realm.write(() => {
         realm.create(Plan, obj);
       });
+      createTriggerNotification(startTime, obj);
       navigation.navigate('Home', 'reset');
     } catch (e) {
+      navigation.navigate('Home', 'reset');
       console.log(e);
     }
   };

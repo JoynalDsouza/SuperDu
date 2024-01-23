@@ -17,6 +17,7 @@ import {
   askNotificationPermission,
   checkAlarmPermission,
 } from '../utils/permission';
+import notifee from '@notifee/react-native';
 
 const getPlansByDay = (plans, day) => {
   const currentDay = day % 7; // Ensure day is within 0 to 6 (Sunday to Saturday)
@@ -52,6 +53,10 @@ const HomeScreen = ({navigation}) => {
 
   useEffect(() => {
     const permissions = async () => {
+      const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+      });
       await askNotificationPermission();
       await checkAlarmPermission();
     };
