@@ -15,6 +15,35 @@ import {useRealm} from '@realm/react';
 import Plan from '../realm/models/Plan';
 import {BSON} from 'realm';
 
+const getAMPMTime = time => {
+  if (!time) return time;
+  const [hours, minutes] = time.split(':');
+  const hoursInNumber = parseInt(hours);
+  const minutesInNumber = parseInt(minutes);
+  if (hoursInNumber > 12) {
+    return `${hoursInNumber - 12}:${minutesInNumber} PM`;
+  } else {
+    return `${hoursInNumber}:${minutesInNumber} AM`;
+  }
+};
+
+const compareStartTimeEndTime = (startTime, endTime) => {
+  const [startHours, startMinutes] = startTime.split(':');
+  const [endHours, endMinutes] = endTime.split(':');
+  const startHoursInNumber = parseInt(startHours);
+  const startMinutesInNumber = parseInt(startMinutes);
+  const endHoursInNumber = parseInt(endHours);
+  const endMinutesInNumber = parseInt(endMinutes);
+  if (startHoursInNumber > endHoursInNumber) {
+    return false;
+  } else if (startHoursInNumber === endHoursInNumber) {
+    if (startMinutesInNumber > endMinutesInNumber) {
+      return false;
+    }
+  }
+  return true;
+};
+
 const WeekDays = ({repeatSequence, setRepeatSequence}) => {
   const days = [
     {
@@ -96,8 +125,8 @@ const WeekDays = ({repeatSequence, setRepeatSequence}) => {
 
 const CreatePlan = ({navigation}) => {
   const [title, setTitle] = useState('');
-  const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [currentPicker, setCurrentPicker] = useState('startTime');
 
   const [mode, setMode] = useState('date');
@@ -135,12 +164,13 @@ const CreatePlan = ({navigation}) => {
         const timestamp = event.nativeEvent.timestamp;
         const utcOffset = event.nativeEvent.utcOffset;
         const date = new Date(timestamp);
-        const adjustedDate = new Date(date.getTime() + utcOffset * 60000);
-
+        const adjustedDate = new Date(date.getTime());
+        const hours = adjustedDate.getHours();
+        const minutes = adjustedDate.getMinutes();
         if (currentPicker === 'startTime') {
-          setStartTime(adjustedDate);
+          setStartTime(`${hours}:${minutes}`);
         } else {
-          setEndTime(adjustedDate);
+          setEndTime(`${hours}:${minutes}`);
         }
       } else {
         setSequenceEndDate(selectedDate);
@@ -157,7 +187,16 @@ const CreatePlan = ({navigation}) => {
         Alert.alert('Please enter a title');
         return;
       }
-      if (startTime > endTime) {
+      if (!startTime) {
+        Alert.alert('Please enter a start time');
+        return;
+      }
+      if (!endTime) {
+        Alert.alert('Please enter a end time');
+        return;
+      }
+
+      if (!compareStartTimeEndTime(startTime, endTime)) {
         Alert.alert('Start time should be less than end time');
         return;
       }
@@ -172,11 +211,11 @@ const CreatePlan = ({navigation}) => {
       const obj = {
         _id: new BSON.ObjectId(),
         title: title,
-        startTime: startTime.toISOString(),
-        endTime: endTime.toISOString(),
-        repeatSequence: repeatSequence,
-        repeatType: repeatSequence?.length === 7 ? 'daily' : 'weeky',
-        repeatEndDate: sequenceEndDate?.toISOString(),
+        startTime: startTime,
+        endTime: endTime,
+        repeatSequence: repeatSequence || [],
+        repeatType: repeatSequence?.length === 7 ? 'daily' : 'weekly',
+        repeatEndDate: sequenceEndDate?.toISOString() || '',
         description: description,
         isCompleted: false,
         goals: goals,
@@ -220,13 +259,13 @@ const CreatePlan = ({navigation}) => {
           <View>
             <Text>Set Start Time</Text>
             <Button
-              title={startTime?.toISOString()}
+              title={getAMPMTime(startTime) || 'set start time'}
               onPress={() => showTimepicker('startTime')}
               style={{marginBottom: 10}}></Button>
 
             <Text>Set End Time</Text>
             <Button
-              title={endTime?.toISOString()}
+              title={getAMPMTime(endTime) || 'set end time'}
               onPress={() => showTimepicker('endTime')}></Button>
           </View>
 
@@ -293,7 +332,7 @@ const CreatePlan = ({navigation}) => {
           {show && (
             <DateTimePicker
               testID="dateTimePicker"
-              value={currentPicker === 'startTime' ? startTime : endTime}
+              value={new Date()}
               mode={mode}
               is24Hour={false}
               onChange={onTimePickerChange}
