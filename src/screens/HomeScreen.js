@@ -1,5 +1,5 @@
 import {useQuery} from '@realm/react';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Button,
   SafeAreaView,
@@ -12,11 +12,24 @@ import {
   Animated,
 } from 'react-native';
 import {Profile} from '../realm/models';
+import {
+  askAlarmPermission,
+  askNotificationPermission,
+  checkAlarmPermission,
+} from '../utils/permission';
 
 const HomeScreen = ({navigation}) => {
   const profile = useQuery(Profile);
 
   const {name} = profile[0];
+
+  useEffect(() => {
+    const permissions = async () => {
+      await askNotificationPermission();
+      await checkAlarmPermission();
+    };
+    permissions();
+  }, []);
 
   const onCreatePlan = () => {
     navigation.navigate('CreatePlan');

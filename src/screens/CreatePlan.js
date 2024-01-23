@@ -11,6 +11,9 @@ import {
 import Button from '../components/common/Button';
 import InputBox from '../components/common/InputBox';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {useRealm} from '@realm/react';
+import Plan from '../realm/models/Plan';
+import {BSON} from 'realm';
 
 const WeekDays = ({repeatSequence, setRepeatSequence}) => {
   const days = [
@@ -114,6 +117,8 @@ const CreatePlan = ({navigation}) => {
     },
   ]);
 
+  const realm = useRealm();
+
   const showMode = currentMode => {
     setShow(true);
     setMode(currentMode);
@@ -147,34 +152,44 @@ const CreatePlan = ({navigation}) => {
   };
 
   const createPlan = () => {
-    if (!title) {
-      Alert.alert('Please enter a title');
-      return;
-    }
-    if (startTime > endTime) {
-      Alert.alert('Start time should be less than end time');
-      return;
-    }
-
-    if (repeatSequence.length && sequenceEndDate) {
-      if (sequenceEndDate < startTime) {
-        Alert.alert('End date should be greater than start time');
+    try {
+      if (!title) {
+        Alert.alert('Please enter a title');
         return;
       }
-    }
+      if (startTime > endTime) {
+        Alert.alert('Start time should be less than end time');
+        return;
+      }
 
-    const obj = {
-      title: title,
-      startTime: startTime,
-      endTime: endTime,
-      repeatSequence: repeatSequence,
-      repeatType: repeatSequence?.length === 7 ? 'daily' : 'weeky',
-      repeatEndDate: sequenceEndDate,
-      description: description,
-      isCompleted: false,
-      goals: goals,
-      friends: friends,
-    };
+      if (repeatSequence.length && sequenceEndDate) {
+        if (sequenceEndDate < startTime) {
+          Alert.alert('End date should be greater than start time');
+          return;
+        }
+      }
+
+      const obj = {
+        _id: new BSON.ObjectId(),
+        title: title,
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
+        repeatSequence: repeatSequence,
+        repeatType: repeatSequence?.length === 7 ? 'daily' : 'weeky',
+        repeatEndDate: sequenceEndDate?.toISOString(),
+        description: description,
+        isCompleted: false,
+        goals: goals,
+        friends: friends?.split(','),
+      };
+
+      realm.write(() => {
+        realm.create(Plan, obj);
+      });
+      navigation.navigate('Home', 'reset');
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -287,7 +302,7 @@ const CreatePlan = ({navigation}) => {
           )}
         </ScrollView>
       </View>
-      <Button title={'Create'}></Button>
+      <Button title={'Create'} onPress={createPlan}></Button>
     </View>
   );
 };
