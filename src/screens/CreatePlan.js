@@ -254,7 +254,7 @@ const CreatePlan = ({navigation}) => {
       realm.write(() => {
         realm.create(Plan, obj);
       });
-      createTriggerNotification(startTime, obj);
+      onCreateTriggerNotification(startTime, obj);
       navigation.navigate('Home', 'reset');
     } catch (e) {
       navigation.navigate('Home', 'reset');
