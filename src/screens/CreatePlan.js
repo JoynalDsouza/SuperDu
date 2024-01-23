@@ -15,7 +15,7 @@ import {useRealm} from '@realm/react';
 import Plan from '../realm/models/Plan';
 import {BSON} from 'realm';
 
-const getAMPMTime = time => {
+export const getAMPMTime = time => {
   if (!time) return time;
   const [hours, minutes] = time.split(':');
   const hoursInNumber = parseInt(hours);
@@ -215,7 +215,10 @@ const CreatePlan = ({navigation}) => {
         endTime: endTime,
         repeatSequence: repeatSequence || [],
         repeatType: repeatSequence?.length === 7 ? 'daily' : 'weekly',
-        repeatEndDate: sequenceEndDate?.toISOString() || '',
+        repeatEndDate:
+          repeatSequence?.length === 0
+            ? new Date().toISOString()
+            : sequenceEndDate?.toISOString() || '',
         description: description,
         isCompleted: false,
         goals: goals,
