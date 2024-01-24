@@ -18,6 +18,7 @@ import {
   checkAlarmPermission,
 } from '../utils/permission';
 import notifee from '@notifee/react-native';
+import {getAMPMTime} from './CreatePlan';
 
 const getPlansByDay = (plans, day) => {
   const currentDay = day % 7; // Ensure day is within 0 to 6 (Sunday to Saturday)
@@ -70,7 +71,11 @@ const HomeScreen = ({navigation}) => {
   return (
     <>
       <View style={styles.container}>
-        <Text>Hello {name}</Text>
+        <View style={{paddingVertical: 6, backgroundColor: 'grey'}}>
+          <Text style={{paddingHorizontal: 10, color: 'white'}}>
+            Hello, {name}
+          </Text>
+        </View>
         <View style={{flex: 1}}>
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: 18, fontWeight: 'bold'}}>
@@ -97,7 +102,7 @@ const HomeScreen = ({navigation}) => {
                       justifyContent: 'space-between',
                     }}>
                     <Text>{plan.title}</Text>
-                    <Text>{plan.startTime}</Text>
+                    <Text>{getAMPMTime(plan.startTime)}</Text>
                   </View>
                 </TouchableOpacity>
               );

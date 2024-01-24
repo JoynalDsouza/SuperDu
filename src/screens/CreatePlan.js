@@ -103,7 +103,7 @@ const WeekDays = ({repeatSequence, setRepeatSequence}) => {
       value: 'Saturday',
     },
     {
-      name: 'T',
+      name: 'S',
       index: 7,
       value: 'Sunday',
     },
@@ -309,7 +309,8 @@ const CreatePlan = ({navigation}) => {
                 <Button
                   onPress={() => showMode('date')}
                   title={
-                    sequenceEndDate?.toISOString() || 'Always Repeat'
+                    sequenceEndDate?.toISOString()?.split('T')[0] ||
+                    'Always Repeat'
                   }></Button>
               </View>
             )}

@@ -37,10 +37,24 @@ const PlanDetail = ({route, navigation}) => {
     startTime: '18:27',
     title: 'alknfalksfa',
   };
-  console.log(plan.repeatSequence);
+  console.log(plan.friends);
   return (
-    <View>
-      <Text>Plan Details</Text>
+    <View style={{gap: 3}}>
+      <View
+        style={{
+          backgroundColor: 'green',
+          alignItems: 'center',
+          paddingVertical: 10,
+        }}>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: 'white',
+          }}>
+          Plan Details
+        </Text>
+      </View>
 
       <Text> Title : {plan.title}</Text>
       <Text> Description : {plan.description || 'No description added'}</Text>
@@ -52,6 +66,28 @@ const PlanDetail = ({route, navigation}) => {
       {!!plan?.repeatSequence.length &&
         plan.repeatSequence.map((day, index) => {
           return <Text key={index}> {DAYS[day]}</Text>;
+        })}
+
+      {!!plan.goals.length && <Text> Goals :</Text>}
+      {!!plan.goals.length &&
+        plan.goals.map((goal, index) => {
+          if (!goal) return null;
+          return (
+            <Text key={index}>
+              {index + 1}. {goal.value}
+            </Text>
+          );
+        })}
+
+      {!!plan.friends.length && <Text> Friends :</Text>}
+      {!!plan.friends.length &&
+        plan.friends.map((goal, index) => {
+          if (!goal) return null;
+          return (
+            <Text key={index}>
+              {index + 1}. {goal}
+            </Text>
+          );
         })}
     </View>
   );
