@@ -1,5 +1,9 @@
-import {User, IncomeType, ExpenseType, InvestmentType} from './User';
+import {User, IncomeType, ExpenseType, InvestmentType, AssetType} from './User';
+import {Asset, Income, Expense} from './Account';
 
-const schemas = [User, IncomeType, ExpenseType, InvestmentType];
+const userSchemas = [User, IncomeType, ExpenseType, InvestmentType, AssetType];
+const accountSchemas = [Asset, Income, Expense];
+
+const schemas = [...userSchemas, ...accountSchemas];
 
 export default schemas;

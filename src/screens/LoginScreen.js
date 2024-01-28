@@ -1,22 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Keyboard} from 'react-native';
+import {View, Text, StyleSheet, Keyboard, Alert} from 'react-native';
 import InputBox from '../components/common/InputBox';
 import Button from '../components/common/Button';
-import {useQuery, useRealm} from '@realm/react';
+import {useObject, useQuery, useRealm} from '@realm/react';
 import {BSON} from 'realm';
 import {Profile} from '../realm/models';
 import {ExpenseType} from '../realm/models/User';
+import AddAsset from '../components/Inputs/AddAsset';
 
 const LoginScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const realm = useRealm();
   const [error, setError] = useState('');
   const expenseTypes = useQuery(ExpenseType);
-  console.log(expenseTypes);
 
   return (
     <View style={styles.container}>
-      <View style={{flexDirection: 'row'}}>
+      <View
+        style={{flexDirection: 'row', marginHorizontal: 10, marginBottom: 16}}>
         <InputBox
           label={'Name'}
           type="alphaNumeric"
@@ -27,19 +28,18 @@ const LoginScreen = ({navigation}) => {
           setInputValue={setName}
         />
       </View>
-
-      <Button title={'Enter'} onPress={() => {}} disabled={!!error}></Button>
+      <View style={{alignSelf: 'center'}}>
+        <Button title={'Enter'} onPress={() => {}} disabled={!!error}></Button>
+      </View>
+      <View style={{marginHorizontal: 10}}>
+        <AddAsset />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1, // fill the entire screen
-    // backgroundColor: 'black',
-  },
+  container: {},
 });
 
 export default LoginScreen;

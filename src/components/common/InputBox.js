@@ -65,7 +65,7 @@ const InputBox = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      {!!label && <Text style={styles.label}>{label}</Text>}
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -82,11 +82,10 @@ const InputBox = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    width: '100%',
   },
   label: {
     fontSize: 16,
-    marginBottom: 8,
   },
   input: {
     height: 40,
