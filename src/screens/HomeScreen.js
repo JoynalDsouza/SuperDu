@@ -1,21 +1,16 @@
 import {useQuery} from '@realm/react';
 import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {Profile} from '../realm/models';
 
 import notifee from '@notifee/react-native';
 
 const HomeScreen = ({navigation}) => {
-  const profile = useQuery(Profile);
-
-  const {name} = profile[0];
-
   return (
     <>
       <View style={styles.container}>
         <View style={{paddingVertical: 6, backgroundColor: 'grey'}}>
           <Text style={{paddingHorizontal: 10, color: 'white'}}>
-            Hello, {name}
+            {/* Hello, {name} */}
           </Text>
         </View>
       </View>

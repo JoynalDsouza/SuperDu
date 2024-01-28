@@ -5,30 +5,14 @@ import Button from '../components/common/Button';
 import {useQuery, useRealm} from '@realm/react';
 import {BSON} from 'realm';
 import {Profile} from '../realm/models';
+import {ExpenseType} from '../realm/models/User';
 
 const LoginScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const realm = useRealm();
   const [error, setError] = useState('');
-
-  const profile = useQuery(Profile);
-
-  useEffect(() => {
-    if (profile.length > 0) {
-      navigation.navigate('Home', 'reset');
-    }
-  });
-
-  const addProfile = () => {
-    // Keyboard.dismiss();
-    realm.write(() => {
-      realm.create(Profile, {
-        _id: new BSON.ObjectId(),
-        name: name,
-      });
-    });
-    navigation.navigate('Home', 'reset');
-  };
+  const expenseTypes = useQuery(ExpenseType);
+  console.log(expenseTypes);
 
   return (
     <View style={styles.container}>
@@ -44,7 +28,7 @@ const LoginScreen = ({navigation}) => {
         />
       </View>
 
-      <Button title={'Enter'} onPress={addProfile} disabled={!!error}></Button>
+      <Button title={'Enter'} onPress={() => {}} disabled={!!error}></Button>
     </View>
   );
 };

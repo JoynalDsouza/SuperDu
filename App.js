@@ -9,13 +9,16 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Navigation from './src/Navigation/navigation';
-import {RealmProvider} from '@realm/react';
 
 import {GoalsItem, Plan, Profile} from './src/realm/models';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
+import schemas from './src/realm/models/schemas';
+import {RealmProvider} from '@realm/react';
+import {BSON} from 'realm';
+import {ExpenseType} from './src/realm/models/User';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -27,7 +30,29 @@ function App() {
 
   return (
     <>
-      <RealmProvider schema={[Profile, Plan, GoalsItem]} schemaVersion={4}>
+      <RealmProvider
+        schema={schemas}
+        schemaVersion={1}
+        deleteRealmIfMigrationNeeded={true}
+        onFirstOpen={realm => {
+          realm.create(ExpenseType, {
+            _id: new BSON.ObjectID(),
+            name: 'Grocery',
+            isActive: true,
+          });
+          realm.create(ExpenseType, {
+            _id: new BSON.ObjectID(),
+
+            name: 'Food',
+            isActive: true,
+          });
+          realm.create(ExpenseType, {
+            _id: new BSON.ObjectID(),
+
+            name: 'Commute',
+            isActive: true,
+          });
+        }}>
         <Navigation />
       </RealmProvider>
     </>
