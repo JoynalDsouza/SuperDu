@@ -36,7 +36,6 @@ const LoginScreen = ({navigation}) => {
 
   const onContinuePress = () => {
     try {
-      console.log(user.length);
       if (user?.length) {
         resetToDashboard();
       } else {
