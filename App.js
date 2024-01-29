@@ -19,6 +19,7 @@ import schemas from './src/realm/models/schemas';
 import {RealmProvider} from '@realm/react';
 import {BSON} from 'realm';
 import {ExpenseType} from './src/realm/models/User';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -29,33 +30,33 @@ function App() {
   };
 
   return (
-    <>
-      <RealmProvider
-        schema={schemas}
-        schemaVersion={1}
-        deleteRealmIfMigrationNeeded={true}
-        onFirstOpen={realm => {
-          realm.create(ExpenseType, {
-            _id: new BSON.ObjectID(),
-            name: 'Grocery',
-            isActive: true,
-          });
-          realm.create(ExpenseType, {
-            _id: new BSON.ObjectID(),
+    <RealmProvider
+      schema={schemas}
+      schemaVersion={1}
+      deleteRealmIfMigrationNeeded={true}
+      onFirstOpen={realm => {
+        realm.create(ExpenseType, {
+          _id: new BSON.ObjectID(),
+          name: 'Grocery',
+          isActive: true,
+        });
+        realm.create(ExpenseType, {
+          _id: new BSON.ObjectID(),
 
-            name: 'Food',
-            isActive: true,
-          });
-          realm.create(ExpenseType, {
-            _id: new BSON.ObjectID(),
+          name: 'Food',
+          isActive: true,
+        });
+        realm.create(ExpenseType, {
+          _id: new BSON.ObjectID(),
 
-            name: 'Commute',
-            isActive: true,
-          });
-        }}>
+          name: 'Commute',
+          isActive: true,
+        });
+      }}>
+      <SafeAreaView style={{flex: 1}}>
         <Navigation />
-      </RealmProvider>
-    </>
+      </SafeAreaView>
+    </RealmProvider>
   );
 }
 
