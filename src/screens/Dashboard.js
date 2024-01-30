@@ -11,8 +11,10 @@ import {getDate, getDateTime} from '../utils/moment';
 import DateTimePicker from 'react-native-ui-datepicker';
 import AddExpense from '../components/Inputs/AddExpense';
 import {useQuery} from '@realm/react';
-import {Expense, Income} from '../realm/models/Account';
+import {Expense, Income, Investment, Lending} from '../realm/models/Account';
 import AddIncome from '../components/Inputs/AddIncome';
+import AddLending from '../components/Inputs/AddLending';
+import AddInvestment from '../components/Inputs/AddInvestment';
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -20,6 +22,8 @@ const Dashboard = () => {
 
   const EXPENSES = useQuery(Expense);
   const INCOMES = useQuery(Income);
+  const LENDINGS = useQuery(Lending);
+  const INVESTMENTS = useQuery(Investment);
 
   const startOfDay = momemt(new Date(date)).startOf('day');
   const endOfDay = momemt(new Date(date)).endOf('day');
@@ -42,6 +46,26 @@ const Dashboard = () => {
         endOfDay.toDate(),
       ),
     [INCOMES, date],
+  );
+
+  const filteredLendings = useMemo(
+    () =>
+      LENDINGS.filtered(
+        'addedOn >= $0 && addedOn <= $1',
+        startOfDay.toDate(),
+        endOfDay.toDate(),
+      ),
+    [LENDINGS, date],
+  );
+
+  const filteredInvestments = useMemo(
+    () =>
+      INVESTMENTS.filtered(
+        'addedOn >= $0 && addedOn <= $1',
+        startOfDay.toDate(),
+        endOfDay.toDate(),
+      ),
+    [INVESTMENTS, date],
   );
 
   useEffect(() => {
@@ -68,12 +92,28 @@ const Dashboard = () => {
 
       <View
         style={{
-          justifyContent: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
           alignItems: 'center',
           paddingVertical: 40,
+          paddingHorizontal: 20,
         }}>
+        <TouchableOpacity
+          onPress={() => {
+            const newDate = momemt(new Date(date)).subtract(1, 'day').toDate();
+            setDate(newDate);
+          }}>
+          <Text>Left</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
           <Text>{getDate(date)}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            const newDate = momemt(new Date(date)).add(1, 'day').toDate();
+            setDate(newDate);
+          }}>
+          <Text>Right</Text>
         </TouchableOpacity>
       </View>
 
@@ -83,6 +123,14 @@ const Dashboard = () => {
 
       <View>
         <AddIncome incomes={filteredIncomes} />
+      </View>
+
+      <View>
+        <AddLending lendings={filteredLendings} />
+      </View>
+
+      <View>
+        <AddInvestment investments={filteredInvestments} />
       </View>
       {showDatePicker && (
         <View

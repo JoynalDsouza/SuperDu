@@ -53,6 +53,19 @@ class AssetType extends Realm.Object<AssetType> {
   };
 }
 
+class LendingType extends Realm.Object<LendingType> {
+  name!: string;
+  isActive?: boolean;
+  static schema: ObjectSchema = {
+    name: 'LendingType',
+    properties: {
+      name: {type: 'string', indexed: true},
+      isActive: {type: 'bool', default: true},
+    },
+    primaryKey: 'name',
+  };
+}
+
 class User extends Realm.Object<User> {
   _id!: Realm.BSON.ObjectId;
   name!: string;
@@ -78,4 +91,4 @@ class User extends Realm.Object<User> {
   };
 }
 
-export {User, IncomeType, ExpenseType, InvestmentType, AssetType};
+export {User, IncomeType, ExpenseType, InvestmentType, AssetType, LendingType};
