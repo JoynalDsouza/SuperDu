@@ -38,6 +38,13 @@ const Dashboard = () => {
     [EXPENSES, date],
   );
 
+  const totalExpense = useMemo(() => {
+    return filteredExpenses.reduce(
+      (total, expense) => total + expense.value,
+      0,
+    );
+  }, [filteredExpenses]);
+
   const filteredIncomes = useMemo(
     () =>
       INCOMES.filtered(
@@ -117,6 +124,7 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
 
+      {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
       <View>
         <AddExpense expenses={filteredExpenses} />
       </View>
