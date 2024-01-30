@@ -4,8 +4,12 @@ import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
 import Dashboard from '../screens/Dashboard';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Overview from '../screens/OverviewScreen';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
 const navigationRef = React.createRef();
 
 export function rootNavigate(name, action = 'back', params = null) {
@@ -45,6 +49,15 @@ export function rootNavigate(name, action = 'back', params = null) {
   }
 }
 
+function MyTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen name="Overview" component={Overview} />
+    </Tab.Navigator>
+  );
+}
+
 const Navigation = () => {
   return (
     <NavigationContainer ref={navigationRef}>
@@ -54,7 +67,7 @@ const Navigation = () => {
           headerShown: false,
         }}>
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Home" component={MyTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

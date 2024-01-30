@@ -62,7 +62,7 @@ const AddExpense = ({expenses = []}) => {
             return (
               <View key={expense._id} style={{flexDirection: 'row'}}>
                 <Text>{expense.value}</Text>
-                <Text>{expense.type?.name}</Text>
+                <Text> {expense.type?.name}</Text>
               </View>
             );
           })}

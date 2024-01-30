@@ -31,7 +31,7 @@ const LoginScreen = ({navigation}) => {
   };
 
   const resetToDashboard = () => {
-    rootNavigate('Dashboard', 'reset');
+    rootNavigate('Home', 'reset');
   };
 
   const onContinuePress = () => {

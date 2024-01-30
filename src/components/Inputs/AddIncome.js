@@ -61,7 +61,7 @@ const AddIncome = ({incomes = []}) => {
             return (
               <View key={income._id} style={{flexDirection: 'row'}}>
                 <Text>{income.value}</Text>
-                <Text>{income.type?.name}</Text>
+                <Text> {income.type?.name}</Text>
               </View>
             );
           })}

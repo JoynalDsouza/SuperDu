@@ -61,7 +61,7 @@ const AddLending = ({lendings = []}) => {
             return (
               <View key={lending._id} style={{flexDirection: 'row'}}>
                 <Text>{lending.value}</Text>
-                <Text>{lending.type?.name}</Text>
+                <Text> {lending.type?.name}</Text>
               </View>
             );
           })}

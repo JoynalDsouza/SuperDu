@@ -16,17 +16,19 @@ import AddIncome from '../components/Inputs/AddIncome';
 import AddLending from '../components/Inputs/AddLending';
 import AddInvestment from '../components/Inputs/AddInvestment';
 
-const Dashboard = () => {
+const Overview = () => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [startDate, setStartDate] = useState(undefined);
+  const [endDate, setEndDate] = useState(undefined);
 
   const EXPENSES = useQuery(Expense);
   const INCOMES = useQuery(Income);
   const LENDINGS = useQuery(Lending);
   const INVESTMENTS = useQuery(Investment);
 
-  const startOfDay = momemt(new Date(date)).startOf('day');
-  const endOfDay = momemt(new Date(date)).endOf('day');
+  const startOfDay = momemt(new Date(startDate || null)).startOf('day');
+  const endOfDay = momemt(new Date(endDate || null)).endOf('day');
 
   const filteredExpenses = useMemo(
     () =>
@@ -35,7 +37,7 @@ const Dashboard = () => {
         startOfDay.toDate(),
         endOfDay.toDate(),
       ),
-    [EXPENSES, date],
+    [EXPENSES, startDate, endDate],
   );
 
   const totalExpense = useMemo(() => {
@@ -52,8 +54,12 @@ const Dashboard = () => {
         startOfDay.toDate(),
         endOfDay.toDate(),
       ),
-    [INCOMES, date],
+    [INCOMES, startDate, endDate],
   );
+
+  const totalIncome = useMemo(() => {
+    return filteredIncomes.reduce((total, income) => total + income.value, 0);
+  });
 
   const filteredLendings = useMemo(
     () =>
@@ -62,8 +68,15 @@ const Dashboard = () => {
         startOfDay.toDate(),
         endOfDay.toDate(),
       ),
-    [LENDINGS, date],
+    [LENDINGS, startDate, endDate],
   );
+
+  const totalLending = useMemo(() => {
+    return filteredLendings.reduce(
+      (total, lending) => total + lending.value,
+      0,
+    );
+  });
 
   const filteredInvestments = useMemo(
     () =>
@@ -72,8 +85,15 @@ const Dashboard = () => {
         startOfDay.toDate(),
         endOfDay.toDate(),
       ),
-    [INVESTMENTS, date],
+    [INVESTMENTS, startDate, endDate],
   );
+
+  const totalInvestment = useMemo(() => {
+    return filteredInvestments.reduce(
+      (total, investment) => total + investment.value,
+      0,
+    );
+  });
 
   useEffect(() => {
     const backAction = () => {
@@ -98,46 +118,23 @@ const Dashboard = () => {
       <View
         style={{
           flexDirection: 'row',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
+
           alignItems: 'center',
           paddingVertical: 40,
-          paddingHorizontal: 20,
         }}>
-        <TouchableOpacity
-          onPress={() => {
-            const newDate = momemt(new Date(date)).subtract(1, 'day').toDate();
-            setDate(newDate);
-          }}>
-          <Text>Left</Text>
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-          <Text>{getDate(date)}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            const newDate = momemt(new Date(date)).add(1, 'day').toDate();
-            setDate(newDate);
-          }}>
-          <Text>Right</Text>
+          <Text>
+            {getDate(startDate)} to {getDate(endDate)}
+          </Text>
         </TouchableOpacity>
       </View>
 
       {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
-      <View>
-        <AddExpense expenses={filteredExpenses} />
-      </View>
+      {!!totalIncome && <Text>Total Income : {totalIncome}</Text>}
+      {!!totalLending && <Text>Total Lending : {totalLending}</Text>}
+      {!!totalInvestment && <Text>Total Investment : {totalInvestment}</Text>}
 
-      <View>
-        <AddIncome incomes={filteredIncomes} />
-      </View>
-
-      <View>
-        <AddLending lendings={filteredLendings} />
-      </View>
-
-      <View>
-        <AddInvestment investments={filteredInvestments} />
-      </View>
       {showDatePicker && (
         <View
           style={{
@@ -147,11 +144,20 @@ const Dashboard = () => {
             backgroundColor: '#F5FCFF',
           }}>
           <DateTimePicker
-            mode="single"
-            date={date}
+            mode="range"
+            startDate={startDate}
+            endDate={endDate}
             onChange={params => {
-              setDate(params.date);
-              setShowDatePicker(false);
+              if (params.startDate > params.endDate) {
+                setStartDate(params.endDate);
+                setEndDate(params.startDate);
+              } else {
+                setStartDate(params.startDate);
+                setEndDate(params.endDate);
+              }
+              if (params.startDate && params.endDate) {
+                setShowDatePicker(false);
+              }
             }}
           />
         </View>
@@ -166,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Dashboard;
+export default Overview;

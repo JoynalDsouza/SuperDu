@@ -13,6 +13,7 @@
   "dependencies": {
     "@notifee/react-native": "^7.8.2",
     "@react-native-community/datetimepicker": "^7.6.2",
+    "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@realm/react": "^0.6.2",
