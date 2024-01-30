@@ -1,13 +1,17 @@
 import moment from 'moment';
 
 export const getDateTime = input => {
-  const data = moment(input).local().format('DD-MM-YYYY hh:mm:ss A');
-  const [date, time] = data.split(' ');
-  return {date, time};
+  const data = moment(input?.toISOString())
+    .local()
+    .format('DD-MM-YYYY hh:mm:ss A');
+  const [date, time, meridian] = data.split(' ');
+  return {date, time: time + ' ' + meridian};
 };
 
 export const getDate = date => {
-  const momentDate = moment(date);
-  const data = moment(momentDate).local().format('DD-MM-YYYY');
-  return data;
+  if (date) {
+    return moment(date?.toISOString()).local().format('DD-MM-YYYY');
+  } else {
+    return moment(new Date().toISOString()).local().format('DD-MM-YYYY');
+  }
 };
