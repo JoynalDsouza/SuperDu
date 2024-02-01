@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   BackHandler,
+  ScrollView,
 } from 'react-native';
 import momemt, {utc} from 'moment';
 import {getDate, getDateTime} from '../utils/moment';
@@ -123,21 +124,23 @@ const Dashboard = () => {
       </View>
 
       {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
-      <View>
-        <AddExpense expenses={filteredExpenses} />
-      </View>
+      <ScrollView>
+        <View style={styles.height300}>
+          <AddExpense expenses={filteredExpenses} />
+        </View>
 
-      {/* <View>
-        <AddIncome incomes={filteredIncomes} />
-      </View>
+        <View style={styles.height300}>
+          <AddIncome incomes={filteredIncomes} />
+        </View>
 
-      <View>
-        <AddLending lendings={filteredLendings} />
-      </View>
+        <View style={styles.height300}>
+          <AddLending lendings={filteredLendings} />
+        </View>
 
-      <View>
-        <AddInvestment investments={filteredInvestments} />
-      </View> */}
+        <View style={styles.height300}>
+          <AddInvestment investments={filteredInvestments} />
+        </View>
+      </ScrollView>
       {showDatePicker && (
         <View
           style={{
@@ -163,6 +166,9 @@ const Dashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  height300: {
+    height: 300,
   },
 });
 
