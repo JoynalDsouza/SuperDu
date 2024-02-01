@@ -90,6 +90,7 @@ const AddExpense = ({expenses = []}) => {
             items={filteredExpenseTypes}
             type={'expense'}
             setType={setType}
+            value={type}
           />
         </View>
         <View style={{flex: 1}}>

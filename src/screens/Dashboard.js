@@ -127,7 +127,7 @@ const Dashboard = () => {
         <AddExpense expenses={filteredExpenses} />
       </View>
 
-      <View>
+      {/* <View>
         <AddIncome incomes={filteredIncomes} />
       </View>
 
@@ -137,7 +137,7 @@ const Dashboard = () => {
 
       <View>
         <AddInvestment investments={filteredInvestments} />
-      </View>
+      </View> */}
       {showDatePicker && (
         <View
           style={{
