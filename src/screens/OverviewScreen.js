@@ -27,8 +27,12 @@ const Overview = () => {
   const LENDINGS = useQuery(Lending);
   const INVESTMENTS = useQuery(Investment);
 
-  const startOfDay = momemt(new Date(startDate || null)).startOf('day');
-  const endOfDay = momemt(new Date(endDate || null)).endOf('day');
+  const startOfDay =
+    (startDate && momemt(new Date(startDate)).startOf('month')) ||
+    momemt(new Date()).startOf('month');
+  const endOfDay =
+    (endDate && momemt(new Date(endDate)).endOf('day')) ||
+    momemt(new Date()).endOf('day');
 
   const filteredExpenses = useMemo(
     () =>

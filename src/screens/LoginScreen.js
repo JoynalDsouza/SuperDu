@@ -25,6 +25,7 @@ const LoginScreen = ({navigation}) => {
           name: name,
         });
       });
+      onContinuePress();
     } catch (e) {
       console.log(e);
     }
@@ -84,17 +85,17 @@ const LoginScreen = ({navigation}) => {
           <Text>Welcome {user[0]?.name}</Text>
         </View>
       )}
-      <View style={{marginHorizontal: 10}}>
+      {/* <View style={{marginHorizontal: 10}}>
         <AddAsset />
-      </View>
-      <View
+      </View> */}
+      {/* <View
         style={{
           justifyContent: 'center',
           alignItems: 'center',
           marginVertical: 10,
         }}>
         <Button title={'Continue'} onPress={onContinuePress}></Button>
-      </View>
+      </View> */}
     </View>
   );
 };

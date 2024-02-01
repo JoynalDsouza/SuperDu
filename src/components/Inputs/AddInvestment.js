@@ -6,12 +6,18 @@ import {useQuery, useRealm} from '@realm/react';
 import {Asset, Investment} from '../../realm/models/Account';
 import {AssetType, InvestmentType} from '../../realm/models/User';
 import {BSON} from 'realm';
+import TypeInputDropdown from './TypeInputDropdown';
 
 const AddInvestment = ({investments = []}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
 
   const realm = useRealm();
+
+  const INVESTMENT_TYPES = useQuery(InvestmentType, type => {
+    return type.sorted('name');
+  });
+  const filteredInvestmentTypes = INVESTMENT_TYPES.filtered('isActive = true');
 
   const getInvestmentType = () => {
     try {
@@ -78,10 +84,10 @@ const AddInvestment = ({investments = []}) => {
           />
         </View>
         <View style={{flex: 2, marginHorizontal: 10}}>
-          <InputBox
-            placeholder={'Select Type'}
-            inputValue={type}
-            setInputValue={setType}
+          <TypeInputDropdown
+            type="investment"
+            items={filteredInvestmentTypes}
+            setType={setType}
           />
         </View>
         <View style={{flex: 1}}>

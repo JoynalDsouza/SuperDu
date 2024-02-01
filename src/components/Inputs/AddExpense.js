@@ -7,12 +7,19 @@ import {Asset, Expense} from '../../realm/models/Account';
 import {AssetType, ExpenseType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import {getDate} from '../../utils/moment';
+import DropDownPicker from 'react-native-dropdown-picker';
+import TypeInputDropdown from './TypeInputDropdown';
 
 const AddExpense = ({expenses = []}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
 
   const realm = useRealm();
+
+  const EXPENSE_TYPES = useQuery(ExpenseType, type => {
+    return type.sorted('name');
+  });
+  const filteredExpenseTypes = EXPENSE_TYPES.filtered('isActive = true');
 
   const getExpenseType = () => {
     try {
@@ -78,11 +85,11 @@ const AddExpense = ({expenses = []}) => {
             setInputValue={setValue}
           />
         </View>
-        <View style={{flex: 2, marginHorizontal: 10}}>
-          <InputBox
-            placeholder={'Select Type'}
-            inputValue={type}
-            setInputValue={setType}
+        <View style={{flex: 2, marginHorizontal: 10, zIndex: 10}}>
+          <TypeInputDropdown
+            items={filteredExpenseTypes}
+            type={'expense'}
+            setType={setType}
           />
         </View>
         <View style={{flex: 1}}>

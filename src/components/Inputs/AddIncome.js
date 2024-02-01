@@ -6,12 +6,18 @@ import {useQuery, useRealm} from '@realm/react';
 import {Asset, Income} from '../../realm/models/Account';
 import {AssetType, IncomeType} from '../../realm/models/User';
 import {BSON} from 'realm';
+import TypeInputDropdown from './TypeInputDropdown';
 
 const AddIncome = ({incomes = []}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
 
   const realm = useRealm();
+
+  const INCOME_TYPES = useQuery(IncomeType, type => {
+    return type.sorted('name');
+  });
+  const filteredIncomeTypes = INCOME_TYPES.filtered('isActive = true');
 
   const getIncomeType = () => {
     try {
@@ -78,10 +84,10 @@ const AddIncome = ({incomes = []}) => {
           />
         </View>
         <View style={{flex: 2, marginHorizontal: 10}}>
-          <InputBox
-            placeholder={'Select Type'}
-            inputValue={type}
-            setInputValue={setType}
+          <TypeInputDropdown
+            type="income"
+            items={filteredIncomeTypes}
+            setType={setType}
           />
         </View>
         <View style={{flex: 1}}>
