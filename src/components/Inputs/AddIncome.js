@@ -88,6 +88,7 @@ const AddIncome = ({incomes = []}) => {
             type="income"
             items={filteredIncomeTypes}
             setType={setType}
+            value={type}
           />
         </View>
         <View style={{flex: 1}}>

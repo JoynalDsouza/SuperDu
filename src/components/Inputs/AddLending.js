@@ -88,6 +88,7 @@ const AddLending = ({lendings = []}) => {
             type="lending"
             items={filteredLendingTypes}
             setType={setType}
+            value={type}
           />
         </View>
         <View style={{flex: 1}}>

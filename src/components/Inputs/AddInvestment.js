@@ -88,6 +88,7 @@ const AddInvestment = ({investments = []}) => {
             type="investment"
             items={filteredInvestmentTypes}
             setType={setType}
+            value={type}
           />
         </View>
         <View style={{flex: 1}}>
