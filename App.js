@@ -33,7 +33,7 @@ function App() {
     <RealmProvider
       schema={schemas}
       schemaVersion={1}
-      deleteRealmIfMigrationNeeded={true}
+      deleteRealmIfMigrationNeeded={__DEV__}
       onFirstOpen={realm => {
         realm.create(ExpenseType, {
           _id: new BSON.ObjectID(),

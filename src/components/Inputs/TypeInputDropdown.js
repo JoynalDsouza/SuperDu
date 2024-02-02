@@ -34,7 +34,7 @@ const TypeInputDropdown = ({
         }}
         placeholder={`Select ${type} type`}
         items={[{name: '+ Add New', value: 'add new'}, ...items]}
-        value={{name: 'hello', value: value}}
+        value={value}
         setOpen={() => {
           setDropdownOpen(!dropdownOpen);
         }}
