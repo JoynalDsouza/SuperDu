@@ -2,11 +2,18 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, BackHandler} from 'react-native';
 import moment from 'moment';
 import {getMonth, getYear, getYearsBetween} from '../utils/moment';
-import {useQuery} from '@realm/react';
-import {Expense, Income, Investment, Lending} from '../realm/models/Account';
+import {useObject, useQuery} from '@realm/react';
+import {
+  Budget,
+  Expense,
+  Income,
+  Investment,
+  Lending,
+} from '../realm/models/Account';
 import {MONTHS} from '../utils/constants/Months';
 import CustomDropdownPicker from '../components/common/CustomDropdownPicker';
 import {User} from '../realm/models/User';
+import AddBudget from '../components/Inputs/AddBudget';
 
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -22,6 +29,9 @@ const Overview = () => {
   const INCOMES = useQuery(Income);
   const LENDINGS = useQuery(Lending);
   const INVESTMENTS = useQuery(Investment);
+  const BUDGET = useObject(Budget, `${selectedMonth}/${selectedYear}`);
+
+  console.log('filteredBudgets', BUDGET.budget);
 
   const startOfMonth = moment()
     .year(selectedYear)
@@ -152,6 +162,11 @@ const Overview = () => {
       {!!totalIncome && <Text>Total Income : {totalIncome}</Text>}
       {!!totalLending && <Text>Total Lending : {totalLending}</Text>}
       {!!totalInvestment && <Text>Total Investment : {totalInvestment}</Text>}
+
+      <AddBudget
+        date={`${selectedMonth}/${selectedYear}`}
+        // budgets={filteredBudgets}
+      />
     </View>
   );
 };

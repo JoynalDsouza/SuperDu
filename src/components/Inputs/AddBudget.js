@@ -8,7 +8,7 @@ import {ExpenseType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
 
-const AddBudget = ({month, year, budgets = []}) => {
+const AddBudget = ({date, budgets = []}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
 
@@ -21,14 +21,28 @@ const AddBudget = ({month, year, budgets = []}) => {
 
   const addBudget = () => {
     try {
-      realm.write(() => {
-        realm.create(Budget, {
-          _id: new BSON.ObjectID(),
-          value: Number(value),
-          type: 'budget', // 'budget' is a string,
-          for: `${month}/${year}`,
+      const budgetExists = realm.objectForPrimaryKey(Budget, date);
+      if (!budgetExists) {
+        realm.write(() => {
+          realm.create(Budget, {
+            for: date,
+            budget: [{value: Number(value), type: type}],
+          });
         });
-      });
+      } else {
+        const budgets = budgetExists.budget;
+        const typeExists = budgets.find(budget => budget.type === type);
+        if (typeExists) {
+          realm.write(() => {
+            typeExists.value = typeExists.value + Number(value);
+          });
+        } else {
+          realm.write(() => {
+            budgets.push({value: Number(value), type: type});
+          });
+        }
+      }
+
       setValue('');
       setType('');
     } catch (e) {
@@ -45,13 +59,12 @@ const AddBudget = ({month, year, budgets = []}) => {
             return (
               <View key={budget._id} style={{flexDirection: 'row'}}>
                 <Text>{budget.value}</Text>
-                <Text> {budget.type?.name}</Text>
+                <Text> {budget.type}</Text>
               </View>
             );
           })}
         </View>
       )}
-
       <Text>Add Budget</Text>
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 3}}>
@@ -63,8 +76,12 @@ const AddBudget = ({month, year, budgets = []}) => {
         </View>
         <View style={{flex: 2, marginHorizontal: 10, zIndex: 10}}>
           <TypeInputDropdown
-            items={filteredExpenseTypes}
-            type={'expense'}
+            items={[
+              ...filteredExpenseTypes,
+              {name: 'investment'},
+              {name: 'lending'},
+            ]}
+            type={'budget'}
             setType={setType}
             value={type}
           />

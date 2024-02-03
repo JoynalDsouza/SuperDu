@@ -6,7 +6,15 @@ import {
   AssetType,
   LendingType,
 } from './User';
-import {Asset, Income, Expense, Lending, Investment, Budget} from './Account';
+import {
+  Asset,
+  Income,
+  Expense,
+  Lending,
+  Investment,
+  Budget,
+  BudgetType,
+} from './Account';
 
 const userSchemas = [
   User,
@@ -16,7 +24,15 @@ const userSchemas = [
   AssetType,
   LendingType,
 ];
-const accountSchemas = [Asset, Income, Expense, Lending, Investment, Budget];
+const accountSchemas = [
+  Asset,
+  Income,
+  Expense,
+  Lending,
+  Investment,
+  Budget,
+  BudgetType,
+];
 
 const schemas = [...userSchemas, ...accountSchemas];
 

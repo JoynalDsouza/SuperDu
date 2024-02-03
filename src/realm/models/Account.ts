@@ -99,22 +99,32 @@ class Lending extends Realm.Object<Lending> {
   };
 }
 
-class Budget extends Realm.Object<Budget> {
-  _id?: Realm.BSON.ObjectId;
+class BudgetType extends Realm.Object<BudgetType> {
   value!: number;
-  type!: 'string';
+  type!: string;
+
+  static schema: ObjectSchema = {
+    name: 'BudgetType',
+    properties: {
+      value: {type: 'float', default: 0},
+      type: {type: 'string'},
+    },
+    primaryKey: 'type',
+  };
+}
+
+class Budget extends Realm.Object<Budget> {
+  budget!: Realm.List<BudgetType>;
   for?: string;
 
   static schema: ObjectSchema = {
     name: 'Budget',
     properties: {
-      _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
-      value: {type: 'float', default: 0},
-      type: {type: 'string'},
+      budget: 'BudgetType[]',
       for: {type: 'string'},
     },
-    primaryKey: '_id',
+    primaryKey: 'for',
   };
 }
 
-export {Asset, Income, Expense, Lending, Investment, Budget};
+export {Asset, Income, Expense, Lending, Investment, Budget, BudgetType};
