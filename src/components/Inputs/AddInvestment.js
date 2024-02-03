@@ -78,7 +78,7 @@ const AddInvestment = ({investments = [], date}) => {
                 item={investment}
                 key={investment._id}
                 type={investment.type}
-                onDelete={onDeleteInvestment}></TypeCard>
+                onDelete={() => onDeleteInvestment(investment)}></TypeCard>
             );
           })}
         </View>

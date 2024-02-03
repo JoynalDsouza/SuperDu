@@ -79,7 +79,7 @@ const AddIncome = ({incomes = [], date}) => {
                 item={income}
                 key={income._id}
                 type={income.type}
-                onDelete={onDeleteIncome}></TypeCard>
+                onDelete={() => onDeleteIncome(income)}></TypeCard>
             );
           })}
         </View>

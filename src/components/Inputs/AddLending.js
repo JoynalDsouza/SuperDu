@@ -78,7 +78,7 @@ const AddLending = ({lendings = [], date}) => {
                 item={lending}
                 key={lending._id}
                 type={lending.type}
-                onDelete={onDeleteLending}></TypeCard>
+                onDelete={() => onDeleteLending(lending)}></TypeCard>
             );
           })}
         </View>
