@@ -59,6 +59,14 @@ const AddLending = ({lendings = [], date}) => {
     }
   };
 
+  const onDeleteLending = lending => {
+    try {
+      realm.write(() => {
+        realm.delete(lending);
+      });
+    } catch (e) {}
+  };
+
   return (
     <View>
       {!!lendings?.length && (
@@ -66,10 +74,11 @@ const AddLending = ({lendings = [], date}) => {
           <Text>Lendings</Text>
           {lendings.map(lending => {
             return (
-              <View key={lending._id} style={{flexDirection: 'row'}}>
-                <Text>{lending.value}</Text>
-                <Text> {lending.type?.name}</Text>
-              </View>
+              <TypeCard
+                item={lending}
+                key={lending._id}
+                type={lending.type}
+                onDelete={onDeleteLending}></TypeCard>
             );
           })}
         </View>

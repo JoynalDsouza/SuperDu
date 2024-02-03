@@ -7,6 +7,7 @@ import {Asset, Income} from '../../realm/models/Account';
 import {AssetType, IncomeType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
+import TypeCard from '../cards/TypeCard';
 
 const AddIncome = ({incomes = [], date}) => {
   const [value, setValue] = useState('');
@@ -59,6 +60,14 @@ const AddIncome = ({incomes = [], date}) => {
     }
   };
 
+  const onDeleteIncome = income => {
+    try {
+      realm.write(() => {
+        realm.delete(income);
+      });
+    } catch (e) {}
+  };
+
   return (
     <View>
       {!!incomes?.length && (
@@ -66,10 +75,11 @@ const AddIncome = ({incomes = [], date}) => {
           <Text>Incomes</Text>
           {incomes.map(income => {
             return (
-              <View key={income._id} style={{flexDirection: 'row'}}>
-                <Text>{income.value}</Text>
-                <Text> {income.type?.name}</Text>
-              </View>
+              <TypeCard
+                item={income}
+                key={income._id}
+                type={income.type}
+                onDelete={onDeleteIncome}></TypeCard>
             );
           })}
         </View>

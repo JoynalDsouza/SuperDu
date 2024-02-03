@@ -7,6 +7,7 @@ import {Expense} from '../../realm/models/Account';
 import {ExpenseType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
+import TypeCard from '../cards/TypeCard';
 
 const AddExpense = ({expenses = [], date}) => {
   const [value, setValue] = useState('');
@@ -59,6 +60,14 @@ const AddExpense = ({expenses = [], date}) => {
     }
   };
 
+  const onDeleteExpense = expense => {
+    try {
+      realm.write(() => {
+        realm.delete(expense);
+      });
+    } catch (e) {}
+  };
+
   return (
     <View>
       {!!expenses?.length && (
@@ -66,10 +75,12 @@ const AddExpense = ({expenses = [], date}) => {
           <Text>Expenses</Text>
           {expenses.map(expense => {
             return (
-              <View key={expense._id} style={{flexDirection: 'row'}}>
-                <Text>{expense.value}</Text>
-                <Text> {expense.type?.name}</Text>
-              </View>
+              <TypeCard
+                item={expense}
+                type={expense.type}
+                key={expense._id}
+                onDelete={() => onDeleteExpense(expense)}
+              />
             );
           })}
         </View>

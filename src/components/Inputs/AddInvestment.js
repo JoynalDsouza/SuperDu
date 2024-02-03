@@ -59,6 +59,14 @@ const AddInvestment = ({investments = [], date}) => {
     }
   };
 
+  const onDeleteInvestment = investment => {
+    try {
+      realm.write(() => {
+        realm.delete(investment);
+      });
+    } catch (e) {}
+  };
+
   return (
     <View>
       {!!investments?.length && (
@@ -66,10 +74,11 @@ const AddInvestment = ({investments = [], date}) => {
           <Text>Investments</Text>
           {investments.map(investment => {
             return (
-              <View key={investment._id} style={{flexDirection: 'row'}}>
-                <Text>{investment.value}</Text>
-                <Text> {investment.type?.name}</Text>
-              </View>
+              <TypeCard
+                item={investment}
+                key={investment._id}
+                type={investment.type}
+                onDelete={onDeleteInvestment}></TypeCard>
             );
           })}
         </View>
