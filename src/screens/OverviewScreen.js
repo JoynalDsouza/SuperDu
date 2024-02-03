@@ -15,6 +15,7 @@ import CustomDropdownPicker from '../components/common/CustomDropdownPicker';
 import {User} from '../realm/models/User';
 import AddBudget from '../components/Inputs/AddBudget';
 import {calculateExpensesComparison} from '../utils/createExpensesComparison';
+import BudgetTable from '../components/budget/BudgetTable';
 
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -136,7 +137,7 @@ const Overview = () => {
     return () => backHandler.remove();
   }, [showDatePicker]);
 
-  const budget = BUDGET.budget;
+  const budget = BUDGET?.budget || [];
 
   if (totalInvestment) {
     budget.push({type: 'investment', value: totalInvestment});
@@ -146,6 +147,7 @@ const Overview = () => {
   }
 
   const comparison = calculateExpensesComparison(totalExpensesByType, budget);
+  console.log('comparison', comparison);
 
   return (
     <View>
@@ -181,8 +183,10 @@ const Overview = () => {
 
       {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
       {!!totalIncome && <Text>Total Income : {totalIncome}</Text>}
-      {!!totalLending && <Text>Total Lending : {totalLending}</Text>}
-      {!!totalInvestment && <Text>Total Investment : {totalInvestment}</Text>}
+
+      {!!Object.keys(comparison).length && (
+        <BudgetTable budgetData={comparison} />
+      )}
 
       <AddBudget
         date={`${selectedMonth}/${selectedYear}`}

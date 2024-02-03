@@ -24,10 +24,5 @@ export function calculateExpensesComparison(totalExpensesByType, budget) {
     }
   }
 
-  // Convert the map to the desired output format
-  for (const type in expensesMap) {
-    result.push({[type]: expensesMap[type]});
-  }
-
-  return result;
+  return expensesMap;
 }
