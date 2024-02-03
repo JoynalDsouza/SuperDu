@@ -8,7 +8,7 @@ import {ExpenseType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
 
-const AddExpense = ({expenses = []}) => {
+const AddExpense = ({expenses = [], date}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
 
@@ -49,6 +49,7 @@ const AddExpense = ({expenses = []}) => {
           _id: new BSON.ObjectID(),
           value: Number(value),
           type: expenseType,
+          addedOn: date,
         });
       });
       setValue('');

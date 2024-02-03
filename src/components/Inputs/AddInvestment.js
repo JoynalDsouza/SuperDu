@@ -8,7 +8,7 @@ import {AssetType, InvestmentType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
 
-const AddInvestment = ({investments = []}) => {
+const AddInvestment = ({investments = [], date}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
 
@@ -49,6 +49,7 @@ const AddInvestment = ({investments = []}) => {
           _id: new BSON.ObjectID(),
           value: Number(value),
           type: investmentType,
+          addedOn: date,
         });
       });
       setValue('');

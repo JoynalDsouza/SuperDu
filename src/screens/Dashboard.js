@@ -126,19 +126,19 @@ const Dashboard = () => {
       {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
       <ScrollView>
         <View style={styles.height300}>
-          <AddExpense expenses={filteredExpenses} />
+          <AddExpense expenses={filteredExpenses} date={date} />
         </View>
 
         <View style={styles.height300}>
-          <AddIncome incomes={filteredIncomes} />
+          <AddIncome incomes={filteredIncomes} date={date} />
         </View>
 
         <View style={styles.height300}>
-          <AddLending lendings={filteredLendings} />
+          <AddLending lendings={filteredLendings} date={date} />
         </View>
 
         <View style={styles.height300}>
-          <AddInvestment investments={filteredInvestments} />
+          <AddInvestment investments={filteredInvestments} date={date} />
         </View>
       </ScrollView>
       {showDatePicker && (
