@@ -14,6 +14,7 @@ import {MONTHS} from '../utils/constants/Months';
 import CustomDropdownPicker from '../components/common/CustomDropdownPicker';
 import {User} from '../realm/models/User';
 import AddBudget from '../components/Inputs/AddBudget';
+import {calculateExpensesComparison} from '../utils/createExpensesComparison';
 
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -30,8 +31,6 @@ const Overview = () => {
   const LENDINGS = useQuery(Lending);
   const INVESTMENTS = useQuery(Investment);
   const BUDGET = useObject(Budget, `${selectedMonth}/${selectedYear}`);
-
-  console.log('filteredBudgets', BUDGET.budget);
 
   const startOfMonth = moment()
     .year(selectedYear)
@@ -58,6 +57,17 @@ const Overview = () => {
       (total, expense) => total + expense.value,
       0,
     );
+  }, [filteredExpenses]);
+
+  const totalExpensesByType = useMemo(() => {
+    return filteredExpenses.reduce((acc, expense) => {
+      if (acc[expense.type.name]) {
+        acc[expense.type.name] = acc[expense.type.name] + expense.value;
+      } else {
+        acc[expense.type.name] = expense.value;
+      }
+      return acc;
+    }, {});
   }, [filteredExpenses]);
 
   const filteredIncomes = useMemo(
@@ -125,6 +135,17 @@ const Overview = () => {
 
     return () => backHandler.remove();
   }, [showDatePicker]);
+
+  const budget = BUDGET.budget;
+
+  if (totalInvestment) {
+    budget.push({type: 'investment', value: totalInvestment});
+  }
+  if (totalLending) {
+    budget.push({type: 'lending', value: totalLending});
+  }
+
+  const comparison = calculateExpensesComparison(totalExpensesByType, budget);
 
   return (
     <View>
