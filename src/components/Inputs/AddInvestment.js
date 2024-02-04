@@ -7,6 +7,7 @@ import {Asset, Investment} from '../../realm/models/Account';
 import {AssetType, InvestmentType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
+import TypeCard from '../cards/TypeCard';
 
 const AddInvestment = ({investments = [], date}) => {
   const [value, setValue] = useState('');

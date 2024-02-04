@@ -1,7 +1,7 @@
 import {FlatList, Text, View} from 'react-native';
 
 const BudgetTable = ({budgetData}) => {
-  const data = Object.keys(budgetData);
+  const data = Object.keys(budgetData || {});
   return (
     <View>
       <View style={{flexDirection: 'row'}}>
