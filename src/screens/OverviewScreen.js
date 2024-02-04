@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, StyleSheet, BackHandler} from 'react-native';
+import {View, Text, StyleSheet, BackHandler, ScrollView} from 'react-native';
 import moment from 'moment';
 import {getMonth, getYear, getYearsBetween} from '../utils/moment';
 import {useObject, useQuery} from '@realm/react';
@@ -150,7 +150,7 @@ const Overview = () => {
   console.log('comparison', comparison);
 
   return (
-    <View>
+    <ScrollView>
       <View style={{flexDirection: 'row', gap: 10, height: 300}}>
         <View style={{flex: 2}}>
           <Text>Select Month</Text>
@@ -192,7 +192,7 @@ const Overview = () => {
         date={`${selectedMonth}/${selectedYear}`}
         // budgets={filteredBudgets}
       />
-    </View>
+    </ScrollView>
   );
 };
 
