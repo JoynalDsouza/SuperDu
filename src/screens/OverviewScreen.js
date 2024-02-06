@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, BackHandler, ScrollView} from 'react-native';
 import moment from 'moment';
 import {getMonth, getYear, getYearsBetween} from '../utils/moment';
-import {useObject, useQuery} from '@realm/react';
+import {useObject, useQuery, useRealm} from '@realm/react';
 import {
   Budget,
   Expense,
@@ -17,6 +17,11 @@ import AddBudget from '../components/Inputs/AddBudget';
 import {calculateExpensesComparison} from '../utils/createExpensesComparison';
 import BudgetTable from '../components/budget/BudgetTable';
 
+const itemExistsInArray = (array, key, value) => {
+  const result = array.some(item => item[key] === value);
+  return result;
+};
+
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -24,6 +29,8 @@ const Overview = () => {
   const [selectedYear, setSelectedYear] = useState(getYear(new Date()));
 
   const user = useQuery(User)[0];
+
+  const realm = useRealm();
 
   const YEARS = getYearsBetween(new Date(user.createdOn), new Date());
 
@@ -118,7 +125,6 @@ const Overview = () => {
       0,
     );
   });
-
   useEffect(() => {
     const backAction = () => {
       if (showDatePicker) {
@@ -140,14 +146,12 @@ const Overview = () => {
   const budget = BUDGET?.budget || [];
 
   if (totalInvestment) {
-    budget.push({type: 'investment', value: totalInvestment});
+    totalExpensesByType['investment'] = totalInvestment;
   }
   if (totalLending) {
-    budget.push({type: 'lending', value: totalLending});
+    totalExpensesByType['lending'] = totalLending;
   }
-
   const comparison = calculateExpensesComparison(totalExpensesByType, budget);
-  console.log('comparison', comparison);
 
   return (
     <ScrollView>
