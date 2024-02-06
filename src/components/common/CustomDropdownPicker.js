@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Alert, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const CustomDropdownPicker = ({
   items = [],
@@ -8,6 +8,8 @@ const CustomDropdownPicker = ({
   placeholder = '',
   setValue = () => {},
   contentContainerStyle = {},
+  labelField = 'name',
+  valueField = 'value',
   ...otherDropdownProps
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -16,18 +18,16 @@ const CustomDropdownPicker = ({
     setDropdownOpen(false);
     setValue(item);
   };
-
   return (
     <View style={contentContainerStyle}>
-      <DropDownPicker
-        items={items}
-        open={dropdownOpen}
-        placeholder={placeholder}
-        value={value}
-        setOpen={() => {
-          setDropdownOpen(!dropdownOpen);
-        }}
+      <Dropdown
+        data={items}
         onSelectItem={onSelectItem}
+        placeholder={placeholder}
+        labelField={labelField}
+        valueField={valueField}
+        onChange={onSelectItem}
+        value={value}
         {...otherDropdownProps}
       />
     </View>

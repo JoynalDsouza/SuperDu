@@ -155,17 +155,13 @@ const Overview = () => {
 
   return (
     <ScrollView>
-      <View style={{flexDirection: 'row', gap: 10, height: 300}}>
+      <View style={{flexDirection: 'row', gap: 10, marginBottom: 20}}>
         <View style={{flex: 2}}>
           <Text>Select Month</Text>
           <CustomDropdownPicker
             items={MONTHS}
             value={selectedMonth}
             setValue={item => setSelectedMonth(item.value)}
-            schema={{
-              label: 'name',
-              value: 'value',
-            }}
             placeholder="Select Month"></CustomDropdownPicker>
         </View>
 
@@ -177,10 +173,7 @@ const Overview = () => {
             setValue={item => {
               setSelectedYear(item.name);
             }}
-            schema={{
-              label: 'name',
-              value: 'name',
-            }}
+            valueField="name"
             placeholder="Select Year"></CustomDropdownPicker>
         </View>
       </View>
