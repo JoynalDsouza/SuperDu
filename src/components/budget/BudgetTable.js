@@ -16,7 +16,7 @@ const BudgetTable = ({budgetData}) => {
           keyExtractor={item => item}
           renderItem={({item}) => {
             const budgetItem = budgetData[item];
-            const diff = budgetItem.actual - budgetItem.planned;
+            const diff = budgetItem.planned - budgetItem.actual;
             return (
               <View style={{flexDirection: 'row', flex: 1}}>
                 <Text style={{flex: 1}}>{item}</Text>
