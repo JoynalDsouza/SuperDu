@@ -2,12 +2,15 @@ import React, {useState} from 'react';
 import {Alert, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AddTypeInputModal from '../Modal/AddTypeInputModal';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const TypeInputDropdown = ({
   items = [],
   type = '',
   setType = () => {},
   value = '',
+  labelField = 'name',
+  valueField = 'name',
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -15,6 +18,7 @@ const TypeInputDropdown = ({
 
   const onSelectItem = item => {
     const {value} = item;
+
     if (value === 'add new') {
       setAddNewModalVisible(true);
       // setDropdownOpen(false);
@@ -23,10 +27,9 @@ const TypeInputDropdown = ({
       setDropdownOpen(false);
     }
   };
-
   return (
     <View>
-      <DropDownPicker
+      {/* <DropDownPicker
         open={dropdownOpen}
         schema={{
           label: 'name',
@@ -39,6 +42,16 @@ const TypeInputDropdown = ({
           setDropdownOpen(!dropdownOpen);
         }}
         onSelectItem={onSelectItem}
+
+      /> */}
+
+      <Dropdown
+        data={[{name: '+ Add New', value: 'add new'}, ...items]}
+        labelField={labelField}
+        valueField={valueField}
+        onChange={onSelectItem}
+        value={value}
+        placeholder={`Select ${type} type`}
       />
 
       <AddTypeInputModal

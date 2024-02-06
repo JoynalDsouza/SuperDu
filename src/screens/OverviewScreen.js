@@ -69,10 +69,10 @@ const Overview = () => {
 
   const totalExpensesByType = useMemo(() => {
     return filteredExpenses.reduce((acc, expense) => {
-      if (acc[expense.type.name]) {
-        acc[expense.type.name] = acc[expense.type.name] + expense.value;
+      if (acc[expense.type?.name]) {
+        acc[expense.type?.name] = acc[expense.type?.name] + expense.value;
       } else {
-        acc[expense.type.name] = expense.value;
+        acc[expense.type?.name] = expense.value;
       }
       return acc;
     }, {});

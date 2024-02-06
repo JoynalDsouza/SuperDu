@@ -75,11 +75,12 @@ const AddBudget = ({date, budgets = []}) => {
           />
         </View>
         <View style={{flex: 2, marginHorizontal: 10, zIndex: 10}}>
+          {console.log(filteredExpenseTypes)}
           <TypeInputDropdown
             items={[
               ...filteredExpenseTypes,
-              {name: 'investment'},
-              {name: 'lending'},
+              {name: 'investment', value: 'investment'},
+              {name: 'lending', value: 'lending'},
             ]}
             type={'budget'}
             setType={setType}
