@@ -201,6 +201,7 @@ const Overview = () => {
       </Text>
       {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
       {!!totalIncome && <Text>Total Income : {totalIncome}</Text>}
+      {<Text>Savings : {totalIncome - totalExpense}</Text>}
 
       {!!Object.keys(comparison).length && (
         <BudgetTable budgetData={comparison} />
