@@ -64,17 +64,20 @@ const Overview = () => {
     `${selectedYear}-${selectedMonth}`,
     'YYYY-MM',
   ).daysInMonth();
-  let daysWithExpenses = [];
 
-  // Populate the daysWithExpenses array
-  filteredExpenses.forEach(expense => {
-    const day = moment(expense.addedOn).date();
-    if (!daysWithExpenses.includes(day)) {
-      daysWithExpenses.push(day);
-    }
-  });
+  const expensesByDate = useMemo(() => {
+    return filteredExpenses.reduce((acc, expense) => {
+      const date = moment(expense.addedOn).format('YYYY-MM-DD');
+      if (acc[date]) {
+        acc[date] = [...acc[date], expense];
+      } else {
+        acc[date] = [expense];
+      }
+      return acc;
+    }, {});
+  }, [filteredExpenses]);
 
-  const daysWithoutExpenses = daysInMonth - daysWithExpenses.length;
+  const daysWithoutExpenses = daysInMonth - Object.keys(expensesByDate).length;
 
   const totalExpense = useMemo(() => {
     return filteredExpenses.reduce(
@@ -207,6 +210,27 @@ const Overview = () => {
         date={`${selectedMonth}/${selectedYear}`}
         // budgets={filteredBudgets}
       />
+
+      <View>
+        <Text style={{marginTop: 10, marginBottom: 5}}>Expenses By Date</Text>
+        {Object.keys(expensesByDate).map(date => {
+          return (
+            <View key={date} style={{marginVertical: 10}}>
+              <Text style={{marginBottom: 4}}>
+                {moment(date).format('dddd , Do MMMM')}
+              </Text>
+              {expensesByDate[date].map(expense => {
+                return (
+                  <View key={expense._id} style={{flexDirection: 'row'}}>
+                    <Text>{expense.value}</Text>
+                    <Text> {expense.type?.name}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          );
+        })}
+      </View>
     </ScrollView>
   );
 };
