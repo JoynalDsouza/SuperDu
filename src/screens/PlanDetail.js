@@ -37,7 +37,6 @@ const PlanDetail = ({route, navigation}) => {
     startTime: '18:27',
     title: 'alknfalksfa',
   };
-  console.log(plan.friends);
   return (
     <View style={{gap: 3}}>
       <View
