@@ -60,6 +60,22 @@ const Overview = () => {
     [EXPENSES, selectedMonth, selectedYear],
   );
 
+  const daysInMonth = moment(
+    `${selectedYear}-${selectedMonth}`,
+    'YYYY-MM',
+  ).daysInMonth();
+  let daysWithExpenses = [];
+
+  // Populate the daysWithExpenses array
+  filteredExpenses.forEach(expense => {
+    const day = moment(expense.addedOn).date();
+    if (!daysWithExpenses.includes(day)) {
+      daysWithExpenses.push(day);
+    }
+  });
+
+  const daysWithoutExpenses = daysInMonth - daysWithExpenses.length;
+
   const totalExpense = useMemo(() => {
     return filteredExpenses.reduce(
       (total, expense) => total + expense.value,
@@ -177,7 +193,9 @@ const Overview = () => {
             placeholder="Select Year"></CustomDropdownPicker>
         </View>
       </View>
-
+      <Text style={{marginVertical: 10}}>
+        Days Without expense : {daysWithoutExpenses} / {daysInMonth}
+      </Text>
       {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
       {!!totalIncome && <Text>Total Income : {totalIncome}</Text>}
 

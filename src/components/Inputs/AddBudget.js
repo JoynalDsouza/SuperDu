@@ -75,7 +75,6 @@ const AddBudget = ({date, budgets = []}) => {
           />
         </View>
         <View style={{flex: 2, marginHorizontal: 10, zIndex: 10}}>
-          {console.log(filteredExpenseTypes)}
           <TypeInputDropdown
             items={[
               ...filteredExpenseTypes,
