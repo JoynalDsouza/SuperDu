@@ -6,6 +6,7 @@ const TypeCard = ({item, type, onDelete}) => {
     <View style={{flexDirection: 'row'}}>
       <Text style={{flex: 1}}>{item.value}</Text>
       <Text style={{flex: 1}}> {type?.name}</Text>
+      <Text style={{flex: 1}}> {item?.notes || ''}</Text>
       {!!onDelete && (
         <TouchableOpacity disabled={!onDelete} onPress={onDelete}>
           <Text style={{color: 'red'}}>Delete</Text>

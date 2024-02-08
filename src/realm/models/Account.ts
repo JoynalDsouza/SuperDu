@@ -68,6 +68,7 @@ class Expense extends Realm.Object<Expense> {
   value!: number;
   type!: ExpenseType;
   addedOn?: Date;
+  notes?: string;
 
   static schema: ObjectSchema = {
     name: 'Expense',
@@ -76,6 +77,7 @@ class Expense extends Realm.Object<Expense> {
       value: {type: 'float', default: 0},
       type: 'ExpenseType',
       addedOn: {type: 'date', default: new Date()},
+      notes: {type: 'string', default: ''},
     },
     primaryKey: '_id',
   };

@@ -8,10 +8,12 @@ import {ExpenseType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
 import TypeCard from '../cards/TypeCard';
+import {alertError} from '../../utils/alertError';
 
 const AddExpense = ({expenses = [], date}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
+  const [notes, setNotes] = useState('');
 
   const realm = useRealm();
 
@@ -44,6 +46,9 @@ const AddExpense = ({expenses = [], date}) => {
 
   const addExpense = () => {
     try {
+      if (!value) return alertError('Please enter a value');
+      if (!type) return alertError('Please select a type');
+
       const expenseType = getExpenseType();
       realm.write(() => {
         realm.create(Expense, {
@@ -51,12 +56,14 @@ const AddExpense = ({expenses = [], date}) => {
           value: Number(value),
           type: expenseType,
           addedOn: date,
+          notes: notes,
         });
       });
       setValue('');
       setType('');
+      setNotes('');
     } catch (e) {
-      console.log(e);
+      alertError(e);
     }
   };
 
@@ -87,15 +94,20 @@ const AddExpense = ({expenses = [], date}) => {
       )}
 
       <Text>Add Expense</Text>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 3}}>
+      <View style={{marginHorizontal: 20, marginVertical: 10}}>
+        <View>
           <InputBox
             placeholder={'Enter value'}
             inputValue={value}
             setInputValue={setValue}
           />
         </View>
-        <View style={{flex: 2, marginHorizontal: 10, zIndex: 10}}>
+        <View
+          style={{
+            marginVertical: 10,
+            borderWidth: 1,
+            padding: 2,
+          }}>
           <TypeInputDropdown
             items={filteredExpenseTypes}
             type={'expense'}
@@ -103,8 +115,15 @@ const AddExpense = ({expenses = [], date}) => {
             value={type}
           />
         </View>
-        <View style={{flex: 1}}>
-          <Button title={'+'} onPress={addExpense}></Button>
+        <View>
+          <InputBox
+            placeholder={'Enter Notes (optional)'}
+            inputValue={notes}
+            setInputValue={setNotes}
+          />
+        </View>
+        <View style={{flex: 1, marginTop: 10}}>
+          <Button title={'+ Add Expense'} onPress={addExpense}></Button>
         </View>
       </View>
     </View>
