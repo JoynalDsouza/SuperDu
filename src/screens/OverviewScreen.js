@@ -16,6 +16,7 @@ import {User} from '../realm/models/User';
 import AddBudget from '../components/Inputs/AddBudget';
 import {calculateExpensesComparison} from '../utils/createExpensesComparison';
 import BudgetTable from '../components/budget/BudgetTable';
+import {formatToINR} from '../utils/formatCurrency';
 
 const itemExistsInArray = (array, key, value) => {
   const result = array.some(item => item[key] === value);
@@ -199,9 +200,11 @@ const Overview = () => {
       <Text style={{marginVertical: 10}}>
         Days Without expense : {daysWithoutExpenses} / {daysInMonth}
       </Text>
-      {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
-      {!!totalIncome && <Text>Total Income : {totalIncome}</Text>}
-      {<Text>Savings : {totalIncome - totalExpense}</Text>}
+      {!!totalExpense && (
+        <Text>Total Expense : {formatToINR(totalExpense)}</Text>
+      )}
+      {!!totalIncome && <Text>Total Income : {formatToINR(totalIncome)}</Text>}
+      {<Text>Savings : {formatToINR(totalIncome - totalExpense)}</Text>}
 
       {!!Object.keys(comparison).length && (
         <BudgetTable budgetData={comparison} />
@@ -223,7 +226,7 @@ const Overview = () => {
               {expensesByDate[date].map(expense => {
                 return (
                   <View key={expense._id} style={{flexDirection: 'row'}}>
-                    <Text>{expense.value}</Text>
+                    <Text>{formatToINR(expense.value)}</Text>
                     <Text> {expense.type?.name}</Text>
                   </View>
                 );

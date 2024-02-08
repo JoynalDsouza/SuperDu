@@ -16,6 +16,7 @@ import {Expense, Income, Investment, Lending} from '../realm/models/Account';
 import AddIncome from '../components/Inputs/AddIncome';
 import AddLending from '../components/Inputs/AddLending';
 import AddInvestment from '../components/Inputs/AddInvestment';
+import {formatToINR} from '../utils/formatCurrency';
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -95,7 +96,7 @@ const Dashboard = () => {
   }, [showDatePicker]);
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <View
         style={{
           flexDirection: 'row',
@@ -123,8 +124,12 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
 
-      {!!totalExpense && <Text>Total Expense : {totalExpense}</Text>}
-      <ScrollView>
+      {!!totalExpense && (
+        <Text>Total Expense : {formatToINR(totalExpense)}</Text>
+      )}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 50}}>
         <View>
           <AddExpense expenses={filteredExpenses} date={date} />
         </View>

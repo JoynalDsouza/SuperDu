@@ -1,4 +1,5 @@
 import {FlatList, Text, View} from 'react-native';
+import {formatToINR} from '../../utils/formatCurrency';
 
 const BudgetTable = ({budgetData}) => {
   const data = Object.keys(budgetData || {});
@@ -20,9 +21,9 @@ const BudgetTable = ({budgetData}) => {
             return (
               <View style={{flexDirection: 'row', flex: 1}}>
                 <Text style={{flex: 1}}>{item}</Text>
-                <Text style={{flex: 1}}>{budgetItem.planned}</Text>
-                <Text style={{flex: 1}}>{budgetItem.actual}</Text>
-                <Text style={{flex: 1}}>{diff}</Text>
+                <Text style={{flex: 1}}>{formatToINR(budgetItem.planned)}</Text>
+                <Text style={{flex: 1}}>{formatToINR(budgetItem.actual)}</Text>
+                <Text style={{flex: 1}}>{formatToINR(diff)}</Text>
               </View>
             );
           }}></FlatList>
