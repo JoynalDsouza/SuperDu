@@ -100,6 +100,7 @@ const AddExpense = ({expenses = [], date}) => {
             placeholder={'Enter value'}
             inputValue={value}
             setInputValue={setValue}
+            keyboardType={'numeric'}
           />
         </View>
         <View

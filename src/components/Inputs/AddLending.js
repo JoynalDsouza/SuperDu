@@ -92,6 +92,7 @@ const AddLending = ({lendings = [], date}) => {
             placeholder={'Enter value'}
             inputValue={value}
             setInputValue={setValue}
+            keyboardType="numeric"
           />
         </View>
         <View style={{flex: 2, marginHorizontal: 10}}>

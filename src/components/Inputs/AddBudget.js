@@ -7,6 +7,7 @@ import {Budget, Expense} from '../../realm/models/Account';
 import {ExpenseType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
+import {alertError} from '../../utils/alertError';
 
 const AddBudget = ({date, budgets = []}) => {
   const [value, setValue] = useState('');
@@ -46,7 +47,7 @@ const AddBudget = ({date, budgets = []}) => {
       setValue('');
       setType('');
     } catch (e) {
-      console.log(e);
+      alertError(e);
     }
   };
 
@@ -72,6 +73,7 @@ const AddBudget = ({date, budgets = []}) => {
             placeholder={'Enter value'}
             inputValue={value}
             setInputValue={setValue}
+            keyboardType={'numeric'}
           />
         </View>
         <View style={{flex: 2, marginHorizontal: 10, zIndex: 10}}>
