@@ -32,8 +32,8 @@ function App() {
   return (
     <RealmProvider
       schema={schemas}
-      schemaVersion={1}
-      deleteRealmIfMigrationNeeded={__DEV__}
+      schemaVersion={2}
+      deleteRealmIfMigrationNeeded={false}
       onFirstOpen={realm => {
         realm.create(ExpenseType, {
           _id: new BSON.ObjectID(),
@@ -52,6 +52,15 @@ function App() {
           name: 'Commute',
           isActive: true,
         });
+      }}
+      onMigration={(oldRealm, newRealm) => {
+        if (oldRealm.schemaVersion < 2) {
+          const oldObjects = oldRealm.objects('Expense');
+          const newObjects = newRealm.objects('Expense');
+          for (let i = 0; i < oldObjects.length; i++) {
+            newObjects[i].notes = '';
+          }
+        }
       }}>
       <SafeAreaView style={{flex: 1}}>
         <Navigation />
