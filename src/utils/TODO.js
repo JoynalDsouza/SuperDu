@@ -4,8 +4,9 @@
 // TODO : Widget for expenses
 // TODO : export realm db to csv
 // TODO : parse csv to realm
-// TODO : input validations
 
 // DONE
 //   add Notes to expenses
 //  format to currency
+// validations
+// migration 1 to 2
