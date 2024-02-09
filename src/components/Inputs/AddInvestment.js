@@ -44,6 +44,8 @@ const AddInvestment = ({investments = [], date}) => {
 
   const addInvestment = () => {
     try {
+      if (!Number(value)) return alertError('Please enter a number value');
+      if (!type) return alertError('Please select a type');
       const investmentType = getInvestmentType();
       realm.write(() => {
         realm.create(Investment, {

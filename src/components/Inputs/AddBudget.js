@@ -22,6 +22,8 @@ const AddBudget = ({date, budgets = []}) => {
 
   const addBudget = () => {
     try {
+      if (!Number(value)) return alertError('Please enter a number value');
+      if (!type) return alertError('Please select a type');
       const budgetExists = realm.objectForPrimaryKey(Budget, date);
       if (!budgetExists) {
         realm.write(() => {

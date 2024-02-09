@@ -8,6 +8,7 @@ import {AssetType, LendingType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
 import TypeCard from '../cards/TypeCard';
+import {alertError} from '../../utils/alertError';
 
 const AddLending = ({lendings = [], date}) => {
   const [value, setValue] = useState('');
@@ -44,6 +45,8 @@ const AddLending = ({lendings = [], date}) => {
 
   const addLending = () => {
     try {
+      if (!Number(value)) return alertError('Please enter a number value');
+      if (!type) return alertError('Please select a type');
       const lendingType = getLendingType();
       realm.write(() => {
         realm.create(Lending, {

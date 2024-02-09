@@ -46,10 +46,11 @@ const AddExpense = ({expenses = [], date}) => {
 
   const addExpense = () => {
     try {
-      if (!value) return alertError('Please enter a value');
+      if (!Number(value)) return alertError('Please enter a number value');
       if (!type) return alertError('Please select a type');
 
       const expenseType = getExpenseType();
+
       realm.write(() => {
         realm.create(Expense, {
           _id: new BSON.ObjectID(),

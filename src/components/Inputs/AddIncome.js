@@ -44,6 +44,9 @@ const AddIncome = ({incomes = [], date}) => {
 
   const addIncome = () => {
     try {
+      if (!Number(value)) return alertError('Please enter a number value');
+      if (!type) return alertError('Please select a type');
+
       const incomeType = getIncomeType();
       realm.write(() => {
         realm.create(Income, {
