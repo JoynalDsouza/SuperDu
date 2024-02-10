@@ -29,14 +29,16 @@ const AddTypeInputModal = ({
         );
         if (typeExsits?.name) {
           if (!typeExsits?.isActive) {
-            realm.create(
-              ExpenseType,
-              {
-                name: typeExsits.name,
-                isActive: true,
-              },
-              'modified',
-            );
+            realm.write(() => {
+              realm.create(
+                ExpenseType,
+                {
+                  name: typeExsits.name,
+                  isActive: true,
+                },
+                'modified',
+              );
+            });
           }
           setType(typeExsits.name);
         } else {
