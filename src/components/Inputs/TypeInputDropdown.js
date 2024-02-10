@@ -106,16 +106,17 @@ const TypeInputDropdown = ({
                 {
                   backgroundColor: pressed ? 'rgba(0, 0, 0, 0.1)' : 'white',
                   justifyContent: 'space-between',
+                  alignItems: 'center',
                   flexDirection: 'row',
-                  paddingVertical: 4,
-                  paddingHorizontal: 4,
+                  paddingVertical: 8,
+                  paddingHorizontal: 8,
                 },
               ]}
               onPress={() => onSelectItem(item)}>
               <Text>{item?.name}</Text>
               {item?.value !== 'add new' && (
                 <TouchableOpacity onPress={() => onRemovePress(item.name)}>
-                  <Text style={{fontSize: 10, color: 'red'}}>Remove</Text>
+                  <Text style={{fontSize: 12, color: 'red'}}>Remove</Text>
                 </TouchableOpacity>
               )}
             </Pressable>
