@@ -2,13 +2,8 @@ import {Alert, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import InputBox from '../common/InputBox';
 import Button from '../common/Button';
 import {useState} from 'react';
-import {
-  ExpenseType,
-  IncomeType,
-  InvestmentType,
-  LendingType,
-} from '../../realm/models/User';
 import {useRealm} from '@realm/react';
+import {alertError} from '../../utils/alertError';
 
 const AddTypeInputModal = ({
   visible,
@@ -20,139 +15,40 @@ const AddTypeInputModal = ({
 
   const realm = useRealm();
 
-  const addExpenseType = () => {
+  const addType = schemaName => {
     try {
       if (value) {
         const typeExsits = realm.objectForPrimaryKey(
-          ExpenseType,
+          schemaName,
           value?.toLowerCase(),
         );
         if (typeExsits?.name) {
           if (!typeExsits?.isActive) {
-            realm.create(
-              ExpenseType,
-              {
-                name: typeExsits.name,
-                isActive: true,
-              },
-              'modified',
-            );
+            realm.write(() => {
+              realm.create(
+                schemaName,
+                {
+                  name: typeExsits.name,
+                  isActive: true,
+                },
+                'modified',
+              );
+            });
           }
           setType(typeExsits.name);
         } else {
-          let newExpenseType;
+          let newType;
           realm.write(() => {
-            newExpenseType = realm.create(ExpenseType, {
+            newType = realm.create(schemaName, {
               name: value?.toLowerCase(),
+              isActive: true,
             });
           });
-          setType(newExpenseType.name);
+          setType(newType.name);
         }
       }
     } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const addIncomeType = () => {
-    try {
-      if (value) {
-        const typeExsits = realm.objectForPrimaryKey(
-          IncomeType,
-          value?.toLowerCase(),
-        );
-        if (typeExsits?.name) {
-          if (!typeExsits?.isActive) {
-            realm.create(
-              IncomeType,
-              {
-                name: typeExsits.name,
-                isActive: true,
-              },
-              'modified',
-            );
-          }
-          setType(typeExsits.name);
-        } else {
-          let newIncomeType;
-          realm.write(() => {
-            newIncomeType = realm.create(IncomeType, {
-              name: value?.toLowerCase(),
-            });
-          });
-          setType(newIncomeType.name);
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const addInvestmentType = () => {
-    try {
-      if (value) {
-        const typeExsits = realm.objectForPrimaryKey(
-          InvestmentType,
-          value?.toLowerCase(),
-        );
-        if (typeExsits?.name) {
-          if (!typeExsits?.isActive) {
-            realm.create(
-              InvestmentType,
-              {
-                name: typeExsits.name,
-                isActive: true,
-              },
-              'modified',
-            );
-          }
-          setType(typeExsits.name);
-        } else {
-          let newInvestmentType;
-          realm.write(() => {
-            newInvestmentType = realm.create(InvestmentType, {
-              name: value?.toLowerCase(),
-            });
-          });
-          setType(newInvestmentType.name);
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const addLendingType = () => {
-    try {
-      if (value) {
-        const typeExsits = realm.objectForPrimaryKey(
-          LendingType,
-          value?.toLowerCase(),
-        );
-        if (typeExsits?.name) {
-          if (!typeExsits?.isActive) {
-            realm.create(
-              LendingType,
-              {
-                name: typeExsits.name,
-                isActive: true,
-              },
-              'modified',
-            );
-          }
-          setType(typeExsits.name);
-        } else {
-          let newLendingType;
-          realm.write(() => {
-            newLendingType = realm.create(LendingType, {
-              name: value?.toLowerCase(),
-            });
-          });
-          setType(newLendingType.name);
-        }
-      }
-    } catch (e) {
-      console.log(e);
+      alertError(e);
     }
   };
 
@@ -160,16 +56,16 @@ const AddTypeInputModal = ({
     if (value) {
       switch (type) {
         case 'expense':
-          addExpenseType();
+          addType('ExpenseType');
           break;
         case 'income':
-          addIncomeType();
+          addType('IncomeType');
           break;
         case 'investment':
-          addInvestmentType();
+          addType('InvestmentType');
           break;
         case 'lending':
-          addLendingType();
+          addType('LendingType');
           break;
         default:
           setVisible(false);

@@ -46,15 +46,23 @@ const AddExpense = ({expenses = [], date}) => {
 
   const addExpense = () => {
     try {
-      if (!Number(value)) return alertError('Please enter a number value');
+      // if (!Number(value)) return alertError('Please enter a number value');
+      let calculatedValue = value;
       if (!type) return alertError('Please select a type');
+
+      if (value.startsWith('=')) {
+        calculatedValue = eval(value.slice(1));
+        setValue(calculatedValue);
+      } else {
+        if (!Number(value)) return alertError('Please enter a number value');
+      }
 
       const expenseType = getExpenseType();
 
       realm.write(() => {
         realm.create(Expense, {
           _id: new BSON.ObjectID(),
-          value: Number(value),
+          value: Number(calculatedValue),
           type: expenseType,
           addedOn: date,
           notes: notes,
@@ -101,7 +109,6 @@ const AddExpense = ({expenses = [], date}) => {
             placeholder={'Enter value'}
             inputValue={value}
             setInputValue={setValue}
-            keyboardType={'numeric'}
           />
         </View>
         <View
