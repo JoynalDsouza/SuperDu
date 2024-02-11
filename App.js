@@ -32,7 +32,7 @@ function App() {
   return (
     <RealmProvider
       schema={schemas}
-      schemaVersion={2}
+      schemaVersion={3}
       deleteRealmIfMigrationNeeded={false}
       onFirstOpen={realm => {
         realm.create(ExpenseType, {
@@ -60,6 +60,16 @@ function App() {
           for (let i = 0; i < oldObjects.length; i++) {
             newObjects[i].notes = '';
           }
+        }
+        if (oldRealm.schemaVersion < 3) {
+          const changed = ['Investment', 'Lending', 'Income'];
+          changed.forEach(type => {
+            const oldObjects = oldRealm.objects(type);
+            const newObjects = newRealm.objects(type);
+            for (let i = 0; i < oldObjects.length; i++) {
+              newObjects[i].notes = '';
+            }
+          });
         }
       }}>
       <SafeAreaView style={{flex: 1}}>

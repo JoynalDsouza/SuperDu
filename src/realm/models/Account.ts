@@ -13,6 +13,7 @@ class Asset extends Realm.Object<Asset> {
   value!: number;
   type!: AssetType;
   addedOn?: Date;
+
   static schema: ObjectSchema = {
     name: 'Asset',
     properties: {
@@ -31,6 +32,7 @@ class Investment extends Realm.Object<Investment> {
   value!: number;
   type!: InvestmentType;
   addedOn?: Date;
+  notes?: string;
 
   static schema: ObjectSchema = {
     name: 'Investment',
@@ -39,6 +41,7 @@ class Investment extends Realm.Object<Investment> {
       value: {type: 'float', default: 0},
       type: 'InvestmentType',
       addedOn: {type: 'date', default: new Date()},
+      notes: {type: 'string', default: '', optional: true},
     },
     primaryKey: '_id',
   };
@@ -50,6 +53,7 @@ class Income extends Realm.Object<Income> {
   value!: number;
   type!: IncomeType;
   addedOn?: Date;
+  notes?: string;
 
   static schema: ObjectSchema = {
     name: 'Income',
@@ -58,6 +62,7 @@ class Income extends Realm.Object<Income> {
       value: {type: 'float', default: 0},
       type: 'IncomeType',
       addedOn: {type: 'date', default: new Date()},
+      notes: {type: 'string', default: '', optional: true},
     },
     primaryKey: '_id',
   };
@@ -88,6 +93,7 @@ class Lending extends Realm.Object<Lending> {
   value!: number;
   type!: LendingType;
   addedOn?: Date;
+  notes?: string;
 
   static schema: ObjectSchema = {
     name: 'Lending',
@@ -96,6 +102,7 @@ class Lending extends Realm.Object<Lending> {
       value: {type: 'float', default: 0},
       type: 'LendingType',
       addedOn: {type: 'date', default: new Date()},
+      notes: {type: 'string', default: '', optional: true},
     },
     primaryKey: '_id',
   };
