@@ -173,8 +173,11 @@ const Overview = () => {
   }
   const comparison = calculateExpensesComparison(totalExpensesByType, budget);
 
+  const spending = totalExpense + totalInvestment + totalLending;
+
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{marginHorizontal: 10, marginVertical: 10}}>
       <View style={{flexDirection: 'row', gap: 10, marginBottom: 20}}>
         <View style={{flex: 2}}>
           <Text>Select Month</Text>
@@ -204,10 +207,16 @@ const Overview = () => {
         <Text>Total Expense : {formatToINR(totalExpense)}</Text>
       )}
       {!!totalIncome && <Text>Total Income : {formatToINR(totalIncome)}</Text>}
-      {<Text>Savings : {formatToINR(totalIncome - totalExpense)}</Text>}
+      {<Text>Savings : {formatToINR(totalIncome - spending)}</Text>}
 
       {!!Object.keys(comparison).length && (
-        <BudgetTable budgetData={comparison} />
+        <BudgetTable
+          budgetData={comparison}
+          containerStyles={{
+            marginTop: 20,
+            marginBottom: 20,
+          }}
+        />
       )}
 
       <AddBudget

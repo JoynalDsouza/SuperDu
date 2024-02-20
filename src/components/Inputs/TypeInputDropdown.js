@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Alert,
   Modal,
@@ -21,9 +21,9 @@ const TypeInputDropdown = ({
   labelField = 'name',
   valueField = 'name',
 }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const [addNewModalVisible, setAddNewModalVisible] = useState(false);
+
+  const dropdownRef = useRef();
 
   const onSelectItem = item => {
     const {value} = item;
@@ -31,9 +31,11 @@ const TypeInputDropdown = ({
     if (value === 'add new') {
       setAddNewModalVisible(true);
       // setDropdownOpen(false);
+      dropdownRef.current?.close();
     } else {
       setType(item.name);
-      setDropdownOpen(false);
+      dropdownRef.current?.close();
+      // setDropdownOpen(false);
     }
   };
 
@@ -92,6 +94,7 @@ const TypeInputDropdown = ({
   return (
     <View>
       <Dropdown
+        ref={dropdownRef}
         data={[{name: '+ Add New', value: 'add new'}, ...items]}
         labelField={labelField}
         valueField={valueField}

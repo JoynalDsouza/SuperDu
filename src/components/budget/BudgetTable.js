@@ -1,15 +1,37 @@
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {formatToINR} from '../../utils/formatCurrency';
 
-const BudgetTable = ({budgetData}) => {
+const BudgetTable = ({budgetData, containerStyles = {}}) => {
   const data = Object.keys(budgetData || {});
+  const totalPlanned = data.reduce((acc, item) => {
+    return acc + budgetData[item].planned;
+  }, 0);
+  const totalActual = data.reduce((acc, item) => {
+    return acc + budgetData[item].actual;
+  }, 0);
+  const diff = totalPlanned - totalActual;
   return (
-    <View>
-      <View style={{flexDirection: 'row'}}>
-        <Text style={{flex: 1}}>Type</Text>
-        <Text style={{flex: 1}}>Planned</Text>
-        <Text style={{flex: 1}}>Actual</Text>
-        <Text style={{flex: 1}}>Diff</Text>
+    <View style={containerStyles}>
+      <View
+        style={{
+          borderWidth: 1,
+          flex: 1,
+        }}>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.headerItems}>Type</Text>
+          <Text style={styles.headerItems}>Planned</Text>
+          <Text style={styles.headerItems}>Actual</Text>
+          <Text style={styles.headerItems}>Diff</Text>
+        </View>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.headerItems}></Text>
+          <Text style={styles.headerItems}>{formatToINR(totalPlanned)}</Text>
+          <Text style={styles.headerItems}>{formatToINR(totalActual)}</Text>
+          <Text
+            style={[styles.headerItems, {color: diff < 0 ? 'red' : 'green'}]}>
+            {formatToINR(totalPlanned - totalActual)}
+          </Text>
+        </View>
       </View>
       <View>
         <FlatList
@@ -19,11 +41,26 @@ const BudgetTable = ({budgetData}) => {
             const budgetItem = budgetData[item];
             const diff = budgetItem.planned - budgetItem.actual;
             return (
-              <View style={{flexDirection: 'row', flex: 1}}>
-                <Text style={{flex: 1}}>{item}</Text>
-                <Text style={{flex: 1}}>{formatToINR(budgetItem.planned)}</Text>
-                <Text style={{flex: 1}}>{formatToINR(budgetItem.actual)}</Text>
-                <Text style={{flex: 1}}>{formatToINR(diff)}</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flex: 1,
+                  borderColor: 'black',
+                }}>
+                <Text style={styles.container}>{item}</Text>
+                <Text style={styles.container}>
+                  {formatToINR(budgetItem.planned)}
+                </Text>
+                <Text style={styles.container}>
+                  {formatToINR(budgetItem.actual)}
+                </Text>
+                <Text
+                  style={[
+                    styles.container,
+                    {color: diff < 0 ? 'red' : 'green'},
+                  ]}>
+                  {formatToINR(diff)}
+                </Text>
               </View>
             );
           }}></FlatList>
@@ -31,5 +68,18 @@ const BudgetTable = ({budgetData}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    borderWidth: 1,
+    textAlign: 'center',
+    paddingVertical: 4,
+  },
+  headerItems: {
+    flex: 1,
+    textAlign: 'center',
+  },
+});
 
 export default BudgetTable;

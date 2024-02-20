@@ -96,7 +96,9 @@ const Dashboard = () => {
   }, [showDatePicker]);
 
   return (
-    <View style={{flex: 1}}>
+    <ScrollView
+      contentContainerStyle={{margin: 10}}
+      showsVerticalScrollIndicator={false}>
       <View
         style={{
           flexDirection: 'row',
@@ -164,7 +166,7 @@ const Dashboard = () => {
           />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
