@@ -46,7 +46,6 @@ const AddType = ({modelType, model, title, date}) => {
 
   const onAdd = () => {
     try {
-      console.log('modelType', modelType, type);
       // if (!Number(value)) return alertError('Please enter a number value');
       let calculatedValue = value;
       if (!type) return alertError('Please select a type');

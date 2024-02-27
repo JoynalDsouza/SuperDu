@@ -1,5 +1,12 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, StyleSheet, BackHandler, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  BackHandler,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
 import moment from 'moment';
 import {getMonth, getYear, getYearsBetween} from '../utils/moment';
 import {useObject, useQuery, useRealm} from '@realm/react';
@@ -17,6 +24,26 @@ import AddBudget from '../components/Inputs/AddBudget';
 import {calculateExpensesComparison} from '../utils/createExpensesComparison';
 import BudgetTable from '../components/budget/BudgetTable';
 import {formatToINR} from '../utils/formatCurrency';
+import {PieChart} from 'react-native-chart-kit';
+
+const screenWidth = Dimensions.get('window').width;
+
+const chartConfig = {
+  backgroundColor: '#e26a00',
+  backgroundGradientFrom: '#fb8c00',
+  backgroundGradientTo: '#ffa726',
+  decimalPlaces: 2, // optional, defaults to 2dp
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  style: {
+    borderRadius: 16,
+  },
+  propsForDots: {
+    r: '6',
+    strokeWidth: '2',
+    stroke: '#ffa726',
+  },
+};
 
 const itemExistsInArray = (array, key, value) => {
   const result = array.some(item => item[key] === value);
@@ -97,7 +124,6 @@ const Overview = () => {
       return acc;
     }, {});
   }, [filteredExpenses]);
-
   const filteredIncomes = useMemo(
     () =>
       INCOMES.filtered(
@@ -223,6 +249,26 @@ const Overview = () => {
         date={`${selectedMonth}/${selectedYear}`}
         // budgets={filteredBudgets}
       />
+
+      <View>
+        <PieChart
+          data={Object.keys(totalExpensesByType).map(key => {
+            return {
+              name: key,
+              expense: totalExpensesByType[key],
+              color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+              legendFontColor: '#7F7F7F',
+              legendFontSize: 15,
+            };
+          })}
+          width={screenWidth}
+          height={220}
+          chartConfig={chartConfig}
+          accessor={'expense'}
+          backgroundColor={'transparent'}
+          center={[0, 0]}
+          absolute></PieChart>
+      </View>
 
       <View>
         <Text style={{marginTop: 10, marginBottom: 5}}>Expenses By Date</Text>

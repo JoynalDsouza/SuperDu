@@ -17,6 +17,7 @@ import AddIncome from '../components/Inputs/AddIncome';
 import AddLending from '../components/Inputs/AddLending';
 import AddInvestment from '../components/Inputs/AddInvestment';
 import {formatToINR} from '../utils/formatCurrency';
+import {alertError} from '../utils/alertError';
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -160,8 +161,15 @@ const Dashboard = () => {
             mode="single"
             date={date}
             onChange={params => {
-              setDate(params.date);
-              setShowDatePicker(false);
+              try {
+                const date = new Date(params.date?.toDate());
+
+                setDate(date);
+
+                setShowDatePicker(false);
+              } catch (e) {
+                alertError(e);
+              }
             }}
           />
         </View>
