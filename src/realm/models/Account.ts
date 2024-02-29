@@ -118,7 +118,6 @@ class BudgetType extends Realm.Object<BudgetType> {
       value: {type: 'float', default: 0},
       type: {type: 'string'},
     },
-    primaryKey: 'type',
   };
 }
 

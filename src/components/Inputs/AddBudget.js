@@ -9,7 +9,12 @@ import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
 import {alertError} from '../../utils/alertError';
 
-const AddBudget = ({date, budgets = []}) => {
+const AddBudget = ({
+  date,
+  budgets = [],
+  setCounter = () => {},
+  counter = 0,
+}) => {
   const [value, setValue] = useState('');
   const [type, setType] = useState('');
 
@@ -48,6 +53,7 @@ const AddBudget = ({date, budgets = []}) => {
 
       setValue('');
       setType('');
+      setCounter(counter + 1);
     } catch (e) {
       alertError(e);
     }
