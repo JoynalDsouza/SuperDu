@@ -12,7 +12,7 @@ function App() {
   return (
     <RealmProvider
       schema={schemas}
-      schemaVersion={3}
+      schemaVersion={4}
       deleteRealmIfMigrationNeeded={false}
       onFirstOpen={realm => {
         realm.create(ExpenseType, {
@@ -50,6 +50,8 @@ function App() {
               newObjects[i].notes = '';
             }
           });
+        }
+        if (oldRealm.schemaVersion < 4) {
         }
       }}>
       <SafeAreaView style={{flex: 1}}>

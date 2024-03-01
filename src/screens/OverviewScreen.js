@@ -52,6 +52,7 @@ const itemExistsInArray = (array, key, value) => {
 
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [counter, setCounter] = useState(0);
 
   const [selectedMonth, setSelectedMonth] = useState(getMonth(new Date()));
   const [selectedYear, setSelectedYear] = useState(getYear(new Date()));
@@ -247,6 +248,8 @@ const Overview = () => {
 
       <AddBudget
         date={`${selectedMonth}/${selectedYear}`}
+        setCounter={setCounter}
+        counter={counter}
         // budgets={filteredBudgets}
       />
 
