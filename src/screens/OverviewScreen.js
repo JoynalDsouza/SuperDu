@@ -276,16 +276,28 @@ const Overview = () => {
       <View>
         <Text style={{marginTop: 10, marginBottom: 5}}>Expenses By Date</Text>
         {Object.keys(expensesByDate).map(date => {
+          const totalExpense = expensesByDate[date].reduce((acc, expense) => {
+            return acc + expense.value;
+          }, 0);
+          const expenseByType = expensesByDate[date].reduce((acc, expense) => {
+            if (acc[expense.type?.name]) {
+              acc[expense.type?.name] = acc[expense.type?.name] + expense.value;
+            } else {
+              acc[expense.type?.name] = expense.value;
+            }
+            return acc;
+          }, {});
           return (
             <View key={date} style={{marginVertical: 10}}>
               <Text style={{marginBottom: 4}}>
-                {moment(date).format('dddd , Do MMMM')}
+                {moment(date).format('dddd , Do MMMM')} - Total :{' '}
+                {formatToINR(totalExpense)}
               </Text>
-              {expensesByDate[date].map(expense => {
+              {Object.keys(expenseByType).map(key => {
                 return (
-                  <View key={expense._id} style={{flexDirection: 'row'}}>
-                    <Text>{formatToINR(expense.value)}</Text>
-                    <Text> {expense.type?.name}</Text>
+                  <View key={key} style={{flexDirection: 'row'}}>
+                    <Text>{key} </Text>
+                    <Text>{formatToINR(expenseByType[key])}</Text>
                   </View>
                 );
               })}

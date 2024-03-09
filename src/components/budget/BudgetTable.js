@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
 import {formatToINR} from '../../utils/formatCurrency';
 
 const BudgetTable = ({budgetData, containerStyles = {}}) => {
