@@ -11,13 +11,12 @@ export const getDateTime = input => {
 export const getDate = date => {
   if (date) {
     return moment(date?.toISOString()).local().format('DD-MM-YYYY');
-  } else {
-    return moment(new Date().toISOString()).local().format('DD-MM-YYYY');
   }
 };
 
 export const getMonth = date => {
   try {
+    if (!date) return 1;
     const month = moment(date).format('M');
     return month;
   } catch (e) {

@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`moment take snapshot of getDate 1`] = `[Function]`;
+
+exports[`moment take snapshot of getDateTime 1`] = `[Function]`;
+
+exports[`moment take snapshot of getMonth 1`] = `[Function]`;
+
+exports[`moment take snapshot of getYear 1`] = `[Function]`;
+
+exports[`moment take snapshot of getYearsBetween 1`] = `[Function]`;
