@@ -40,6 +40,9 @@ const BudgetTable = ({budgetData, containerStyles = {}}) => {
           renderItem={({item}) => {
             const budgetItem = budgetData[item];
             const diff = budgetItem.planned - budgetItem.actual;
+            if (!budgetItem.planned && !budgetItem.actual) {
+              return null;
+            }
             return (
               <View
                 style={{
