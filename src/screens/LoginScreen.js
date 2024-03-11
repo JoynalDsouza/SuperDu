@@ -1,26 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Keyboard, Alert} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import InputBox from '../components/common/InputBox';
 import Button from '../components/common/Button';
-import {useObject, useQuery, useRealm} from '@realm/react';
+import {useQuery, useRealm} from '@realm/react';
 import {BSON} from 'realm';
-import {Profile} from '../realm/models';
-import {ExpenseType, User} from '../realm/models/User';
-import AddAsset from '../components/Inputs/AddAsset';
 import {rootNavigate} from '../Navigation/navigation';
 
 const LoginScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const realm = useRealm();
   const [error, setError] = useState('');
-  const expenseTypes = useQuery(ExpenseType);
 
-  const user = useQuery(User) || {};
+  const user = useQuery('User') || {};
 
   const onNameEnter = () => {
     try {
       realm.write(() => {
-        realm.create(User, {
+        realm.create('User', {
           _id: new BSON.ObjectID(),
           name: name,
         });
@@ -40,7 +36,6 @@ const LoginScreen = ({navigation}) => {
       if (user?.length) {
         resetToDashboard();
       } else {
-        // Alert.alert('Please enter your name');
       }
     } catch (e) {
       console.log(e);
@@ -62,6 +57,7 @@ const LoginScreen = ({navigation}) => {
               marginBottom: 16,
             }}>
             <InputBox
+              testID={'nameInput'}
               label={'Name'}
               type="alphaNumeric"
               placeholder={'Enter your name'}
@@ -73,6 +69,7 @@ const LoginScreen = ({navigation}) => {
           </View>
           <View style={{alignSelf: 'center'}}>
             <Button
+              testID={'enterButton'}
               title={'Enter'}
               onPress={() => {
                 onNameEnter();
@@ -85,17 +82,6 @@ const LoginScreen = ({navigation}) => {
           <Text>Welcome {user[0]?.name}</Text>
         </View>
       )}
-      {/* <View style={{marginHorizontal: 10}}>
-        <AddAsset />
-      </View> */}
-      {/* <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginVertical: 10,
-        }}>
-        <Button title={'Continue'} onPress={onContinuePress}></Button>
-      </View> */}
     </View>
   );
 };

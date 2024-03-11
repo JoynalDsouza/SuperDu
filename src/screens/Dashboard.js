@@ -18,6 +18,7 @@ import AddLending from '../components/Inputs/AddLending';
 import AddInvestment from '../components/Inputs/AddInvestment';
 import {formatToINR} from '../utils/formatCurrency';
 import {alertError} from '../utils/alertError';
+import {rootNavigate} from '../Navigation/navigation';
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -110,8 +111,13 @@ const Dashboard = () => {
         }}>
         <TouchableOpacity
           onPress={() => {
-            const newDate = momemt(new Date(date)).subtract(1, 'day').toDate();
-            setDate(newDate);
+            // const newDate = momemt(new Date(date)).subtract(1, 'day').toDate();
+            // setDate(newDate);
+            try {
+              rootNavigate('HomeScreen', 'push');
+            } catch (err) {
+              alertError(err);
+            }
           }}>
           <Text>Left</Text>
         </TouchableOpacity>
