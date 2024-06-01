@@ -21,10 +21,14 @@ import {MONTHS} from '../utils/constants/Months';
 import CustomDropdownPicker from '../components/common/CustomDropdownPicker';
 import {User} from '../realm/models/User';
 import AddBudget from '../components/Inputs/AddBudget';
-import {calculateExpensesComparison} from '../utils/createExpensesComparison';
+import {
+  calculateExpensesComparison,
+  getIncomeAllocation,
+} from '../utils/overview-utils';
 import BudgetTable from '../components/budget/BudgetTable';
 import {formatToINR} from '../utils/formatCurrency';
 import {PieChart} from 'react-native-chart-kit';
+import AllocationTable from '../components/overview/AllocationTable';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -67,6 +71,16 @@ const Overview = () => {
   const INCOMES = useQuery(Income);
   const LENDINGS = useQuery(Lending);
   const INVESTMENTS = useQuery(Investment);
+
+  const EXPENSE_TYPES = realm.objects('ExpenseType');
+
+  const expenseTypeMap = useMemo(() => {
+    return EXPENSE_TYPES.reduce((acc, type) => {
+      acc[type.name] = type;
+      return acc;
+    }, {});
+  }, [EXPENSE_TYPES]);
+
   const BUDGET = useObject(Budget, `${selectedMonth}/${selectedYear}`);
 
   const startOfMonth = moment()
@@ -125,6 +139,7 @@ const Overview = () => {
       return acc;
     }, {});
   }, [filteredExpenses]);
+
   const filteredIncomes = useMemo(
     () =>
       INCOMES.filtered(
@@ -200,6 +215,12 @@ const Overview = () => {
   }
   const comparison = calculateExpensesComparison(totalExpensesByType, budget);
 
+  const allocation = getIncomeAllocation(
+    comparison,
+    totalIncome,
+    expenseTypeMap,
+  );
+
   const spending = totalExpense + totalInvestment + totalLending;
 
   return (
@@ -254,7 +275,17 @@ const Overview = () => {
       />
 
       <View>
-        <PieChart
+        {!!Object.keys(allocation).length && (
+          <AllocationTable
+            allocationData={allocation}
+            containerStyles={{
+              marginTop: 20,
+              marginBottom: 20,
+            }}
+          />
+        )}
+
+        {/* <PieChart
           data={Object.keys(totalExpensesByType).map(key => {
             return {
               name: key,
@@ -270,7 +301,7 @@ const Overview = () => {
           accessor={'expense'}
           backgroundColor={'transparent'}
           center={[0, 0]}
-          absolute></PieChart>
+          absolute></PieChart> */}
       </View>
 
       <View>

@@ -8,7 +8,7 @@ import {RealmProvider} from '@realm/react';
 import {BSON} from 'realm';
 import {ExpenseType} from './src/realm/models/User';
 
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 function App() {
   return (
@@ -54,6 +54,9 @@ function App() {
           });
         }
         if (oldRealm.schemaVersion < 4) {
+        }
+
+        if (oldRealm.schemaVersion < 5) {
         }
       }}>
       <SafeAreaView style={{flex: 1}}>
