@@ -5,6 +5,7 @@ import Button from '../components/common/Button';
 import {useQuery, useRealm} from '@realm/react';
 import {BSON} from 'realm';
 import {rootNavigate} from '../Navigation/navigation';
+import {importRealmData} from '../utils/realm-import-export';
 
 const LoginScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -22,9 +23,7 @@ const LoginScreen = ({navigation}) => {
         });
       });
       onContinuePress();
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   const resetToDashboard = () => {
@@ -37,9 +36,7 @@ const LoginScreen = ({navigation}) => {
         resetToDashboard();
       } else {
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -67,7 +64,7 @@ const LoginScreen = ({navigation}) => {
               setInputValue={setName}
             />
           </View>
-          <View style={{alignSelf: 'center'}}>
+          <View style={{alignSelf: 'center', gap: 16}}>
             <Button
               testID={'enterButton'}
               title={'Enter'}
@@ -75,11 +72,19 @@ const LoginScreen = ({navigation}) => {
                 onNameEnter();
               }}
               disabled={!!error}></Button>
+
+            <Button
+              title={'Import App Data'}
+              onPress={() => {
+                importRealmData(realm);
+              }}
+            />
           </View>
         </View>
       ) : (
         <View>
           <Text>Welcome {user[0]?.name}</Text>
+          <Button title={"Let's Go!!!"} onPress={resetToDashboard}></Button>
         </View>
       )}
     </View>

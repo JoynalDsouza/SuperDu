@@ -44,4 +44,9 @@ describe('InputBox Component', () => {
     const {getByText} = setup({error: 'Error message'});
     expect(getByText('Error message')).toBeTruthy();
   });
+
+  test('should not display error text when error prop is not provided', () => {
+    const {queryByText} = setup();
+    expect(queryByText('Error message')).toBeNull();
+  });
 });

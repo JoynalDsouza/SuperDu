@@ -11,6 +11,7 @@ import Dashboard from '../screens/Dashboard';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Overview from '../screens/OverviewScreen';
 import HomeScreen from '../screens/HomeScreen';
+import Settings from '../screens/Settings';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -59,6 +60,7 @@ function MyTabs() {
     <Tab.Navigator>
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Overview" component={Overview} />
+      <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
 }

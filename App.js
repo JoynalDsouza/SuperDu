@@ -8,11 +8,13 @@ import {RealmProvider} from '@realm/react';
 import {BSON} from 'realm';
 import {ExpenseType} from './src/realm/models/User';
 
+export const SCHEMA_VERSION = 4;
+
 function App() {
   return (
     <RealmProvider
       schema={schemas}
-      schemaVersion={4}
+      schemaVersion={SCHEMA_VERSION}
       deleteRealmIfMigrationNeeded={false}
       onFirstOpen={realm => {
         realm.create(ExpenseType, {
