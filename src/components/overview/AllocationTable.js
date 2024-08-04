@@ -1,5 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import {formatToINR} from '../../utils/formatCurrency';
+import {colorPalette} from '../../design/theme';
 
 const AllocationTable = ({allocationData, containerStyles = {}}) => {
   const headers = ['Category', 'Budget Allocation %', 'Actual %'];
@@ -21,23 +23,35 @@ const AllocationTable = ({allocationData, containerStyles = {}}) => {
               styles.dataRow,
               styles.rowSeparator,
               index % 2 === 0 ? styles.evenRow : styles.oddRow,
+              {alignItems: 'center'},
             ]}>
+            {console.log('key', key)}
             <Text style={[styles.dataItem, styles.capitalize]}>{key}</Text>
-            <Text style={styles.dataItem}>
-              {value.plannedPercentage.toFixed(2)}%
-            </Text>
-            <Text
-              style={[
-                styles.dataItem,
-                {
-                  color:
-                    value.actualPercentage < value.plannedPercentage
-                      ? 'red'
-                      : 'green',
-                },
-              ]}>
-              {value.actualPercentage.toFixed(2)}%
-            </Text>
+            <View style={{flex: 1}}>
+              <Text style={styles.dataItem}>
+                {value.plannedPercentage.toFixed(2)}%
+              </Text>
+              <Text style={styles.dataItem}>{formatToINR(value?.planned)}</Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text
+                style={[
+                  styles.dataItem,
+                  {
+                    color:
+                      value.actualPercentage < value.plannedPercentage
+                        ? key === 'SAVINGS'
+                          ? 'red'
+                          : 'green'
+                        : key == 'SAVINGS'
+                        ? 'green'
+                        : 'red',
+                  },
+                ]}>
+                {value.actualPercentage.toFixed(2)}%
+              </Text>
+              <Text style={styles.dataItem}>{formatToINR(value?.actual)}</Text>
+            </View>
           </View>
         ))}
       </View>
@@ -57,7 +71,7 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    backgroundColor: '#4caf50',
+    backgroundColor: colorPalette.secondary,
   },
   headerItem: {
     flex: 1,
