@@ -3,6 +3,7 @@ import schemas from '../realm/models/schemas';
 import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
 import {BSON} from 'realm';
+import {Platform} from 'react-native';
 
 export const exportRealmData = async realm => {
   try {
@@ -18,7 +19,11 @@ export const exportRealmData = async realm => {
     });
     const exportJson = JSON.stringify(exportData);
     // Save to file
-    const filePath = `${RNFS.DownloadDirectoryPath}/export.json`;
+    const filePath =
+      Platform.OS == 'android'
+        ? `${RNFS.DownloadDirectoryPath}/export.json`
+        : `${RNFS.DocumentDirectoryPath}/export.json`;
+
     await RNFS.writeFile(filePath, exportJson, 'utf8');
     // Share the file
     // await Share.open({
@@ -27,7 +32,7 @@ export const exportRealmData = async realm => {
     //   type: 'application/json',
     // });
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };
 

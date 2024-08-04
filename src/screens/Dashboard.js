@@ -11,7 +11,7 @@ import momemt, {utc} from 'moment';
 import {getDate, getDateTime} from '../utils/moment';
 import DateTimePicker from 'react-native-ui-datepicker';
 import AddExpense from '../components/Inputs/AddExpense';
-import {useQuery} from '@realm/react';
+import {useQuery, useRealm} from '@realm/react';
 import {Expense, Income, Investment, Lending} from '../realm/models/Account';
 import AddIncome from '../components/Inputs/AddIncome';
 import AddLending from '../components/Inputs/AddLending';
@@ -19,10 +19,13 @@ import AddInvestment from '../components/Inputs/AddInvestment';
 import {formatToINR} from '../utils/formatCurrency';
 import {alertError} from '../utils/alertError';
 import {rootNavigate} from '../Navigation/navigation';
+import {exportRealmData} from '../utils/realm-import-export';
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const realm = useRealm();
 
   const EXPENSES = useQuery(Expense);
   const INCOMES = useQuery(Income);
@@ -78,6 +81,10 @@ const Dashboard = () => {
       ),
     [INVESTMENTS, date],
   );
+
+  useEffect(() => {
+    exportRealmData(realm);
+  }, []);
 
   useEffect(() => {
     const backAction = () => {
