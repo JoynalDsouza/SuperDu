@@ -140,7 +140,6 @@ const Overview = () => {
       return acc;
     }, {});
   }, [filteredExpenses]);
-
   const filteredIncomes = useMemo(
     () =>
       INCOMES.filtered(
