@@ -21,10 +21,16 @@ import {MONTHS} from '../utils/constants/Months';
 import CustomDropdownPicker from '../components/common/CustomDropdownPicker';
 import {User} from '../realm/models/User';
 import AddBudget from '../components/Inputs/AddBudget';
-import {calculateExpensesComparison} from '../utils/createExpensesComparison';
+import {
+  calculateDaysWithoutExpenses,
+  calculateExpensesComparison,
+  getIncomeAllocation,
+} from '../utils/overview-utils';
 import BudgetTable from '../components/budget/BudgetTable';
 import {formatToINR} from '../utils/formatCurrency';
 import {PieChart} from 'react-native-chart-kit';
+import AllocationTable from '../components/overview/AllocationTable';
+import OverviewStatsCard from '../components/overview/OverviewStatsCard';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -67,6 +73,16 @@ const Overview = () => {
   const INCOMES = useQuery(Income);
   const LENDINGS = useQuery(Lending);
   const INVESTMENTS = useQuery(Investment);
+
+  const EXPENSE_TYPES = realm.objects('ExpenseType');
+
+  const expenseTypeMap = useMemo(() => {
+    return EXPENSE_TYPES.reduce((acc, type) => {
+      acc[type.name] = type;
+      return acc;
+    }, {});
+  }, [EXPENSE_TYPES]);
+
   const BUDGET = useObject(Budget, `${selectedMonth}/${selectedYear}`);
 
   const startOfMonth = moment()
@@ -89,11 +105,6 @@ const Overview = () => {
     [EXPENSES, selectedMonth, selectedYear],
   );
 
-  const daysInMonth = moment(
-    `${selectedYear}-${selectedMonth}`,
-    'YYYY-MM',
-  ).daysInMonth();
-
   const expensesByDate = useMemo(() => {
     return filteredExpenses.reduce((acc, expense) => {
       const date = moment(expense.addedOn).format('YYYY-MM-DD');
@@ -106,7 +117,11 @@ const Overview = () => {
     }, {});
   }, [filteredExpenses]);
 
-  const daysWithoutExpenses = daysInMonth - Object.keys(expensesByDate).length;
+  const daysWithoutExpenses = calculateDaysWithoutExpenses(
+    selectedMonth,
+    selectedYear,
+    Object.keys(expensesByDate).length,
+  );
 
   const totalExpense = useMemo(() => {
     return filteredExpenses.reduce(
@@ -200,6 +215,12 @@ const Overview = () => {
   }
   const comparison = calculateExpensesComparison(totalExpensesByType, budget);
 
+  const allocation = getIncomeAllocation(
+    comparison,
+    totalIncome,
+    expenseTypeMap,
+  );
+
   const spending = totalExpense + totalInvestment + totalLending;
 
   return (
@@ -227,14 +248,12 @@ const Overview = () => {
             placeholder="Select Year"></CustomDropdownPicker>
         </View>
       </View>
-      <Text style={{marginVertical: 10}}>
-        Days Without expense : {daysWithoutExpenses} / {daysInMonth}
-      </Text>
-      {!!totalExpense && (
-        <Text>Total Expense : {formatToINR(totalExpense)}</Text>
-      )}
-      {!!totalIncome && <Text>Total Income : {formatToINR(totalIncome)}</Text>}
-      {<Text>Savings : {formatToINR(totalIncome - spending)}</Text>}
+      <OverviewStatsCard
+        totalExpense={totalExpense}
+        totalIncome={totalIncome}
+        savings={totalIncome - spending}
+        daysWithoutExpense={`${daysWithoutExpenses}`}
+      />
 
       {!!Object.keys(comparison).length && (
         <BudgetTable
@@ -254,38 +273,42 @@ const Overview = () => {
       />
 
       <View>
-        <PieChart
-          data={Object.keys(totalExpensesByType).map(key => {
-            return {
-              name: key,
-              expense: totalExpensesByType[key],
-              color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-              legendFontColor: '#7F7F7F',
-              legendFontSize: 15,
-            };
-          })}
-          width={screenWidth}
-          height={220}
-          chartConfig={chartConfig}
-          accessor={'expense'}
-          backgroundColor={'transparent'}
-          center={[0, 0]}
-          absolute></PieChart>
+        {!!Object.keys(allocation).length && (
+          <AllocationTable
+            allocationData={allocation}
+            containerStyles={{
+              marginTop: 20,
+              marginBottom: 20,
+            }}
+          />
+        )}
       </View>
 
       <View>
         <Text style={{marginTop: 10, marginBottom: 5}}>Expenses By Date</Text>
         {Object.keys(expensesByDate).map(date => {
+          const totalExpense = expensesByDate[date].reduce((acc, expense) => {
+            return acc + expense.value;
+          }, 0);
+          const expenseByType = expensesByDate[date].reduce((acc, expense) => {
+            if (acc[expense.type?.name]) {
+              acc[expense.type?.name] = acc[expense.type?.name] + expense.value;
+            } else {
+              acc[expense.type?.name] = expense.value;
+            }
+            return acc;
+          }, {});
           return (
             <View key={date} style={{marginVertical: 10}}>
               <Text style={{marginBottom: 4}}>
-                {moment(date).format('dddd , Do MMMM')}
+                {moment(date).format('dddd , Do MMMM')} - Total :{' '}
+                {formatToINR(totalExpense)}
               </Text>
-              {expensesByDate[date].map(expense => {
+              {Object.keys(expenseByType).map(key => {
                 return (
-                  <View key={expense._id} style={{flexDirection: 'row'}}>
-                    <Text>{formatToINR(expense.value)}</Text>
-                    <Text> {expense.type?.name}</Text>
+                  <View key={key} style={{flexDirection: 'row'}}>
+                    <Text>{key} </Text>
+                    <Text>{formatToINR(expenseByType[key])}</Text>
                   </View>
                 );
               })}

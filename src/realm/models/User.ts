@@ -1,14 +1,18 @@
 import {ObjectSchema} from 'realm';
 import Realm, {Object, Types, BSON} from 'realm';
 
+export type EXPENSE_CATEGORIES = 'NEED' | 'WANT' | 'SAVINGS';
+
 class ExpenseType extends Realm.Object<ExpenseType> {
   name!: string;
   isActive?: boolean;
+  category?: EXPENSE_CATEGORIES;
   static schema: ObjectSchema = {
     name: 'ExpenseType',
     properties: {
       name: {type: 'string', indexed: true},
       isActive: {type: 'bool', default: true},
+      category: {type: 'string', default: ''},
     },
     primaryKey: 'name',
   };

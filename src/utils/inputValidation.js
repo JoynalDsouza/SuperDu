@@ -9,7 +9,7 @@ export const vaildateInput = (type, value) => {
       return 'Invalid email address';
     }
   } else if (type === 'alphaNumeric') {
-    if (!value?.trim()?.length === 0) {
+    if (value?.trim()?.length === 0) {
       return 'This field is required';
     }
     if (value?.trim()?.length < 3) {

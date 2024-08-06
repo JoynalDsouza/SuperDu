@@ -18,6 +18,7 @@ import AddLending from '../components/Inputs/AddLending';
 import AddInvestment from '../components/Inputs/AddInvestment';
 import {formatToINR} from '../utils/formatCurrency';
 import {alertError} from '../utils/alertError';
+import {rootNavigate} from '../Navigation/navigation';
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -100,63 +101,58 @@ const Dashboard = () => {
     <ScrollView
       contentContainerStyle={{margin: 10}}
       showsVerticalScrollIndicator={false}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingVertical: 40,
-          paddingHorizontal: 20,
-        }}>
+      <View style={styles.header}>
         <TouchableOpacity
+          style={styles.button}
           onPress={() => {
-            const newDate = momemt(new Date(date)).subtract(1, 'day').toDate();
-            setDate(newDate);
+            try {
+              const newDate = momemt(new Date(date))
+                .subtract(1, 'day')
+                .toDate();
+              setDate(newDate);
+            } catch (err) {
+              alertError(err);
+            }
           }}>
-          <Text>Left</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-          <Text>{getDate(date)}</Text>
+          <Text style={styles.buttonText}>Left</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowDatePicker(true)}>
+          <Text style={styles.buttonText}>{getDate(date)}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => {
             const newDate = momemt(new Date(date)).add(1, 'day').toDate();
             setDate(newDate);
           }}>
-          <Text>Right</Text>
+          <Text style={styles.buttonText}>Right</Text>
         </TouchableOpacity>
       </View>
 
-      {!!totalExpense && (
-        <Text>Total Expense : {formatToINR(totalExpense)}</Text>
-      )}
+      <Text style={styles.totalExpenseText}>
+        Total Expense: {formatToINR(totalExpense)}
+      </Text>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 50}}>
-        <View>
+        <View style={styles.card}>
           <AddExpense expenses={filteredExpenses} date={date} />
         </View>
-
-        <View>
+        <View style={styles.card}>
           <AddIncome incomes={filteredIncomes} date={date} />
         </View>
-
-        <View>
+        <View style={styles.card}>
           <AddLending lendings={filteredLendings} date={date} />
         </View>
-
-        <View>
+        <View style={styles.card}>
           <AddInvestment investments={filteredInvestments} date={date} />
         </View>
       </ScrollView>
       {showDatePicker && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            zIndex: 1,
-            backgroundColor: '#F5FCFF',
-          }}>
+        <View style={styles.datePickerOverlay}>
           <DateTimePicker
             mode="single"
             date={date}
@@ -181,9 +177,59 @@ const Dashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 10,
   },
-  height300: {
-    height: 300,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  button: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: '#007bff',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  datePickerOverlay: {
+    position: 'absolute',
+    top: 0,
+    backgroundColor: 'rgba(245, 252, 255, 1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  totalExpenseText: {
+    fontSize: 16,
+    color: '#333333',
+    padding: 20,
+    fontWeight: 'bold',
+  },
+  card: {
+    marginVertical: 10,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.22,
+    shadowRadius: 1.22,
+    elevation: 3,
   },
 });
 

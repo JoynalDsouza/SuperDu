@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginScreen Tests renders correctly when there is no user 1`] = `
+<View
+  style={{}}
+>
+  <View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "marginBottom": 16,
+          "marginHorizontal": 10,
+        }
+      }
+    >
+      <InputBox
+        error=""
+        inputValue=""
+        label="Name"
+        placeholder="Enter your name"
+        setError={[Function]}
+        setInputValue={[Function]}
+        testID="nameInput"
+        type="alphaNumeric"
+      />
+    </View>
+    <View
+      style={
+        {
+          "alignSelf": "center",
+        }
+      }
+    >
+      <Button
+        disabled={false}
+        onPress={[Function]}
+        testID="enterButton"
+        title="Enter"
+      />
+    </View>
+  </View>
+</View>
+`;

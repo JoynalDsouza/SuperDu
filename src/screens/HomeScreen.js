@@ -1,8 +1,5 @@
-import {useQuery} from '@realm/react';
 import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-
-import notifee from '@notifee/react-native';
 
 const HomeScreen = ({navigation}) => {
   return (
@@ -10,7 +7,7 @@ const HomeScreen = ({navigation}) => {
       <View style={styles.container}>
         <View style={{paddingVertical: 6, backgroundColor: 'grey'}}>
           <Text style={{paddingHorizontal: 10, color: 'white'}}>
-            {/* Hello, {name} */}
+            Hello, {'Joy'}
           </Text>
         </View>
       </View>
@@ -21,6 +18,7 @@ const HomeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // fill the entire screen
+    backgroundColor: 'red',
   },
 });
 
