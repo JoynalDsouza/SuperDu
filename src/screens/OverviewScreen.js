@@ -28,7 +28,6 @@ import {
 } from '../utils/overview-utils';
 import BudgetTable from '../components/budget/BudgetTable';
 import {formatToINR} from '../utils/formatCurrency';
-import {PieChart} from 'react-native-chart-kit';
 import AllocationTable from '../components/overview/AllocationTable';
 import OverviewStatsCard from '../components/overview/OverviewStatsCard';
 
