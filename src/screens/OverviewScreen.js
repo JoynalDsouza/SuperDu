@@ -1,13 +1,14 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   BackHandler,
   ScrollView,
   Dimensions,
+  FlatList,
 } from 'react-native';
 import moment from 'moment';
+import Text from '../components/common/Text';
 import {getMonth, getYear, getYearsBetween} from '../utils/moment';
 import {useObject, useQuery, useRealm} from '@realm/react';
 import {
@@ -29,7 +30,13 @@ import {
 import BudgetTable from '../components/budget/BudgetTable';
 import {formatToINR} from '../utils/formatCurrency';
 import AllocationTable from '../components/overview/AllocationTable';
-import OverviewStatsCard from '../components/overview/OverviewStatsCard';
+import MonthOverviewCard from '../components/dashboard/MonthOverviewCard';
+import {
+  ELECTRIC_BLUE,
+  LIGHT_SLATE_GREY,
+  PRIMARY_BACKGROUND,
+} from '../design/theme';
+import TransactionCard from '../components/Transaction/TransactionCard';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -115,12 +122,6 @@ const Overview = () => {
       return acc;
     }, {});
   }, [filteredExpenses]);
-
-  const daysWithoutExpenses = calculateDaysWithoutExpenses(
-    selectedMonth,
-    selectedYear,
-    Object.keys(expensesByDate).length,
-  );
 
   const totalExpense = useMemo(() => {
     return filteredExpenses.reduce(
@@ -224,8 +225,16 @@ const Overview = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={{marginHorizontal: 10, marginVertical: 10}}>
-      <View style={{flexDirection: 'row', gap: 10, marginBottom: 20}}>
+      contentContainerStyle={{
+        backgroundColor: PRIMARY_BACKGROUND,
+      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          gap: 10,
+          marginBottom: 20,
+          backgroundColor: ELECTRIC_BLUE,
+        }}>
         <View style={{flex: 2}}>
           <Text>Select Month</Text>
           <CustomDropdownPicker
@@ -247,11 +256,10 @@ const Overview = () => {
             placeholder="Select Year"></CustomDropdownPicker>
         </View>
       </View>
-      <OverviewStatsCard
-        totalExpense={totalExpense}
-        totalIncome={totalIncome}
-        savings={totalIncome - spending}
-        daysWithoutExpense={`${daysWithoutExpenses}`}
+
+      <MonthOverviewCard
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
       />
 
       {!!Object.keys(comparison).length && (
@@ -263,13 +271,14 @@ const Overview = () => {
           }}
         />
       )}
-
-      <AddBudget
-        date={`${selectedMonth}/${selectedYear}`}
-        setCounter={setCounter}
-        counter={counter}
-        // budgets={filteredBudgets}
-      />
+      <View style={{backgroundColor: LIGHT_SLATE_GREY, padding: 16}}>
+        <AddBudget
+          date={`${selectedMonth}/${selectedYear}`}
+          setCounter={setCounter}
+          counter={counter}
+          // budgets={filteredBudgets}
+        />
+      </View>
 
       <View>
         {!!Object.keys(allocation).length && (
@@ -303,14 +312,21 @@ const Overview = () => {
                 {moment(date).format('dddd , Do MMMM')} - Total :{' '}
                 {formatToINR(totalExpense)}
               </Text>
-              {Object.keys(expenseByType).map(key => {
-                return (
-                  <View key={key} style={{flexDirection: 'row'}}>
-                    <Text>{key} </Text>
-                    <Text>{formatToINR(expenseByType[key])}</Text>
-                  </View>
-                );
-              })}
+              <FlatList
+                data={expensesByDate[date]}
+                keyExtractor={item => item.id}
+                contentContainerStyle={{gap: 8}}
+                renderItem={({item}) => {
+                  return (
+                    <TransactionCard
+                      type={'Expense'}
+                      category={item.type?.name}
+                      addedOn={item.addedOn}
+                      value={item.value}
+                    />
+                  );
+                }}
+              />
             </View>
           );
         })}

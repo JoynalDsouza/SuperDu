@@ -12,6 +12,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Overview from '../screens/OverviewScreen';
 import HomeScreen from '../screens/HomeScreen';
 import Settings from '../screens/Settings';
+import {LIME_GREEN, PRIMARY_BACKGROUND} from '../design/theme';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -57,7 +58,15 @@ export function rootNavigate(name, action = 'back', params = null) {
 
 function MyTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      initialRouteName="Dashboard"
+      screenOptions={{
+        headerShown: false,
+        tabBarAllowFontScaling: true,
+        tabBarActiveTintColor: LIME_GREEN,
+        tabBarInactiveBackgroundColor: PRIMARY_BACKGROUND,
+        tabBarActiveBackgroundColor: PRIMARY_BACKGROUND,
+      }}>
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Overview" component={Overview} />
       <Tab.Screen name="Settings" component={Settings} />

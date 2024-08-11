@@ -1,7 +1,14 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {formatToINR} from '../../utils/formatCurrency';
-import {colorPalette} from '../../design/theme';
+import Text from '../common/Text';
+import {
+  ERROR_RED,
+  PRIMARY_BACKGROUND,
+  SECONDARY_BACKGROUND,
+  SUCCESS_GREEN,
+  TEAL_BLUE,
+} from '../../design/theme';
 
 const AllocationTable = ({allocationData, containerStyles = {}}) => {
   const headers = ['Category', 'Budget Allocation %', 'Actual %'];
@@ -41,11 +48,11 @@ const AllocationTable = ({allocationData, containerStyles = {}}) => {
                     color:
                       value.actualPercentage < value.plannedPercentage
                         ? key === 'SAVINGS'
-                          ? 'red'
-                          : 'green'
+                          ? ERROR_RED
+                          : SUCCESS_GREEN
                         : key == 'SAVINGS'
-                        ? 'green'
-                        : 'red',
+                        ? SUCCESS_GREEN
+                        : ERROR_RED,
                   },
                 ]}>
                 {value.actualPercentage.toFixed(2)}%
@@ -71,7 +78,7 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    backgroundColor: colorPalette.secondary,
+    backgroundColor: TEAL_BLUE,
   },
   headerItem: {
     flex: 1,
@@ -95,10 +102,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   evenRow: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: PRIMARY_BACKGROUND,
   },
   oddRow: {
-    backgroundColor: '#f1f1f1',
+    backgroundColor: SECONDARY_BACKGROUND,
   },
   capitalize: {
     textTransform: 'capitalize',

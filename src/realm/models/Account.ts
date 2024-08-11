@@ -135,4 +135,24 @@ class Budget extends Realm.Object<Budget> {
   };
 }
 
+// class Transaction extends Realm.Object<Transaction> {
+//   _id?: Realm.BSON.ObjectId;
+//   value!: number;
+//   type!: string;
+//   addedOn?: Date;
+//   notes?: string;
+
+//   static schema: ObjectSchema = {
+//     name: 'Transaction',
+//     properties: {
+//       _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
+//       value: {type: 'float', default: 0},
+//       type: {type: 'string'},
+//       addedOn: {type: 'date', default: new Date()},
+//       notes: {type: 'string', default: '', optional: true},
+//     },
+//     primaryKey: '_id',
+//   };
+// }
+
 export {Asset, Income, Expense, Lending, Investment, Budget, BudgetType};
