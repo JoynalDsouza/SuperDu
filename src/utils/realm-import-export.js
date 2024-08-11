@@ -32,7 +32,6 @@ export const exportRealmData = async realm => {
     //   type: 'application/json',
     // });
   } catch (error) {
-    console.log(error);
   }
 };
 
