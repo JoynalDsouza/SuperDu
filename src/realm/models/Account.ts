@@ -9,6 +9,8 @@ import {
 
 export type CategoryType = 'INVESTMENT' | 'EXPENSE' | 'INCOME' | 'LENDING';
 
+export type TransactionCategory = 'NEED' | 'WANT' | 'INVESTMENT';
+
 class Asset extends Object<Asset> {
   _id?: BSON.ObjectId;
 
@@ -167,6 +169,7 @@ class Category extends Object<Category> {
   type!: CategoryType;
   image?: string;
   isActive?: boolean;
+  transactionCategory?: TransactionCategory;
 
   static schema: ObjectSchema = {
     name: 'Category',
@@ -175,6 +178,7 @@ class Category extends Object<Category> {
       name: {type: 'string'},
       image: {type: 'string', optional: true, default: ''},
       type: {type: 'string'},
+      transactionCategory: {type: 'string', optional: true, default: ''},
       isActive: {type: 'bool', default: true, optional: true},
     },
     primaryKey: '_id',

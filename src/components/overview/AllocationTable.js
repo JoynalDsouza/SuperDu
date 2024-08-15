@@ -32,7 +32,6 @@ const AllocationTable = ({allocationData, containerStyles = {}}) => {
               index % 2 === 0 ? styles.evenRow : styles.oddRow,
               {alignItems: 'center'},
             ]}>
-            {console.log('key', key)}
             <Text style={[styles.dataItem, styles.capitalize]}>{key}</Text>
             <View style={{flex: 1}}>
               <Text style={styles.dataItem}>

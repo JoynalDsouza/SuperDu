@@ -18,7 +18,6 @@ import AddLending from '../components/Inputs/AddLending';
 import AddInvestment from '../components/Inputs/AddInvestment';
 import {formatToINR} from '../utils/formatCurrency';
 import {alertError} from '../utils/alertError';
-import {rootNavigate} from '../Navigation/navigation';
 import {exportRealmData} from '../utils/realm-import-export';
 
 const Dashboard = () => {

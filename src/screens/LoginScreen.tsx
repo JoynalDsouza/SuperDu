@@ -6,13 +6,13 @@ import {useQuery, useRealm} from '@realm/react';
 import {BSON} from 'realm';
 import {rootNavigate} from '../Navigation/navigation';
 import {importRealmData} from '../utils/realm-import-export';
-
+import {User} from '../realm/models/User';
 const LoginScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const realm = useRealm();
   const [error, setError] = useState('');
 
-  const user = useQuery('User') || {};
+  const user = useQuery(User);
 
   const onNameEnter = () => {
     try {
@@ -66,7 +66,6 @@ const LoginScreen = ({navigation}) => {
           </View>
           <View style={{alignSelf: 'center', gap: 16}}>
             <Button
-              testID={'enterButton'}
               title={'Enter'}
               onPress={() => {
                 onNameEnter();

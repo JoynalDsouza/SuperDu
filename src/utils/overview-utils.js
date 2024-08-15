@@ -39,7 +39,7 @@ export const getIncomeAllocation = (
   try {
     const allocation = Object.keys(comparison).reduce((acc, key) => {
       const {actual, planned} = comparison[key];
-      let category = expenseTypeMap[key]?.category;
+      let category = expenseTypeMap[key]?.transactionCategory;
       if (key === 'investment' || key === 'lending') {
         category = 'SAVINGS';
       }

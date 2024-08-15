@@ -1,33 +1,49 @@
 import React from 'react';
-
 import {
   NavigationContainer,
   CommonActions,
   StackActions,
+  NavigationContainerRef,
+  ParamListBase,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import LoginScreen from '../screens/LoginScreen';
 import Dashboard from '../screens/Dashboard';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Overview from '../screens/OverviewScreen';
 import HomeScreen from '../screens/HomeScreen';
+import ManageTransaction from '../screens/ManageTransaction';
 import Settings from '../screens/Settings';
-import {LIME_GREEN, PRIMARY_BACKGROUND} from '../design/theme';
+import {PRIMARY_BACKGROUND, SUCCESS_GREEN} from '../design/theme';
+import {
+  NavigationActionType,
+  StackParamList,
+  TabParamList,
+} from './navigation.types';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<StackParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
 
-const navigationRef = React.createRef();
+// Define the type for the navigation ref
+const navigationRef = React.createRef<NavigationContainerRef<ParamListBase>>();
 
-export function rootNavigate(name, action = 'back', params = null) {
+// Define the type for navigation actions
+
+export function rootNavigate<T extends keyof (StackParamList & TabParamList)>(
+  name?: T,
+  action: NavigationActionType = 'back',
+  params?: (StackParamList & TabParamList)[T],
+) {
   try {
     if (navigationRef?.current?.getRootState()) {
       if (action === 'navigate') {
-        navigationRef.current?.navigate(name, params);
+        navigationRef.current?.navigate(name as string, params as any);
       } else if (action === 'replace') {
-        navigationRef.current.dispatch(StackActions.replace(name, params));
+        navigationRef.current.dispatch(
+          StackActions.replace(name, params as any),
+        );
       } else if (action === 'push') {
-        navigationRef.current.dispatch(StackActions.push(name, params));
+        navigationRef.current.dispatch(StackActions.push(name, params as any));
       } else if (action === 'reset') {
         navigationRef.current.dispatch(
           CommonActions.reset({
@@ -39,11 +55,6 @@ export function rootNavigate(name, action = 'back', params = null) {
         navigationRef.current?.goBack();
       }
     } else {
-      /* The `setTimeout` function is used to delay the execution of a function by a specified number of
-   milliseconds. In this case, it is used to delay the execution of the `rootNavigate` function by 100
-   milliseconds. This is done to ensure that the navigationRef is ready before attempting to navigate.
-   If the navigationRef is not ready, the function is called again after a short delay. This is a
-   workaround to handle cases where the navigationRef is not immediately ready. */
       setTimeout(() => {
         rootNavigate(name, action, params);
       }, 100);
@@ -63,7 +74,7 @@ function MyTabs() {
       screenOptions={{
         headerShown: false,
         tabBarAllowFontScaling: true,
-        tabBarActiveTintColor: LIME_GREEN,
+        tabBarActiveTintColor: SUCCESS_GREEN,
         tabBarInactiveBackgroundColor: PRIMARY_BACKGROUND,
         tabBarActiveBackgroundColor: PRIMARY_BACKGROUND,
       }}>
@@ -74,7 +85,7 @@ function MyTabs() {
   );
 }
 
-const Navigation = () => {
+const Navigation: React.FC = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
@@ -84,8 +95,12 @@ const Navigation = () => {
         }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
-
         <Stack.Screen name="Home" component={MyTabs} />
+        <Stack.Screen
+          name="ManageTransaction"
+          component={ManageTransaction}
+          initialParams={{transactionId: undefined}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -9,7 +9,7 @@ import {BSON} from 'realm';
 import {ExpenseType} from './src/realm/models/User';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 
 function App() {
   LogBox.ignoreAllLogs();

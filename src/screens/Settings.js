@@ -8,26 +8,24 @@ import {
 } from 'react-native';
 import React from 'react';
 import Button from '../components/common/Button';
-import {useQuery, useRealm} from '@realm/react';
 import {exportRealmData} from '../utils/realm-import-export';
 import {Dropdown} from 'react-native-element-dropdown';
+import {Category} from '../realm/models/Account';
+import {useQuery, useRealm} from '@realm/react';
 
 export default function Settings() {
   const realm = useRealm();
 
-  const EXPENSE_TYPES = useQuery('ExpenseType', type => {
-    return type.sorted('category');
-  });
+  const EXPENSE_TYPES = useQuery(Category)
+    .filtered('type == "EXPENSE"')
+    .sorted('transactionCategory');
   const filteredExpenseTypes = EXPENSE_TYPES;
 
-  const onSelectItem = (expenseName, category) => {
+  const onSelectItem = (expenseId, category) => {
     try {
       realm.write(() => {
-        const expenseType = realm.objectForPrimaryKey(
-          'ExpenseType',
-          expenseName,
-        );
-        expenseType.category = category;
+        const expenseType = realm.objectForPrimaryKey('Category', expenseId);
+        expenseType.transactionCategory = category;
       });
     } catch (error) {}
   };
@@ -57,8 +55,8 @@ export default function Settings() {
                   labelField={'name'}
                   valueField={'value'}
                   value={{
-                    name: item?.category?.toLowerCase(),
-                    value: item?.category,
+                    name: item?.transactionCategory?.toLowerCase(),
+                    value: item?.transactionCategory,
                   }}
                   data={[
                     {name: 'Need', value: 'NEED'},
@@ -67,7 +65,7 @@ export default function Settings() {
                   ]}
                   renderItem={category => {
                     return (
-                      <Pressable
+                      <View
                         key={category.name}
                         style={({pressed}) => [
                           {
@@ -80,11 +78,13 @@ export default function Settings() {
                             paddingVertical: 8,
                             paddingHorizontal: 8,
                           },
-                        ]}
-                        onPress={() => onSelectItem(item.name, category.value)}>
+                        ]}>
                         <Text>{category?.name}</Text>
-                      </Pressable>
+                      </View>
                     );
+                  }}
+                  onChange={category => {
+                    onSelectItem(item._id, category.value);
                   }}></Dropdown>
               </View>
             );
