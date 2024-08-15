@@ -1,4 +1,4 @@
-import {ObjectSchema} from 'realm';
+import {ObjectSchema, Object, BSON} from 'realm';
 import {
   AssetType,
   ExpenseType,
@@ -7,8 +7,10 @@ import {
   LendingType,
 } from './User';
 
-class Asset extends Realm.Object<Asset> {
-  _id?: Realm.BSON.ObjectId;
+export type CategoryType = 'INVESTMENT' | 'EXPENSE' | 'INCOME' | 'LENDING';
+
+class Asset extends Object<Asset> {
+  _id?: BSON.ObjectId;
 
   value!: number;
   type!: AssetType;
@@ -17,7 +19,7 @@ class Asset extends Realm.Object<Asset> {
   static schema: ObjectSchema = {
     name: 'Asset',
     properties: {
-      _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
       value: {type: 'float', default: 0},
       type: 'AssetType',
       addedOn: {type: 'date', default: new Date()},
@@ -26,8 +28,8 @@ class Asset extends Realm.Object<Asset> {
   };
 }
 
-class Investment extends Realm.Object<Investment> {
-  _id?: Realm.BSON.ObjectId;
+class Investment extends Object<Investment> {
+  _id?: BSON.ObjectId;
 
   value!: number;
   type!: InvestmentType;
@@ -37,7 +39,7 @@ class Investment extends Realm.Object<Investment> {
   static schema: ObjectSchema = {
     name: 'Investment',
     properties: {
-      _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
       value: {type: 'float', default: 0},
       type: 'InvestmentType',
       addedOn: {type: 'date', default: new Date()},
@@ -47,8 +49,8 @@ class Investment extends Realm.Object<Investment> {
   };
 }
 
-class Income extends Realm.Object<Income> {
-  _id!: Realm.BSON.ObjectId;
+class Income extends Object<Income> {
+  _id!: BSON.ObjectId;
 
   value!: number;
   type!: IncomeType;
@@ -58,7 +60,7 @@ class Income extends Realm.Object<Income> {
   static schema: ObjectSchema = {
     name: 'Income',
     properties: {
-      _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
       value: {type: 'float', default: 0},
       type: 'IncomeType',
       addedOn: {type: 'date', default: new Date()},
@@ -68,8 +70,8 @@ class Income extends Realm.Object<Income> {
   };
 }
 
-class Expense extends Realm.Object<Expense> {
-  _id?: Realm.BSON.ObjectId;
+class Expense extends Object<Expense> {
+  _id?: BSON.ObjectId;
   value!: number;
   type!: ExpenseType;
   addedOn?: Date;
@@ -78,7 +80,7 @@ class Expense extends Realm.Object<Expense> {
   static schema: ObjectSchema = {
     name: 'Expense',
     properties: {
-      _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
       value: {type: 'float', default: 0},
       type: 'ExpenseType',
       addedOn: {type: 'date', default: new Date()},
@@ -88,8 +90,8 @@ class Expense extends Realm.Object<Expense> {
   };
 }
 
-class Lending extends Realm.Object<Lending> {
-  _id?: Realm.BSON.ObjectId;
+class Lending extends Object<Lending> {
+  _id?: BSON.ObjectId;
   value!: number;
   type!: LendingType;
   addedOn?: Date;
@@ -98,7 +100,7 @@ class Lending extends Realm.Object<Lending> {
   static schema: ObjectSchema = {
     name: 'Lending',
     properties: {
-      _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
       value: {type: 'float', default: 0},
       type: 'LendingType',
       addedOn: {type: 'date', default: new Date()},
@@ -108,7 +110,7 @@ class Lending extends Realm.Object<Lending> {
   };
 }
 
-class BudgetType extends Realm.Object<BudgetType> {
+class BudgetType extends Object<BudgetType> {
   value!: number;
   type!: string;
 
@@ -121,7 +123,7 @@ class BudgetType extends Realm.Object<BudgetType> {
   };
 }
 
-class Budget extends Realm.Object<Budget> {
+class Budget extends Object<Budget> {
   budget!: Realm.List<BudgetType>;
   for?: string;
 
@@ -135,24 +137,84 @@ class Budget extends Realm.Object<Budget> {
   };
 }
 
-// class Transaction extends Realm.Object<Transaction> {
-//   _id?: Realm.BSON.ObjectId;
-//   value!: number;
-//   type!: string;
-//   addedOn?: Date;
-//   notes?: string;
+class AccountDetails extends Object<AccountDetails> {
+  _id?: BSON.ObjectId;
+  name!: string;
+  type?: string;
+  balance?: number;
+  addedOn?: Date;
+  notes?: string;
+  isActive?: boolean;
 
-//   static schema: ObjectSchema = {
-//     name: 'Transaction',
-//     properties: {
-//       _id: {type: 'objectId', default: new Realm.BSON.ObjectID()},
-//       value: {type: 'float', default: 0},
-//       type: {type: 'string'},
-//       addedOn: {type: 'date', default: new Date()},
-//       notes: {type: 'string', default: '', optional: true},
-//     },
-//     primaryKey: '_id',
-//   };
-// }
+  static schema: ObjectSchema = {
+    name: 'AccountDetails',
+    properties: {
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
+      name: {type: 'string'},
+      type: {type: 'string', default: '', optional: true},
+      balance: {type: 'float', default: 0},
+      addedOn: {type: 'date', default: new Date()},
+      notes: {type: 'string', default: '', optional: true},
+      isActive: {type: 'bool', default: true, optional: true},
+    },
+    primaryKey: '_id',
+  };
+}
 
-export {Asset, Income, Expense, Lending, Investment, Budget, BudgetType};
+class Category extends Object<Category> {
+  _id?: BSON.ObjectId;
+  name!: string;
+  type!: CategoryType;
+  image?: string;
+  isActive?: boolean;
+
+  static schema: ObjectSchema = {
+    name: 'Category',
+    properties: {
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
+      name: {type: 'string'},
+      image: {type: 'string', optional: true, default: ''},
+      type: {type: 'string'},
+      isActive: {type: 'bool', default: true, optional: true},
+    },
+    primaryKey: '_id',
+  };
+}
+class Transaction extends Object<Transaction> {
+  _id?: BSON.ObjectId;
+  amount!: number;
+  type?: CategoryType;
+  category?: Category;
+  addedOn?: Date;
+  modifiedOn?: Date;
+  notes?: string;
+  from?: AccountDetails;
+
+  static schema: ObjectSchema = {
+    name: 'Transaction',
+    properties: {
+      _id: {type: 'objectId', default: new BSON.ObjectID()},
+      amount: {type: 'float', default: 0},
+      type: {type: 'string', default: '', optional: true},
+      category: 'Category',
+      addedOn: {type: 'date', default: new Date()},
+      modifiedOn: {type: 'date', default: new Date()},
+      notes: {type: 'string', default: '', optional: true},
+      from: 'AccountDetails',
+    },
+    primaryKey: '_id',
+  };
+}
+
+export {
+  Asset,
+  Income,
+  Expense,
+  Lending,
+  Investment,
+  Budget,
+  BudgetType,
+  Category,
+  Transaction,
+  AccountDetails,
+};

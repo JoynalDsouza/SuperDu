@@ -4,7 +4,6 @@ import Text from '../common/Text';
 import {
   ELECTRIC_BLUE,
   ERROR_RED,
-  LIGHT_SLATE_GREY,
   PRIMARY_TEXT,
   SECONDARY_BACKGROUND,
   SECONDARY_TEXT,
@@ -12,24 +11,24 @@ import {
 } from '../../design/theme';
 import {formatToINR} from '../../utils/formatCurrency';
 import {Swipeable} from 'react-native-gesture-handler';
+import {CategoryType} from 'realm/models/Account';
 
 type TransactionCardProps = {
-  type: string;
+  type: CategoryType;
   category: string;
   addedOn: Date;
-  value: number;
+  amount: number;
 };
 
 const TransactionCard: React.FC<TransactionCardProps> = ({
   type,
   category,
   addedOn,
-  value,
+  amount,
 }) => {
-  // Define the left and right swipe actions
   const renderLeftActions = (
-    progress: Animated.AnimatedInterpolation,
-    dragX: Animated.AnimatedInterpolation,
+    progress: Animated.AnimatedInterpolation<string | number>,
+    dragX: Animated.AnimatedInterpolation<string | number>,
   ) => {
     const scale = dragX.interpolate({
       inputRange: [0, 100],
@@ -47,8 +46,8 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   };
 
   const renderRightActions = (
-    progress: Animated.AnimatedInterpolation,
-    dragX: Animated.AnimatedInterpolation,
+    progress: Animated.AnimatedInterpolation<string | number>,
+    dragX: Animated.AnimatedInterpolation<string | number>,
   ) => {
     const scale = dragX.interpolate({
       inputRange: [-100, 0],
@@ -73,8 +72,15 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
     <Swipeable
       renderLeftActions={renderLeftActions}
       renderRightActions={renderRightActions}
-      onSwipeableLeftOpen={() => Alert.alert('Marked as Reviewed')}
-      onSwipeableRightOpen={() => Alert.alert('Transaction Deleted')}>
+      leftThreshold={100}
+      rightThreshold={100}
+      onSwipeableOpen={direction => {
+        if (direction === 'left') {
+          Alert.alert('Marked as Reviewed');
+        } else {
+          Alert.alert('Transaction Deleted');
+        }
+      }}>
       <View style={styles.transactionItem}>
         <View style={styles.transactionDetails}>
           <Text variant="b1" style={styles.transactionType}>
@@ -87,14 +93,14 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         <Text
           variant="b1"
           color={
-            type === 'Income'
+            type === 'INCOME'
               ? SUCCESS_GREEN
-              : type === 'Investment' || type === 'Lending'
+              : type === 'INVESTMENT' || type === 'LENDING'
               ? ELECTRIC_BLUE
               : ERROR_RED
           }>
-          {type === 'Income' ? '+ ' : type === 'Expense' ? '- ' : ''}
-          {formatToINR(value, false)}
+          {type === 'INCOME' ? '+ ' : type === 'EXPENSE' ? '- ' : ''}
+          {formatToINR(amount, false)}
         </Text>
       </View>
     </Swipeable>
@@ -117,6 +123,7 @@ const styles = StyleSheet.create({
   },
   transactionType: {
     color: PRIMARY_TEXT,
+    textTransform: 'capitalize',
   },
   transactionDate: {
     color: SECONDARY_TEXT,

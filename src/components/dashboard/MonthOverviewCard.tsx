@@ -8,6 +8,7 @@ import {
   Income,
   Investment,
   Lending,
+  Transaction,
 } from '../../realm/models/Account';
 import moment from 'moment';
 import {calculateDaysWithoutExpenses} from '../../utils/overview-utils';
@@ -32,23 +33,10 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
   selectedMonth,
   selectedYear,
 }) => {
-  const realm = useRealm();
-  //   const selectedMonth = getMonth(new Date());
-  //   const selectedYear = getYear(new Date());
-
-  const EXPENSES = useQuery(Expense);
-  const INCOMES = useQuery(Income);
-  const LENDINGS = useQuery(Lending);
-  const INVESTMENTS = useQuery(Investment);
-
-  const EXPENSE_TYPES = realm.objects(ExpenseType);
-
-  const expenseTypeMap = useMemo(() => {
-    return EXPENSE_TYPES.reduce((acc, type) => {
-      acc[type.name] = type;
-      return acc;
-    }, {});
-  }, [EXPENSE_TYPES]);
+  const EXPENSES = useQuery(Transaction).filtered('type == "EXPENSE"');
+  const INCOMES = useQuery(Transaction).filtered('type == "INCOME"');
+  const LENDINGS = useQuery(Transaction).filtered('type == "LENDING"');
+  const INVESTMENTS = useQuery(Transaction).filtered('type == "INVESTMENT"');
 
   const BUDGET = useObject(Budget, `${selectedMonth}/${selectedYear}`);
 
@@ -92,7 +80,7 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
 
   const totalExpense = useMemo(() => {
     return filteredExpenses.reduce(
-      (total, expense) => total + expense.value,
+      (total, expense) => total + expense.amount,
       0,
     );
   }, [filteredExpenses]);
@@ -108,7 +96,7 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
   );
 
   const totalIncome = useMemo(() => {
-    return filteredIncomes.reduce((total, income) => total + income.value, 0);
+    return filteredIncomes.reduce((total, income) => total + income.amount, 0);
   }, [filteredIncomes]);
 
   const filteredLendings = useMemo(
@@ -123,7 +111,7 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
 
   const totalLending = useMemo(() => {
     return filteredLendings.reduce(
-      (total, lending) => total + lending.value,
+      (total, lending) => total + lending.amount,
       0,
     );
   }, [filteredLendings]);
@@ -140,7 +128,7 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
 
   const totalInvestment = useMemo(() => {
     return filteredInvestments.reduce(
-      (total, investment) => total + investment.value,
+      (total, investment) => total + investment.amount,
       0,
     );
   }, [filteredInvestments]);

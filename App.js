@@ -9,7 +9,7 @@ import {BSON} from 'realm';
 import {ExpenseType} from './src/realm/models/User';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 function App() {
   LogBox.ignoreAllLogs();
@@ -61,6 +61,60 @@ function App() {
           }
 
           if (oldRealm.schemaVersion < 5) {
+          }
+
+          if (oldRealm.schemaVersion < 6) {
+            const categoryChanged = [
+              'ExpenseType',
+              'IncomeType',
+              'InvestmentType',
+              'LendingType',
+            ];
+
+            const categoryMap = {
+              ExpenseType: 'EXPENSE',
+              IncomeType: 'INCOME',
+              InvestmentType: 'INVESTMENT',
+              LendingType: 'LENDING',
+            };
+
+            const categoryIdsMap = {};
+
+            categoryChanged.forEach(type => {
+              const oldObjects = oldRealm.objects(type);
+              for (let i = 0; i < oldObjects.length; i++) {
+                const _id = new BSON.ObjectID();
+                categoryIdsMap[oldObjects[i].name] = _id;
+                newRealm.create('Category', {
+                  _id: _id,
+                  name: oldObjects[i].name,
+                  type: categoryMap[type],
+                  isActive: oldObjects[i].isActive,
+                });
+              }
+            });
+
+            const changed = ['Investment', 'Lending', 'Income', 'Expense'];
+
+            changed.forEach(type => {
+              const oldObjects = oldRealm.objects(type);
+
+              for (let i = 0; i < oldObjects.length; i++) {
+                newRealm.create('Transaction', {
+                  _id: new BSON.ObjectID(),
+                  amount: oldObjects[i].value,
+                  type: type?.toUpperCase(),
+                  category: newRealm.objectForPrimaryKey(
+                    'Category',
+                    categoryIdsMap[oldObjects[i].type.name],
+                  ),
+                  addedOn: oldObjects[i].addedOn,
+                  modifiedOn: oldObjects[i].addedOn,
+                  notes: oldObjects[i].notes,
+                  from: null,
+                });
+              }
+            });
           }
         }}>
         <SafeAreaView style={{flex: 1}}>

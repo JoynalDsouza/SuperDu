@@ -4,26 +4,18 @@ import {
   StyleSheet,
   BackHandler,
   ScrollView,
-  Dimensions,
   FlatList,
 } from 'react-native';
 import moment from 'moment';
 import Text from '../components/common/Text';
 import {getMonth, getYear, getYearsBetween} from '../utils/moment';
 import {useObject, useQuery, useRealm} from '@realm/react';
-import {
-  Budget,
-  Expense,
-  Income,
-  Investment,
-  Lending,
-} from '../realm/models/Account';
+import {Budget, Category, Transaction} from '../realm/models/Account';
 import {MONTHS} from '../utils/constants/Months';
 import CustomDropdownPicker from '../components/common/CustomDropdownPicker';
 import {User} from '../realm/models/User';
 import AddBudget from '../components/Inputs/AddBudget';
 import {
-  calculateDaysWithoutExpenses,
   calculateExpensesComparison,
   getIncomeAllocation,
 } from '../utils/overview-utils';
@@ -38,30 +30,6 @@ import {
 } from '../design/theme';
 import TransactionCard from '../components/Transaction/TransactionCard';
 
-const screenWidth = Dimensions.get('window').width;
-
-const chartConfig = {
-  backgroundColor: '#e26a00',
-  backgroundGradientFrom: '#fb8c00',
-  backgroundGradientTo: '#ffa726',
-  decimalPlaces: 2, // optional, defaults to 2dp
-  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  style: {
-    borderRadius: 16,
-  },
-  propsForDots: {
-    r: '6',
-    strokeWidth: '2',
-    stroke: '#ffa726',
-  },
-};
-
-const itemExistsInArray = (array, key, value) => {
-  const result = array.some(item => item[key] === value);
-  return result;
-};
-
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [counter, setCounter] = useState(0);
@@ -71,16 +39,14 @@ const Overview = () => {
 
   const user = useQuery(User)[0];
 
-  const realm = useRealm();
-
   const YEARS = getYearsBetween(new Date(user.createdOn), new Date());
 
-  const EXPENSES = useQuery(Expense);
-  const INCOMES = useQuery(Income);
-  const LENDINGS = useQuery(Lending);
-  const INVESTMENTS = useQuery(Investment);
+  const EXPENSES = useQuery(Transaction).filtered('type == "EXPENSE"');
+  const INCOMES = useQuery(Transaction).filtered('type == "INCOME"');
+  const LENDINGS = useQuery(Transaction).filtered('type == "LENDING"');
+  const INVESTMENTS = useQuery(Transaction).filtered('type == "INVESTMENT"');
 
-  const EXPENSE_TYPES = realm.objects('ExpenseType');
+  const EXPENSE_TYPES = useQuery(Category).filtered('type == "EXPENSE"');
 
   const expenseTypeMap = useMemo(() => {
     return EXPENSE_TYPES.reduce((acc, type) => {
@@ -125,21 +91,23 @@ const Overview = () => {
 
   const totalExpense = useMemo(() => {
     return filteredExpenses.reduce(
-      (total, expense) => total + expense.value,
+      (total, expense) => total + expense.amount,
       0,
     );
   }, [filteredExpenses]);
 
   const totalExpensesByType = useMemo(() => {
     return filteredExpenses.reduce((acc, expense) => {
-      if (acc[expense.type?.name]) {
-        acc[expense.type?.name] = acc[expense.type?.name] + expense.value;
+      if (acc[expense?.category?.name]) {
+        acc[expense?.category?.name] =
+          acc[expense?.category?.name] + expense.amount;
       } else {
-        acc[expense.type?.name] = expense.value;
+        acc[expense?.category?.name] = expense.amount;
       }
       return acc;
     }, {});
   }, [filteredExpenses]);
+
   const filteredIncomes = useMemo(
     () =>
       INCOMES.filtered(
@@ -151,8 +119,8 @@ const Overview = () => {
   );
 
   const totalIncome = useMemo(() => {
-    return filteredIncomes.reduce((total, income) => total + income.value, 0);
-  });
+    return filteredIncomes.reduce((total, income) => total + income.amount, 0);
+  }, [filteredIncomes]);
 
   const filteredLendings = useMemo(
     () =>
@@ -166,10 +134,10 @@ const Overview = () => {
 
   const totalLending = useMemo(() => {
     return filteredLendings.reduce(
-      (total, lending) => total + lending.value,
+      (total, lending) => total + lending.amount,
       0,
     );
-  });
+  }, [filteredLendings]);
 
   const filteredInvestments = useMemo(
     () =>
@@ -183,10 +151,11 @@ const Overview = () => {
 
   const totalInvestment = useMemo(() => {
     return filteredInvestments.reduce(
-      (total, investment) => total + investment.value,
+      (total, investment) => total + investment.amount,
       0,
     );
-  });
+  }, [filteredInvestments]);
+
   useEffect(() => {
     const backAction = () => {
       if (showDatePicker) {
@@ -220,8 +189,6 @@ const Overview = () => {
     totalIncome,
     expenseTypeMap,
   );
-
-  const spending = totalExpense + totalInvestment + totalLending;
 
   return (
     <ScrollView
@@ -296,16 +263,9 @@ const Overview = () => {
         <Text style={{marginTop: 10, marginBottom: 5}}>Expenses By Date</Text>
         {Object.keys(expensesByDate).map(date => {
           const totalExpense = expensesByDate[date].reduce((acc, expense) => {
-            return acc + expense.value;
+            return acc + expense.amount;
           }, 0);
-          const expenseByType = expensesByDate[date].reduce((acc, expense) => {
-            if (acc[expense.type?.name]) {
-              acc[expense.type?.name] = acc[expense.type?.name] + expense.value;
-            } else {
-              acc[expense.type?.name] = expense.value;
-            }
-            return acc;
-          }, {});
+
           return (
             <View key={date} style={{marginVertical: 10}}>
               <Text style={{marginBottom: 4}}>
@@ -319,10 +279,10 @@ const Overview = () => {
                 renderItem={({item}) => {
                   return (
                     <TransactionCard
-                      type={'Expense'}
-                      category={item.type?.name}
+                      type={'EXPENSE'}
+                      category={item?.category?.name}
                       addedOn={item.addedOn}
-                      value={item.value}
+                      amount={item.amount}
                     />
                   );
                 }}
