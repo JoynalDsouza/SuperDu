@@ -9,7 +9,7 @@ import {
 
 export type CategoryType = 'INVESTMENT' | 'EXPENSE' | 'INCOME' | 'LENDING';
 
-export type TransactionCategory = 'NEED' | 'WANT' | 'INVESTMENT';
+export type TransactionCategory = 'NEED' | 'WANT' | 'SAVINGS';
 
 class Asset extends Object<Asset> {
   _id?: BSON.ObjectId;

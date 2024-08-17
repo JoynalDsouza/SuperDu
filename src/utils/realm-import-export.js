@@ -4,6 +4,7 @@ import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
 import {BSON} from 'realm';
 import {Platform} from 'react-native';
+import {applyMigration} from '../realm/migration';
 
 export const exportRealmData = async realm => {
   try {
@@ -38,8 +39,7 @@ export const exportRealmData = async realm => {
 
 export const importRealmData = async realm => {
   try {
-    // // Pick a JSON file
-
+    // Pick a JSON file
     const result = await DocumentPicker.pickSingle({
       type: [DocumentPicker.types.allFiles],
     });
@@ -47,11 +47,6 @@ export const importRealmData = async realm => {
     // Read file content
     const fileContent = await RNFS.readFile(result.uri, 'utf8');
     const importData = JSON.parse(fileContent);
-
-    // Check if migration is needed
-    if (importData.schemaVersion !== SCHEMA_VERSION) {
-      // Handle schema migrations here if needed
-    }
 
     // Write data to Realm
     realm.write(() => {
@@ -61,18 +56,34 @@ export const importRealmData = async realm => {
           data.forEach(item => {
             const newItem = {
               ...item,
-              _id: new BSON.ObjectID(),
             };
 
+            if (item?._id) {
+              newItem._id = new BSON.ObjectID(item._id);
+            }
             realm.create(schema.name, newItem, 'modified');
           });
         }
       });
     });
+
+    // Migration process if needed
+    const schemaVersion = importData.schemaVersion || 0;
+
+    if (schemaVersion < SCHEMA_VERSION) {
+      if (schemaVersion < 2) {
+        applyMigration(realm, 2);
+      }
+      if (schemaVersion < 3) {
+        applyMigration(realm, 3);
+      }
+      if (schemaVersion < 6) {
+        applyMigration(realm, 6);
+      }
+    }
   } catch (error) {
-    if (DocumentPicker.isCancel(error)) {
-      // User canceled the picker
-    } else {
+    if (!DocumentPicker.isCancel(error)) {
+      // console.error('Error importing Realm data:', error);
     }
   }
 };

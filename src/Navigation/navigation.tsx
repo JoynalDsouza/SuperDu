@@ -20,6 +20,7 @@ import {
   StackParamList,
   TabParamList,
 } from './navigation.types';
+import TransactionsScreen from '../screens/TransactionsScreen';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -80,6 +81,7 @@ function MyTabs() {
       }}>
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Overview" component={Overview} />
+      <Tab.Screen name="Transactions" component={TransactionsScreen} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );

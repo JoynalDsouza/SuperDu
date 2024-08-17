@@ -91,6 +91,15 @@ export default function Settings() {
           }}
           keyExtractor={item => item.name}></FlatList>
       </View>
+      {/* <Button
+        style={{marginVertical: 16}}
+        title="Delete App data"
+        onPress={() => {
+          realm.write(() => {
+            realm.deleteAll();
+          });
+        }}
+      /> */}
       <Button
         style={{marginVertical: 16}}
         title="Export App data"

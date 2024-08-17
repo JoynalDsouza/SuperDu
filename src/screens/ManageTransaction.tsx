@@ -51,7 +51,7 @@ const ManageTransaction = ({route}) => {
   const transactionTypeDropdownData: {name: string; value: CategoryType}[] = [
     {name: 'Expense', value: 'EXPENSE'},
     {name: 'Income', value: 'INCOME'},
-    {name: 'Lending', value: 'LENDING'},
+    // {name: 'Lending', value: 'LENDING'},
     {name: 'Investment', value: 'INVESTMENT'},
   ];
 
