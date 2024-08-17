@@ -6,6 +6,7 @@ import {useQuery} from '@realm/react';
 import {Transaction} from 'realm/models/Account';
 import {LIGHT_SLATE_GREY} from '../../design/theme';
 import TransactionCard from '../Transaction/TransactionCard';
+import {rootNavigate} from 'Navigation/navigation';
 
 const RecentTransactions = () => {
   const RecentTransactions = useQuery<Transaction>('Transaction')
@@ -31,6 +32,7 @@ const RecentTransactions = () => {
               category={category.name}
               addedOn={addedOn}
               amount={amount}
+              id={item._id.toString()}
             />
           );
         }}

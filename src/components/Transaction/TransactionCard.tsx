@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Animated, Alert} from 'react-native';
+import {StyleSheet, View, Animated, Alert, Pressable} from 'react-native';
 import Text from '../common/Text';
 import {
   ELECTRIC_BLUE,
@@ -12,8 +12,10 @@ import {
 import {formatToINR} from '../../utils/formatCurrency';
 import {Swipeable} from 'react-native-gesture-handler';
 import {CategoryType} from 'realm/models/Account';
+import {rootNavigate} from '../../Navigation/navigation';
 
 type TransactionCardProps = {
+  id: string;
   type: CategoryType;
   category: string;
   addedOn: Date;
@@ -21,6 +23,7 @@ type TransactionCardProps = {
 };
 
 const TransactionCard: React.FC<TransactionCardProps> = ({
+  id,
   type,
   category,
   addedOn,
@@ -39,7 +42,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
     return (
       <View style={styles.leftAction}>
         <Animated.Text style={[styles.actionText, {transform: [{scale}]}]}>
-          Mark as Reviewed
+          🤓
         </Animated.Text>
       </View>
     );
@@ -62,7 +65,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
             styles.actionText,
             {transform: [{scale}], textAlign: 'right'},
           ]}>
-          Delete
+          😎
         </Animated.Text>
       </View>
     );
@@ -76,12 +79,18 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
       rightThreshold={100}
       onSwipeableOpen={direction => {
         if (direction === 'left') {
-          Alert.alert('Marked as Reviewed');
+          // Alert.alert('Marked as Reviewed');
         } else {
-          Alert.alert('Transaction Deleted');
+          // Alert.alert('Transaction Deleted');
         }
+        Alert.alert('cooking');
       }}>
-      <View style={styles.transactionItem}>
+      <Pressable
+        style={styles.transactionItem}
+        onPress={() =>
+          rootNavigate('ManageTransaction', 'push', {transactionId: id})
+        }
+        disabled={!id}>
         <View style={styles.transactionDetails}>
           <Text variant="b1" style={styles.transactionType}>
             {type}: {category}
@@ -102,7 +111,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           {type === 'INCOME' ? '+ ' : type === 'EXPENSE' ? '- ' : ''}
           {formatToINR(amount, false)}
         </Text>
-      </View>
+      </Pressable>
     </Swipeable>
   );
 };

@@ -29,6 +29,7 @@ import {
   PRIMARY_BACKGROUND,
 } from '../design/theme';
 import TransactionCard from '../components/Transaction/TransactionCard';
+import {rootNavigate} from 'Navigation/navigation';
 
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -283,6 +284,7 @@ const Overview = () => {
                       category={item?.category?.name}
                       addedOn={item.addedOn}
                       amount={item.amount}
+                      id={item.id}
                     />
                   );
                 }}

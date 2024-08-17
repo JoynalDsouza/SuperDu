@@ -1,28 +1,37 @@
 import {Pressable, StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {BSON} from 'realm';
 import Text from '../components/common/Text';
-import {PRIMARY_BACKGROUND} from '../design/theme';
+import {ERROR_RED, PRIMARY_BACKGROUND} from '../design/theme';
 import Button from '../components/common/Button';
 import {rootNavigate} from '../Navigation/navigation';
 import {ManageTransactionParams} from 'Navigation/navigation.types';
 import {Dropdown} from 'react-native-element-dropdown';
 import InputBox from '../components/common/InputBox';
 import {useQuery, useRealm} from '@realm/react';
-import {Category} from '../realm/models/Account';
+import {Category, CategoryType, Transaction} from '../realm/models/Account';
 import {alertError} from '../utils/alertError';
 
 const ManageTransaction = ({route}) => {
   const {transactionId}: ManageTransactionParams = route.params;
 
+  const mode = transactionId ? 'edit' : 'add';
+
   const realm = useRealm();
+
+  const [initialData, setInitialData] = useState({
+    amount: '',
+    notes: '',
+    selectedTransactionType: '',
+    selectedCategory: '',
+  });
 
   const [amount, setAmount] = useState('');
   const [notes, setNotes] = useState('');
 
   const ALL_CATEGORIES = useQuery(Category).filtered('isActive == true');
 
-  const transactionTypeDropdownData = [
+  const transactionTypeDropdownData: {name: string; value: CategoryType}[] = [
     {name: 'Expense', value: 'EXPENSE'},
     {name: 'Income', value: 'INCOME'},
     {name: 'Lending', value: 'LENDING'},
@@ -39,9 +48,42 @@ const ManageTransaction = ({route}) => {
 
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  useEffect(() => {
+    if (mode == 'edit') {
+      const bsonTransactionId = new BSON.ObjectId(transactionId);
+      const transaction = realm.objectForPrimaryKey(
+        Transaction,
+        bsonTransactionId,
+      );
+      if (transaction) {
+        setInitialData({
+          amount: transaction.amount.toString(),
+          notes: transaction.notes,
+          selectedTransactionType: transaction.type,
+          selectedCategory: transaction.category._id?.toString(),
+        });
+
+        setAmount(transaction.amount.toString());
+        setNotes(transaction.notes);
+
+        setSelectedTransactionType(
+          transactionTypeDropdownData.find(
+            item => item.value === transaction.type,
+          ),
+        );
+        const category = ALL_CATEGORIES.find(
+          item => item._id.toString() === transaction.category._id.toString(),
+        );
+        if (category) {
+          setSelectedCategory(category);
+        }
+      }
+    }
+  }, []);
+
   const onAddTransaction = () => {
     try {
-      // if (!Number(amount)) return alertError('Please enter a number amount');
+      if (!Number(amount)) return alertError('Please enter a number amount');
       let calculatedValue = amount;
 
       if (amount.startsWith('=')) {
@@ -53,28 +95,73 @@ const ManageTransaction = ({route}) => {
 
       if (!selectedCategory) return alertError('Please select a category');
 
-      const writeTransaction = {
-        _id: new BSON.ObjectId(),
+      const transactionData = {
         amount: Number(calculatedValue),
         type: selectedTransactionType.value,
         category: selectedCategory,
-        addedOn: new Date(),
         modifiedOn: new Date(),
         notes,
       };
 
       realm.write(() => {
-        realm.create('Transaction', writeTransaction);
+        if (mode === 'add') {
+          realm.create('Transaction', {
+            ...transactionData,
+            _id: new BSON.ObjectId(),
+            addedOn: new Date(),
+          });
+        } else {
+          const bsonTransactionId = new BSON.ObjectId(transactionId);
+          const transaction = realm.objectForPrimaryKey(
+            Transaction,
+            bsonTransactionId,
+          );
+
+          if (transaction) {
+            Object.assign(transaction, transactionData);
+          }
+        }
       });
 
-      setAmount('');
-      setSelectedCategory(null);
-      setNotes('');
+      resetForm();
       rootNavigate();
     } catch (e) {
       alertError(e);
     }
   };
+
+  const resetForm = () => {
+    setAmount('');
+    setSelectedCategory(null);
+    setNotes('');
+  };
+
+  const onDeleteTransaction = () => {
+    try {
+      const bsonTransactionId = new BSON.ObjectId(transactionId);
+      const transaction = realm.objectForPrimaryKey(
+        Transaction,
+        bsonTransactionId,
+      );
+
+      realm.write(() => {
+        realm.delete(transaction);
+      });
+
+      rootNavigate();
+    } catch (error) {}
+  };
+
+  const isEdited = useMemo(() => {
+    return (
+      amount !== initialData.amount ||
+      notes !== initialData.notes ||
+      selectedCategory?._id?.toString() !== initialData.selectedCategory ||
+      selectedTransactionType.value !== initialData.selectedTransactionType
+    );
+  }, [amount, notes, selectedCategory, selectedTransactionType, initialData]);
+
+  const isSaveDisabled = !amount || !selectedCategory || !isEdited;
 
   return (
     <View
@@ -91,6 +178,7 @@ const ManageTransaction = ({route}) => {
           gap: 16,
           flexDirection: 'row',
           alignItems: 'center',
+          justifyContent: 'space-between',
         }}>
         <Pressable
           onPress={() => {
@@ -98,7 +186,13 @@ const ManageTransaction = ({route}) => {
           }}>
           <Text>{'<--'}</Text>
         </Pressable>
-        <Text>ManageTransaction</Text>
+        <Text style={{textTransform: 'capitalize'}}>{mode} Transaction</Text>
+
+        {mode == 'edit' && (
+          <Pressable onPress={onDeleteTransaction}>
+            <Text color={ERROR_RED}>X</Text>
+          </Pressable>
+        )}
       </View>
       <View style={{flexDirection: 'row', gap: 8, alignItems: 'center'}}>
         <Text>Transaction Type : </Text>
@@ -201,7 +295,8 @@ const ManageTransaction = ({route}) => {
       </View>
 
       <Button
-        title="Add Transaction"
+        title={mode === 'add' ? 'Add Transaction' : 'Save Transaction'}
+        disabled={isSaveDisabled}
         onPress={() => {
           onAddTransaction();
         }}
