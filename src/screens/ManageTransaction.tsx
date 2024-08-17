@@ -20,6 +20,7 @@ import {Category, CategoryType, Transaction} from '../realm/models/Account';
 import {alertError} from '../utils/alertError';
 import {getDate} from '../utils/moment';
 import DateTimePicker from 'react-native-ui-datepicker';
+import {showAlertDialog} from '../utils/alert-utils';
 
 const ManageTransaction = ({route}) => {
   const {transactionId}: ManageTransactionParams = route.params;
@@ -231,7 +232,18 @@ const ManageTransaction = ({route}) => {
         <Text style={{textTransform: 'capitalize'}}>{mode} Transaction</Text>
 
         {mode == 'edit' && (
-          <Pressable onPress={onDeleteTransaction}>
+          <Pressable
+            onPress={() => {
+              showAlertDialog({
+                title: 'Delete Transaction',
+                message: 'Are you sure you want to delete this transaction?',
+                positiveButtonTitle: 'Yes',
+                negativeButtonTitle: 'No',
+                onPositiveButtonPress: () => {
+                  onDeleteTransaction();
+                },
+              });
+            }}>
             <Text color={ERROR_RED}>X</Text>
           </Pressable>
         )}
