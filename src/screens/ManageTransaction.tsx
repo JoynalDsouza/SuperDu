@@ -1,4 +1,11 @@
-import {Pressable, StyleSheet, View} from 'react-native';
+import {
+  BackHandler,
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {BSON} from 'realm';
 import Text from '../components/common/Text';
@@ -11,6 +18,8 @@ import InputBox from '../components/common/InputBox';
 import {useQuery, useRealm} from '@realm/react';
 import {Category, CategoryType, Transaction} from '../realm/models/Account';
 import {alertError} from '../utils/alertError';
+import {getDate} from '../utils/moment';
+import DateTimePicker from 'react-native-ui-datepicker';
 
 const ManageTransaction = ({route}) => {
   const {transactionId}: ManageTransactionParams = route.params;
@@ -19,12 +28,18 @@ const ManageTransaction = ({route}) => {
 
   const realm = useRealm();
 
+  const currentDate = new Date();
+
   const [initialData, setInitialData] = useState({
     amount: '',
     notes: '',
     selectedTransactionType: '',
     selectedCategory: '',
+    addedOn: currentDate,
   });
+
+  const [date, setDate] = useState(currentDate);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [amount, setAmount] = useState('');
   const [notes, setNotes] = useState('');
@@ -49,6 +64,24 @@ const ManageTransaction = ({route}) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
+    const backAction = () => {
+      if (showDatePicker) {
+        setShowDatePicker(false);
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [showDatePicker]);
+
+  useEffect(() => {
     if (mode == 'edit') {
       const bsonTransactionId = new BSON.ObjectId(transactionId);
       const transaction = realm.objectForPrimaryKey(
@@ -61,8 +94,9 @@ const ManageTransaction = ({route}) => {
           notes: transaction.notes,
           selectedTransactionType: transaction.type,
           selectedCategory: transaction.category._id?.toString(),
+          addedOn: new Date(transaction.addedOn),
         });
-
+        setDate(new Date(transaction.addedOn));
         setAmount(transaction.amount.toString());
         setNotes(transaction.notes);
 
@@ -99,7 +133,8 @@ const ManageTransaction = ({route}) => {
         amount: Number(calculatedValue),
         type: selectedTransactionType.value,
         category: selectedCategory,
-        modifiedOn: new Date(),
+        modifiedOn: new Date(date),
+        addedOn: new Date(date),
         notes,
       };
 
@@ -108,7 +143,6 @@ const ManageTransaction = ({route}) => {
           realm.create('Transaction', {
             ...transactionData,
             _id: new BSON.ObjectId(),
-            addedOn: new Date(),
           });
         } else {
           const bsonTransactionId = new BSON.ObjectId(transactionId);
@@ -157,9 +191,17 @@ const ManageTransaction = ({route}) => {
       amount !== initialData.amount ||
       notes !== initialData.notes ||
       selectedCategory?._id?.toString() !== initialData.selectedCategory ||
-      selectedTransactionType.value !== initialData.selectedTransactionType
+      selectedTransactionType.value !== initialData.selectedTransactionType ||
+      date.getTime() != initialData.addedOn?.getTime()
     );
-  }, [amount, notes, selectedCategory, selectedTransactionType, initialData]);
+  }, [
+    amount,
+    notes,
+    selectedCategory,
+    selectedTransactionType,
+    date,
+    initialData,
+  ]);
 
   const isSaveDisabled = !amount || !selectedCategory || !isEdited;
 
@@ -178,7 +220,7 @@ const ManageTransaction = ({route}) => {
           gap: 16,
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: mode == 'add' ? 'flex-start' : 'space-between',
         }}>
         <Pressable
           onPress={() => {
@@ -194,6 +236,14 @@ const ManageTransaction = ({route}) => {
           </Pressable>
         )}
       </View>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowDatePicker(true)}>
+          <Text style={styles.buttonText}>{getDate(date)}</Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={{flexDirection: 'row', gap: 8, alignItems: 'center'}}>
         <Text>Transaction Type : </Text>
         <Dropdown
@@ -301,10 +351,51 @@ const ManageTransaction = ({route}) => {
           onAddTransaction();
         }}
       />
+
+      {showDatePicker && (
+        <View style={styles.datePickerOverlay}>
+          <DateTimePicker
+            mode="single"
+            date={date}
+            onChange={params => {
+              try {
+                // @ts-ignore
+                const date = new Date(params.date?.toDate());
+
+                setDate(date);
+
+                setShowDatePicker(false);
+              } catch (e) {
+                alertError(e);
+              }
+            }}
+          />
+        </View>
+      )}
     </View>
   );
 };
 
 export default ManageTransaction;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  button: {
+    padding: 10,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  datePickerOverlay: {
+    position: 'absolute',
+    top: 0,
+    width: Dimensions.get('window').width,
+    backgroundColor: 'rgba(245, 252, 255, 1)',
+  },
+});
