@@ -78,24 +78,24 @@ const Overview = () => {
     [EXPENSES, selectedMonth, selectedYear],
   );
 
-  const expensesByDate = useMemo(() => {
-    return filteredExpenses.reduce((acc, expense) => {
-      const date = moment(expense.addedOn).format('YYYY-MM-DD');
-      if (acc[date]) {
-        acc[date] = [...acc[date], expense];
-      } else {
-        acc[date] = [expense];
-      }
-      return acc;
-    }, {});
-  }, [filteredExpenses]);
+  // const expensesByDate = useMemo(() => {
+  //   return filteredExpenses.reduce((acc, expense) => {
+  //     const date = moment(expense.addedOn).format('YYYY-MM-DD');
+  //     if (acc[date]) {
+  //       acc[date] = [...acc[date], expense];
+  //     } else {
+  //       acc[date] = [expense];
+  //     }
+  //     return acc;
+  //   }, {});
+  // }, [filteredExpenses]);
 
-  const totalExpense = useMemo(() => {
-    return filteredExpenses.reduce(
-      (total, expense) => total + expense.amount,
-      0,
-    );
-  }, [filteredExpenses]);
+  // const totalExpense = useMemo(() => {
+  //   return filteredExpenses.reduce(
+  //     (total, expense) => total + expense.amount,
+  //     0,
+  //   );
+  // }, [filteredExpenses]);
 
   const totalExpensesByType = useMemo(() => {
     return filteredExpenses.reduce((acc, expense) => {
@@ -260,7 +260,7 @@ const Overview = () => {
         )}
       </View>
 
-      <View>
+      {/* <View>
         <Text style={{marginTop: 10, marginBottom: 5}}>Expenses By Date</Text>
         {Object.keys(expensesByDate).map(date => {
           const totalExpense = expensesByDate[date].reduce((acc, expense) => {
@@ -292,7 +292,7 @@ const Overview = () => {
             </View>
           );
         })}
-      </View>
+      </View> */}
     </ScrollView>
   );
 };

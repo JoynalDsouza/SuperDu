@@ -1,14 +1,14 @@
 import React from 'react';
 import {View, TextInput, Text, StyleSheet} from 'react-native';
-import {vaildateInput} from '../../utils/inputValidation';
+import {validateInput} from '../../utils/inputValidation';
 
 const InputBox = ({
   type = 'text',
   label,
   inputValue,
-  setInputValue = () => {},
+  setInputValue = value => {},
   error = '',
-  setError = () => {},
+  setError = string => {},
   ...textInputProps
 }) => {
   const handleInputChange = text => {
@@ -17,7 +17,7 @@ const InputBox = ({
   };
 
   const handleInputBlur = () => {
-    setError(vaildateInput(type, inputValue));
+    setError(validateInput(type, inputValue));
   };
 
   return (

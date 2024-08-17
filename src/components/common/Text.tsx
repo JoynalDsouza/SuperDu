@@ -9,7 +9,7 @@ import {
 import TYPOGRAPHY, {FONT_SIZE} from '../../design/typography';
 
 interface TextComponentProps extends RNTextProps {
-  variant?: 'h1' | 'h2' | 'h3' | 'b1' | 'b2' | 'caption' | 'buttotn';
+  variant?: 'h1' | 'h2' | 'h3' | 'b1' | 'b2' | 'caption' | 'button';
   color?: string; // Custom color for the text
   align?: 'left' | 'center' | 'right' | 'justify'; // Text alignment options
   weight?: 'normal' | 'bold'; // Font weight options
