@@ -66,6 +66,7 @@ const LoginScreen = ({navigation}) => {
           </View>
           <View style={{alignSelf: 'center', gap: 16}}>
             <Button
+              testID={'enterButton'}
               title={'Enter'}
               onPress={() => {
                 onNameEnter();

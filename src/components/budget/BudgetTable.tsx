@@ -115,6 +115,28 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 8,
     textAlign: 'center',
+    color: '#fff',
+    fontSize: 15,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    backgroundColor: '#f1f1f1',
+  },
+  dataRow: {
+    flexDirection: 'row',
+  },
+  dataItem: {
+    flex: 1,
+    padding: 12,
+    textAlign: 'center',
+    fontSize: 13,
+  },
+  rowSeparator: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  capitalize: {
+    textTransform: 'capitalize',
   },
   summaryRow: {
     flexDirection: 'row',
