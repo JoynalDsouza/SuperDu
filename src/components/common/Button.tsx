@@ -27,6 +27,7 @@ interface ButtonProps {
   children?: React.ReactNode;
   disabled?: boolean;
   type?: 'primary' | 'secondary' | 'success' | 'error' | 'link';
+  backgroundColor?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -38,6 +39,7 @@ const Button: React.FC<ButtonProps> = ({
   children,
   disabled,
   type = 'primary',
+  backgroundColor,
   ...otherProps
 }) => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -88,7 +90,7 @@ const Button: React.FC<ButtonProps> = ({
         styles.button,
         style,
         {
-          backgroundColor: getBackgroundColor(),
+          backgroundColor: backgroundColor || getBackgroundColor(),
           opacity: buttonDisabled ? 0.5 : 1,
         },
       ]}

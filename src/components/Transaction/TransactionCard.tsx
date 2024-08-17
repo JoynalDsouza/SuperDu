@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Animated, Alert, Pressable} from 'react-native';
 import Text from '../common/Text';
 import {
+  applyOpacityToHexColor,
   ELECTRIC_BLUE,
   ERROR_RED,
   PRIMARY_TEXT,
@@ -13,6 +14,7 @@ import {formatToINR} from '../../utils/formatCurrency';
 import {Swipeable} from 'react-native-gesture-handler';
 import {CategoryType} from 'realm/models/Account';
 import {rootNavigate} from '../../Navigation/navigation';
+import {TRANSACTION_COLOR} from '../../utils/constants/transactions';
 
 type TransactionCardProps = {
   id: string;
@@ -71,48 +73,51 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
     );
   };
 
+  const backgroundColor = applyOpacityToHexColor(TRANSACTION_COLOR[type], 25);
+
   return (
-    <Swipeable
-      renderLeftActions={renderLeftActions}
-      renderRightActions={renderRightActions}
-      leftThreshold={100}
-      rightThreshold={100}
-      onSwipeableOpen={direction => {
-        if (direction === 'left') {
-          // Alert.alert('Marked as Reviewed');
-        } else {
-          // Alert.alert('Transaction Deleted');
-        }
-        Alert.alert('cooking');
-      }}>
-      <Pressable
-        style={styles.transactionItem}
-        onPress={() =>
-          rootNavigate('ManageTransaction', 'push', {transactionId: id})
-        }
-        disabled={!id}>
-        <View style={styles.transactionDetails}>
-          <Text variant="b1" style={styles.transactionType}>
-            {type}: {category}
-          </Text>
-          <Text variant="caption" style={styles.transactionDate}>
-            {addedOn.toDateString()}
-          </Text>
-        </View>
-        <Text
-          variant="b1"
-          color={
-            type === 'INCOME'
-              ? SUCCESS_GREEN
-              : type === 'INVESTMENT' || type === 'LENDING'
-              ? ELECTRIC_BLUE
-              : ERROR_RED
-          }>
-          {type === 'INCOME' ? '+ ' : type === 'EXPENSE' ? '- ' : ''}
-          {formatToINR(amount, false)}
+    // <Swipeable
+    //   renderLeftActions={renderLeftActions}
+    //   renderRightActions={renderRightActions}
+    //   leftThreshold={100}
+    //   rightThreshold={100}
+    //   onSwipeableOpen={direction => {
+    //     if (direction === 'left') {
+    //       // Alert.alert('Marked as Reviewed');
+    //     } else {
+    //       // Alert.alert('Transaction Deleted');
+    //     }
+    //     Alert.alert('cooking');
+    //   }}>
+    <Pressable
+      style={[styles.transactionItem, {backgroundColor}]}
+      onPress={() =>
+        rootNavigate('ManageTransaction', 'push', {transactionId: id})
+      }
+      disabled={!id}>
+      <View style={styles.transactionDetails}>
+        <Text variant="b1" style={styles.transactionType}>
+          {type}: {category}
         </Text>
-      </Pressable>
-    </Swipeable>
+        <Text variant="caption" style={styles.transactionDate}>
+          {addedOn.toDateString()}
+        </Text>
+      </View>
+      <Text
+        variant="b1"
+        // color={
+        //   type === 'INCOME'
+        //     ? SUCCESS_GREEN
+        //     : type === 'INVESTMENT' || type === 'LENDING'
+        //     ? ELECTRIC_BLUE
+        //     : ERROR_RED
+        // }
+      >
+        {type === 'INCOME' ? '+ ' : type === 'EXPENSE' ? '- ' : ''}
+        {formatToINR(amount, false)}
+      </Text>
+    </Pressable>
+    // </Swipeable>
   );
 };
 

@@ -21,6 +21,7 @@ import {alertError} from '../utils/alertError';
 import {getDate} from '../utils/moment';
 import DateTimePicker from 'react-native-ui-datepicker';
 import {showAlertDialog} from '../utils/alert-utils';
+import {TRANSACTION_COLOR} from '../utils/constants/transactions';
 
 const ManageTransaction = ({route}) => {
   const {transactionId}: ManageTransactionParams = route.params;
@@ -206,6 +207,9 @@ const ManageTransaction = ({route}) => {
 
   const isSaveDisabled = !amount || !selectedCategory || !isEdited;
 
+  const buttonBackgroundColor =
+    TRANSACTION_COLOR[selectedTransactionType.value];
+
   return (
     <View
       style={{
@@ -357,7 +361,12 @@ const ManageTransaction = ({route}) => {
       </View>
 
       <Button
-        title={mode === 'add' ? 'Add Transaction' : 'Save Transaction'}
+        backgroundColor={buttonBackgroundColor}
+        title={
+          mode === 'add'
+            ? `ADD ${selectedTransactionType.value}`
+            : `SAVE ${selectedTransactionType.value}`
+        }
         disabled={isSaveDisabled}
         onPress={() => {
           onAddTransaction();
