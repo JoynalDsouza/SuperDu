@@ -20,7 +20,6 @@ import {
   getIncomeAllocation,
 } from '../utils/overview-utils';
 import BudgetTable from '../components/budget/BudgetTable';
-import {formatToINR} from '../utils/formatCurrency';
 import AllocationTable from '../components/overview/AllocationTable';
 import MonthOverviewCard from '../components/dashboard/MonthOverviewCard';
 import {
@@ -28,8 +27,8 @@ import {
   LIGHT_SLATE_GREY,
   PRIMARY_BACKGROUND,
 } from '../design/theme';
-import TransactionCard from '../components/Transaction/TransactionCard';
-import {rootNavigate} from 'Navigation/navigation';
+import Button from '../components/common/Button';
+import {rootNavigate} from '../Navigation/navigation';
 
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -77,25 +76,6 @@ const Overview = () => {
       ),
     [EXPENSES, selectedMonth, selectedYear],
   );
-
-  // const expensesByDate = useMemo(() => {
-  //   return filteredExpenses.reduce((acc, expense) => {
-  //     const date = moment(expense.addedOn).format('YYYY-MM-DD');
-  //     if (acc[date]) {
-  //       acc[date] = [...acc[date], expense];
-  //     } else {
-  //       acc[date] = [expense];
-  //     }
-  //     return acc;
-  //   }, {});
-  // }, [filteredExpenses]);
-
-  // const totalExpense = useMemo(() => {
-  //   return filteredExpenses.reduce(
-  //     (total, expense) => total + expense.amount,
-  //     0,
-  //   );
-  // }, [filteredExpenses]);
 
   const totalExpensesByType = useMemo(() => {
     return filteredExpenses.reduce((acc, expense) => {
@@ -229,6 +209,16 @@ const Overview = () => {
         selectedMonth={selectedMonth}
         selectedYear={selectedYear}
       />
+
+      <Button
+        title="See Transactions"
+        style={{marginHorizontal: 16}}
+        onPress={() => {
+          rootNavigate('Transactions', 'navigate', {
+            startDate: startOfMonth.toISOString(),
+            endDate: endOfMonth.toISOString(),
+          });
+        }}></Button>
 
       {!!Object.keys(comparison).length && (
         <BudgetTable

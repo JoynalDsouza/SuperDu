@@ -6,7 +6,7 @@ import {useQuery} from '@realm/react';
 import {Transaction} from 'realm/models/Account';
 import {LIGHT_SLATE_GREY} from '../../design/theme';
 import TransactionCard from '../Transaction/TransactionCard';
-import {rootNavigate} from 'Navigation/navigation';
+import {rootNavigate} from '../../Navigation/navigation';
 
 const RecentTransactions = () => {
   const RecentTransactions = useQuery<Transaction>('Transaction')
@@ -17,7 +17,13 @@ const RecentTransactions = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text variant="h2">Recent Transactions</Text>
-        <Button title="View All" type="link" onPress={() => {}} />
+        <Button
+          title="View All"
+          type="link"
+          onPress={() => {
+            rootNavigate('Transactions', 'navigate');
+          }}
+        />
       </View>
 
       <FlatList

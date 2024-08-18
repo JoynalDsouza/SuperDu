@@ -2,7 +2,7 @@
 export type TabParamList = {
   Dashboard: undefined;
   Overview: undefined;
-  Transactions: undefined;
+  Transactions: TransactionsParams;
   Settings: undefined;
 };
 
@@ -24,4 +24,9 @@ export type NavigationActionType =
 
 export type ManageTransactionParams = {
   transactionId?: string;
+};
+
+export type TransactionsParams = {
+  startDate?: string;
+  endDate?: string;
 };

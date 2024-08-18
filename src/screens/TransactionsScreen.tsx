@@ -1,5 +1,5 @@
 import {FlatList, Pressable, StyleSheet, View} from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {ERROR_RED, PRIMARY_BACKGROUND} from '../design/theme';
 import ScreenHeader from '../components/common/ScreenHeader';
 import {useQuery} from '@realm/react';
@@ -14,8 +14,11 @@ import TransactionFilter from '../components/Transaction/TransactionFilter';
 import {showAlertDialog} from '../utils/alert-utils';
 import Text from '../components/common/Text';
 import Button from '../components/common/Button';
+import {TransactionsParams} from '../Navigation/navigation.types';
 
-const TransactionsScreen = () => {
+const TransactionsScreen = ({route}) => {
+  const {startDate, endDate}: TransactionsParams = route?.params;
+
   const [showOverviewStatsModal, setShowOverviewStatsModal] =
     React.useState(false);
 
@@ -25,6 +28,16 @@ const TransactionsScreen = () => {
   const [filters, setFilters] = React.useState<TransactionFilterState>(
     TRANSACTION_FILTER_INITIAL_STATE,
   );
+
+  // useEffect(() => {
+  //   if (startDate && endDate) {
+  //     setFilters({
+  //       ...filters,
+  //       startDate: new Date(startDate),
+  //       endDate: new Date(endDate),
+  //     });
+  //   }
+  // }, []);
 
   const Transactions = useQuery(Transaction).sorted('addedOn', true);
 
@@ -42,7 +55,12 @@ const TransactionsScreen = () => {
     totalBalance,
   } = useMemo(() => {
     return getOverviewStats(filteredTransactions);
-  }, [filteredTransactions?.length, filters.types]);
+  }, [
+    filteredTransactions?.length,
+    filters.types,
+    // filters.startDate,
+    // filters.endDate,
+  ]);
 
   const hasFilters = filters.types.length > 0;
 
@@ -83,7 +101,7 @@ const TransactionsScreen = () => {
 
         {hasFilters && (
           <View>
-            <Text>Filters</Text>
+            <Text>Transaction Filters</Text>
             {Object.keys(filters).map(key => {
               if (filters[key].length > 0) {
                 return (
@@ -98,10 +116,12 @@ const TransactionsScreen = () => {
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}>
-                      <Text>{key == 'types' ? 'Expense Type' : key} : </Text>
+                      <Text>{key == 'types' ? 'Type' : key} : </Text>
                       <Button
                         type="link"
-                        title={`${filters[key]?.length} filters applied`}
+                        title={`${filters[key]?.length} filter${
+                          filters[key].length === 1 ? '' : 's'
+                        } applied`}
                         style={{
                           paddingHorizontal: 0,
                         }}

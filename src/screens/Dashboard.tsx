@@ -1,11 +1,4 @@
-import {
-  ScrollView,
-  SectionList,
-  SectionListComponent,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {SectionList, StyleSheet, View} from 'react-native';
 import React from 'react';
 import MonthOverViewCard from '../components/dashboard/MonthOverviewCard';
 import RecentTransactions from '../components/dashboard/RecentTransactions';

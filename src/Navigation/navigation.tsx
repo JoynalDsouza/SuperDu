@@ -91,7 +91,8 @@ function MyTabs() {
         name="Overview"
         component={Overview}
         options={{
-          tabBarIcon: () => <Text fontSize={20}>👁️</Text>,
+          tabBarLabel: 'Budget',
+          tabBarIcon: () => <Text fontSize={20}>🗓️</Text>,
         }}
       />
       <Tab.Screen
@@ -100,6 +101,7 @@ function MyTabs() {
         options={{
           tabBarIcon: () => <Text fontSize={20}>💵</Text>,
         }}
+        initialParams={{startDate: undefined, endDate: undefined}}
       />
       <Tab.Screen
         name="Settings"
