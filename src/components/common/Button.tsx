@@ -14,8 +14,8 @@ import {
   PRIMARY_TEXT,
   SUCCESS_GREEN,
   ERROR_RED,
-  SECONDARY_BACKGROUND,
   VIVID_ORANGE,
+  applyOpacityToHexColor,
 } from '../../design/theme';
 
 interface ButtonProps {
@@ -64,7 +64,7 @@ const Button: React.FC<ButtonProps> = ({
       case 'primary':
         return ELECTRIC_BLUE;
       case 'secondary':
-        return VIVID_ORANGE;
+        return applyOpacityToHexColor(VIVID_ORANGE, 75);
       case 'success':
         return SUCCESS_GREEN;
       case 'error':
@@ -88,11 +88,11 @@ const Button: React.FC<ButtonProps> = ({
     <TouchableOpacity
       style={[
         styles.button,
-        style,
         {
           backgroundColor: backgroundColor || getBackgroundColor(),
           opacity: buttonDisabled ? 0.5 : 1,
         },
+        style,
       ]}
       onPress={handlePress}
       disabled={buttonDisabled}

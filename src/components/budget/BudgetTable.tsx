@@ -55,7 +55,7 @@ const BudgetTable = ({budgetData, containerStyles = {}}) => {
       </View>
       <FlatList
         data={data}
-        keyExtractor={item => item?.id}
+        keyExtractor={item => item}
         renderItem={({item, index}) => {
           const budgetItem = budgetData[item];
           const diff = budgetItem.planned - budgetItem.actual;

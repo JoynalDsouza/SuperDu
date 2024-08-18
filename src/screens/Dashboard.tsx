@@ -1,4 +1,11 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  ScrollView,
+  SectionList,
+  SectionListComponent,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
 import MonthOverViewCard from '../components/dashboard/MonthOverviewCard';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
@@ -17,25 +24,37 @@ const Dashboard = () => {
         flex: 1,
         backgroundColor: PRIMARY_BACKGROUND,
       }}>
-      <ScrollView>
-        <MonthOverViewCard
-          selectedMonth={currentMonth}
-          selectedYear={currentYear}
-        />
-
-        <Button
-          title="Add Transaction"
-          onPress={() => {
-            rootNavigate('ManageTransaction', 'push', {
-              transactionId: undefined,
-            });
-          }}
-          style={{
-            margin: 16,
-          }}
-        />
-        <RecentTransactions />
-      </ScrollView>
+      <SectionList
+        sections={[
+          {
+            key: 'main-content',
+            data: [
+              <MonthOverViewCard
+                selectedMonth={currentMonth}
+                selectedYear={currentYear}
+              />,
+              <Button
+                title="Add Transaction"
+                onPress={() => {
+                  rootNavigate('ManageTransaction', 'push', {
+                    transactionId: undefined,
+                  });
+                }}
+                style={{
+                  margin: 16,
+                }}
+              />,
+            ],
+          },
+          {
+            key: 'recent-transactions',
+            data: [<RecentTransactions />],
+          },
+        ]}
+        renderItem={({item}) => {
+          return item;
+        }}
+      />
     </View>
   );
 };

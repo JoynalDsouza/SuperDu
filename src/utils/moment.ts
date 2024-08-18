@@ -46,7 +46,15 @@ export const getYearsBetween = (startDate, endDate) => {
       },
     );
     return yearsArray;
-  } catch (e) {
-    console.log(e);
-  }
+  } catch (e) {}
+};
+
+export const getDaysBetweenDates = (
+  dateString1: string | Date,
+  dateString2: string | Date,
+): number => {
+  const date1 = moment(dateString1, 'YYYY-MM-DD');
+  const date2 = moment(dateString2, 'YYYY-MM-DD');
+
+  return date2.diff(date1, 'days');
 };

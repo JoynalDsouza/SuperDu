@@ -1,3 +1,5 @@
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
 import {
   ELECTRIC_BLUE,
   ERROR_RED,
@@ -5,10 +7,18 @@ import {
   SECONDARY_BACKGROUND,
 } from '../../design/theme';
 import Text from '../../components/common/Text';
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {formatToINR} from '../../utils/formatCurrency';
 
-const FinancialSummary = ({
+interface FinancialSummaryProps {
+  daysWithoutExpenses: number;
+  totalIncome: number;
+  totalExpense: number;
+  totalLending: number;
+  totalInvestment: number;
+  totalBalance: number;
+}
+
+const FinancialSummary: React.FC<FinancialSummaryProps> = ({
   daysWithoutExpenses,
   totalIncome,
   totalExpense,
@@ -25,24 +35,25 @@ const FinancialSummary = ({
     <View style={styles.section}>
       <Text variant="h1">Days Without Expense: {daysWithoutExpenses}</Text>
 
-      <Text variant="b1">Total Income: ₹{totalIncome.toFixed(2)}</Text>
+      <Text variant="b1">Total Income: {formatToINR(totalIncome)}</Text>
 
       <Text variant="b1">
-        Total Expenses: ₹{totalExpense.toFixed(2)} -{' '}
-        {expensePercentage.toFixed()}%
+        Total Expenses: {formatToINR(totalExpense)} -{' '}
+        {expensePercentage.toFixed(2)}%
       </Text>
 
       <Text variant="b1">
-        Total Lendings: ₹{totalLending.toFixed(2)} -{' '}
-        {lendingPercentage.toFixed()}%
-      </Text>
-      <Text variant="b1">
-        Total Investments: ₹{totalInvestment.toFixed(2)} -{' '}
-        {investmentPercentage.toFixed()}%
+        Total Lendings: {formatToINR(totalLending)} -{' '}
+        {lendingPercentage.toFixed(2)}%
       </Text>
 
       <Text variant="b1">
-        Balance: ₹{totalBalance.toFixed(2)} - {balancePercentage.toFixed(2)}%
+        Total Investments: {formatToINR(totalInvestment)} -{' '}
+        {investmentPercentage.toFixed(2)}%
+      </Text>
+
+      <Text variant="b1">
+        Balance: {formatToINR(totalBalance)} - {balancePercentage.toFixed(2)}%
       </Text>
 
       <View style={styles.progressBar}>
@@ -70,6 +81,7 @@ const FinancialSummary = ({
           ]}
         />
       </View>
+
       <View style={styles.legendContainer}>
         {!!totalExpense && (
           <View style={styles.legendItem}>
@@ -94,6 +106,8 @@ const FinancialSummary = ({
   );
 };
 
+export default FinancialSummary;
+
 const styles = StyleSheet.create({
   section: {
     marginBottom: 16,
@@ -106,7 +120,6 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 4,
   },
-
   progressBar: {
     flexDirection: 'row',
     height: 20,
@@ -143,5 +156,3 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
-
-export default FinancialSummary;

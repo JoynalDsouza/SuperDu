@@ -21,6 +21,7 @@ import {
   TabParamList,
 } from './navigation.types';
 import TransactionsScreen from '../screens/TransactionsScreen';
+import Text from '../components/common/Text';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -79,10 +80,34 @@ function MyTabs() {
         tabBarInactiveBackgroundColor: PRIMARY_BACKGROUND,
         tabBarActiveBackgroundColor: PRIMARY_BACKGROUND,
       }}>
-      <Tab.Screen name="Dashboard" component={Dashboard} />
-      <Tab.Screen name="Overview" component={Overview} />
-      <Tab.Screen name="Transactions" component={TransactionsScreen} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          tabBarIcon: () => <Text fontSize={20}>🚀</Text>,
+        }}
+      />
+      <Tab.Screen
+        name="Overview"
+        component={Overview}
+        options={{
+          tabBarIcon: () => <Text fontSize={20}>👁️</Text>,
+        }}
+      />
+      <Tab.Screen
+        name="Transactions"
+        component={TransactionsScreen}
+        options={{
+          tabBarIcon: () => <Text fontSize={20}>💵</Text>,
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarIcon: () => <Text fontSize={20}>🔧</Text>,
+        }}
+      />
     </Tab.Navigator>
   );
 }

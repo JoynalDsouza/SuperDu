@@ -1,40 +1,180 @@
-import {Pressable, StyleSheet, View} from 'react-native';
-import React from 'react';
-import {PRIMARY_BACKGROUND} from '../design/theme';
-import {rootNavigate} from '../Navigation/navigation';
+import {FlatList, Pressable, StyleSheet, View} from 'react-native';
+import React, {useMemo} from 'react';
+import {ERROR_RED, PRIMARY_BACKGROUND} from '../design/theme';
+import ScreenHeader from '../components/common/ScreenHeader';
+import {useQuery} from '@realm/react';
+import {Transaction} from '../realm/models/Account';
+import TransactionCard from '../components/Transaction/TransactionCard';
+import {getOverviewStats} from '../utils/transaction-utils';
+import FinancialSummary from '../components/dashboard/FinancialSummary';
+import ModalBase from '../components/base/ModalBase';
+import {TransactionFilterState} from 'dist/transactions.types';
+import {TRANSACTION_FILTER_INITIAL_STATE} from '../utils/constants/transactions';
+import TransactionFilter from '../components/Transaction/TransactionFilter';
+import {showAlertDialog} from '../utils/alert-utils';
 import Text from '../components/common/Text';
+import Button from '../components/common/Button';
 
 const TransactionsScreen = () => {
+  const [showOverviewStatsModal, setShowOverviewStatsModal] =
+    React.useState(false);
+
+  const [openTransactionFilter, setOpenTransactionFilter] =
+    React.useState(false);
+
+  const [filters, setFilters] = React.useState<TransactionFilterState>(
+    TRANSACTION_FILTER_INITIAL_STATE,
+  );
+
+  const Transactions = useQuery(Transaction).sorted('addedOn', true);
+
+  const filteredTransactions =
+    filters.types.length > 0
+      ? Transactions.filtered('type IN $0', filters.types)
+      : Transactions;
+
+  const {
+    daysWithoutExpenses,
+    totalIncome,
+    totalExpense,
+    totalLending,
+    totalInvestment,
+    totalBalance,
+  } = useMemo(() => {
+    return getOverviewStats(filteredTransactions);
+  }, [filteredTransactions?.length, filters.types]);
+
+  const hasFilters = filters.types.length > 0;
+
   return (
-    <View
-      style={{
-        backgroundColor: PRIMARY_BACKGROUND,
-        gap: 16,
-        paddingHorizontal: 16,
-        paddingVertical: 16,
-        flex: 1,
-      }}>
+    <>
       <View
         style={{
-          marginVertical: 16,
+          backgroundColor: PRIMARY_BACKGROUND,
           gap: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          paddingHorizontal: 16,
+          paddingVertical: 16,
+          flex: 1,
         }}>
-        <Pressable
-          onPress={() => {
-            rootNavigate();
-          }}>
-          <Text>{'<--'}</Text>
-        </Pressable>
-        <Text style={{textTransform: 'capitalize'}}>Transactions</Text>
+        <ScreenHeader
+          title={'Transactions'}
+          rightIcons={[
+            {
+              icon: '🔍',
+              onPress: () => {
+                setOpenTransactionFilter(true);
+              },
+            },
+            {
+              icon: '👁️',
+              onPress: () => {
+                if (hasFilters) {
+                  showAlertDialog({
+                    title: 'Overview not available',
+                    message: 'Please clear the filters to view the overview',
+                  });
+                  return;
+                }
+                setShowOverviewStatsModal(true);
+              },
+            },
+          ]}
+        />
 
-        <View>
-          <Text>∑</Text>
-        </View>
+        {hasFilters && (
+          <View>
+            <Text>Filters</Text>
+            {Object.keys(filters).map(key => {
+              if (filters[key].length > 0) {
+                return (
+                  <Pressable
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <Text>{key == 'types' ? 'Expense Type' : key} : </Text>
+                      <Button
+                        type="link"
+                        title={`${filters[key]?.length} filters applied`}
+                        style={{
+                          paddingHorizontal: 0,
+                        }}
+                        onPress={() => {
+                          setOpenTransactionFilter(true);
+                        }}></Button>
+                    </View>
+                    <Button
+                      type="link"
+                      textStyle={{
+                        color: ERROR_RED,
+                      }}
+                      title={'Clear'}
+                      onPress={() => {
+                        setFilters({
+                          ...filters,
+                          [key]: [],
+                        });
+                      }}
+                    />
+                  </Pressable>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </View>
+        )}
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={filteredTransactions}
+          keyExtractor={item => item._id.toString()}
+          ItemSeparatorComponent={() => <View style={{height: 8}} />}
+          renderItem={({item}) => {
+            const {_id, type, category, addedOn, amount} = item;
+            return (
+              <TransactionCard
+                id={_id.toString()}
+                type={type}
+                category={category.name}
+                addedOn={addedOn}
+                amount={amount}
+              />
+            );
+          }}
+        />
+        <ModalBase
+          visible={showOverviewStatsModal}
+          setVisible={setShowOverviewStatsModal}
+          onRequestClose={() => setShowOverviewStatsModal(false)}>
+          <FinancialSummary
+            daysWithoutExpenses={daysWithoutExpenses}
+            totalIncome={totalIncome}
+            totalExpense={totalExpense}
+            totalLending={totalLending}
+            totalInvestment={totalInvestment}
+            totalBalance={totalBalance}
+          />
+        </ModalBase>
+
+        {openTransactionFilter && (
+          <TransactionFilter
+            visible={openTransactionFilter}
+            setVisible={setOpenTransactionFilter}
+            filters={filters}
+            onApplyFilter={(filters: TransactionFilterState) => {
+              setFilters(filters);
+              setOpenTransactionFilter(false);
+            }}
+          />
+        )}
       </View>
-    </View>
+    </>
   );
 };
 

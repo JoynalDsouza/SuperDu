@@ -14,7 +14,10 @@ import {formatToINR} from '../../utils/formatCurrency';
 import {Swipeable} from 'react-native-gesture-handler';
 import {CategoryType} from 'realm/models/Account';
 import {rootNavigate} from '../../Navigation/navigation';
-import {TRANSACTION_COLOR} from '../../utils/constants/transactions';
+import {
+  TRANSACTION_COLOR,
+  TRANSACTION_TYPE_ICON,
+} from '../../utils/constants/transactions';
 
 type TransactionCardProps = {
   id: string;
@@ -97,7 +100,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
       disabled={!id}>
       <View style={styles.transactionDetails}>
         <Text variant="b1" style={styles.transactionType}>
-          {type}: {category}
+          {TRANSACTION_TYPE_ICON[type]} {type}: {category}
         </Text>
         <Text variant="caption" style={styles.transactionDate}>
           {addedOn.toDateString()}

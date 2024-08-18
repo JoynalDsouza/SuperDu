@@ -21,7 +21,11 @@ import {alertError} from '../utils/alertError';
 import {getDate} from '../utils/moment';
 import DateTimePicker from 'react-native-ui-datepicker';
 import {showAlertDialog} from '../utils/alert-utils';
-import {TRANSACTION_COLOR} from '../utils/constants/transactions';
+import {
+  TRANSACTION_COLOR,
+  TRANSACTION_TYPES,
+} from '../utils/constants/transactions';
+import ScreenHeader from '../components/common/ScreenHeader';
 
 const ManageTransaction = ({route}) => {
   const {transactionId}: ManageTransactionParams = route.params;
@@ -48,12 +52,7 @@ const ManageTransaction = ({route}) => {
 
   const ALL_CATEGORIES = useQuery(Category).filtered('isActive == true');
 
-  const transactionTypeDropdownData: {name: string; value: CategoryType}[] = [
-    {name: 'Expense', value: 'EXPENSE'},
-    {name: 'Income', value: 'INCOME'},
-    // {name: 'Lending', value: 'LENDING'},
-    {name: 'Investment', value: 'INVESTMENT'},
-  ];
+  const transactionTypeDropdownData = TRANSACTION_TYPES;
 
   const [selectedTransactionType, setSelectedTransactionType] = useState(
     transactionTypeDropdownData[0],
@@ -219,39 +218,28 @@ const ManageTransaction = ({route}) => {
         paddingVertical: 16,
         flex: 1,
       }}>
-      <View
-        style={{
-          marginVertical: 16,
-          gap: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: mode == 'add' ? 'flex-start' : 'space-between',
-        }}>
-        <Pressable
-          onPress={() => {
-            rootNavigate();
-          }}>
-          <Text>{'<--'}</Text>
-        </Pressable>
-        <Text style={{textTransform: 'capitalize'}}>{mode} Transaction</Text>
+      <ScreenHeader
+        title={mode === 'add' ? 'Add Transaction' : 'Edit Transaction'}
+        rightIcons={
+          mode === 'edit' && [
+            {
+              icon: '❌',
+              onPress: () => {
+                showAlertDialog({
+                  title: 'Delete Transaction',
+                  message: 'Are you sure you want to delete this transaction?',
+                  positiveButtonTitle: 'Yes',
+                  negativeButtonTitle: 'No',
+                  onPositiveButtonPress: () => {
+                    onDeleteTransaction();
+                  },
+                });
+              },
+            },
+          ]
+        }
+      />
 
-        {mode == 'edit' && (
-          <Pressable
-            onPress={() => {
-              showAlertDialog({
-                title: 'Delete Transaction',
-                message: 'Are you sure you want to delete this transaction?',
-                positiveButtonTitle: 'Yes',
-                negativeButtonTitle: 'No',
-                onPositiveButtonPress: () => {
-                  onDeleteTransaction();
-                },
-              });
-            }}>
-            <Text color={ERROR_RED}>X</Text>
-          </Pressable>
-        )}
-      </View>
       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
         <TouchableOpacity
           style={styles.button}

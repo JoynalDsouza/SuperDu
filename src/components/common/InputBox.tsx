@@ -1,28 +1,41 @@
 import React from 'react';
-import {View, TextInput, Text, StyleSheet} from 'react-native';
+import {View, TextInput, StyleSheet, TextInputProps} from 'react-native';
 import {validateInput} from '../../utils/inputValidation';
+import Text from './Text';
+import {ERROR_RED} from '../../design/theme';
 
-const InputBox = ({
+type InputType = 'text' | 'email' | 'password';
+
+type InputBoxProps = {
+  type?: InputType;
+  label?: string;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  error?: string;
+  setError?: (error: string) => void;
+} & TextInputProps;
+
+const InputBox: React.FC<InputBoxProps> = ({
   type = 'text',
   label,
   inputValue,
-  setInputValue = value => {},
+  setInputValue,
   error = '',
-  setError = string => {},
+  setError,
   ...textInputProps
 }) => {
-  const handleInputChange = text => {
+  const handleInputChange = (text: string) => {
     setInputValue(text);
-    setError('');
+    if (setError) setError(''); // Clear error on input change if setError is provided
   };
 
   const handleInputBlur = () => {
-    setError(validateInput(type, inputValue));
+    if (setError) setError(validateInput(type, inputValue));
   };
 
   return (
     <View style={styles.container}>
-      {!!label && <Text style={styles.label}>{label}</Text>}
+      {!!label && <Text variant="b2">{label}</Text>}
       <TextInput
         style={styles.input}
         value={inputValue}
@@ -30,7 +43,11 @@ const InputBox = ({
         onBlur={handleInputBlur}
         {...textInputProps}
       />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? (
+        <Text color={ERROR_RED} variant="b2">
+          {error}
+        </Text>
+      ) : null}
     </View>
   );
 };
@@ -38,20 +55,13 @@ const InputBox = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-  },
-  label: {
-    fontSize: 16,
+    gap: 4,
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    marginTop: 4,
   },
 });
 

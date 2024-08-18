@@ -36,7 +36,7 @@ const Text: React.FC<TextComponentProps> = ({
     textAlign: align,
     fontWeight: weight,
     fontStyle: italic ? 'italic' : 'normal',
-    fontSize: fontSize || FONT_SIZE[variant],
+    fontSize: fontSize || TYPOGRAPHY[variant].fontSize,
     fontFamily: fontFamily || TYPOGRAPHY[variant].fontFamily,
   };
 
