@@ -67,13 +67,13 @@ export const importRealmData = async realm => {
 
     if (schemaVersion < SCHEMA_VERSION) {
       if (schemaVersion < 2) {
-        applyMigration(realm, 2);
+        applyMigration(realm, 2, true);
       }
       if (schemaVersion < 3) {
-        applyMigration(realm, 3);
+        applyMigration(realm, 3, true);
       }
       if (schemaVersion < 6) {
-        applyMigration(realm, 6);
+        applyMigration(realm, 6, true);
       }
     }
   } catch (error) {

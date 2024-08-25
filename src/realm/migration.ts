@@ -1,19 +1,19 @@
 import {BSON} from 'realm';
 
-export const applyMigration = (realm, schemaVersion) => {
+export const applyMigration = (realm, schemaVersion, dataImport = false) => {
   switch (schemaVersion) {
     case 2:
-      migrateExpenseSchema(realm);
+      migrateExpenseSchema(realm, dataImport);
       break;
     case 3:
-      migrateTypes(realm, ['Investment', 'Lending', 'Income']);
+      migrateTypes(realm, ['Investment', 'Lending', 'Income'], dataImport);
       break;
     case 4:
       break;
     case 5:
       break;
     case 6:
-      migrateToCategorySchema(realm);
+      migrateToCategorySchema(realm, dataImport);
       break;
     default:
       break;
@@ -21,27 +21,39 @@ export const applyMigration = (realm, schemaVersion) => {
 };
 
 // Helper functions
-const migrateExpenseSchema = realm => {
+const migrateExpenseSchema = (realm, dataImport) => {
   const oldObjects = realm.objects('Expense');
-  realm.write(() => {
+  if (dataImport) {
+    realm.write(() => {
+      oldObjects.forEach(obj => {
+        realm.create('Expense', {...obj, notes: ''}, 'modified');
+      });
+    });
+  } else {
     oldObjects.forEach(obj => {
       realm.create('Expense', {...obj, notes: ''}, 'modified');
     });
-  });
+  }
 };
 
-const migrateTypes = (realm, types) => {
+const migrateTypes = (realm, types, dataImport) => {
   types.forEach(type => {
     const oldObjects = realm.objects(type);
-    realm.write(() => {
+    if (dataImport) {
+      realm.write(() => {
+        oldObjects.forEach(obj => {
+          realm.create(type, {...obj, notes: ''}, 'modified');
+        });
+      });
+    } else {
       oldObjects.forEach(obj => {
         realm.create(type, {...obj, notes: ''}, 'modified');
       });
-    });
+    }
   });
 };
 
-const migrateToCategorySchema = realm => {
+const migrateToCategorySchema = (realm, dataImport) => {
   const categoryMap = {
     ExpenseType: 'EXPENSE',
     IncomeType: 'INCOME',
@@ -63,21 +75,37 @@ const migrateToCategorySchema = realm => {
     oldObjects.forEach(obj => {
       const _id = obj?._id || new BSON.ObjectID();
       categoryIdsMap[obj.name] = _id;
-      realm.create(
-        'Category',
-        {
-          _id,
-          name: obj.name,
-          type: categoryMap[type],
-          isActive: obj.isActive,
-          transactionCategory: getTransactionCategory(type, obj),
-        },
-        'modified',
-      );
+      if (dataImport) {
+        realm.write(() => {
+          realm.create(
+            'Category',
+            {
+              _id,
+              name: obj.name,
+              type: categoryMap[type],
+              isActive: obj.isActive,
+              transactionCategory: getTransactionCategory(type, obj),
+            },
+            'modified',
+          );
+        });
+      } else {
+        realm.create(
+          'Category',
+          {
+            _id,
+            name: obj.name,
+            type: categoryMap[type],
+            isActive: obj.isActive,
+            transactionCategory: getTransactionCategory(type, obj),
+          },
+          'modified',
+        );
+      }
     });
   });
 
-  migrateTransactions(realm, categoryIdsMap);
+  migrateTransactions(realm, categoryIdsMap, dataImport);
 };
 
 const getTransactionCategory = (type, obj) => {
@@ -93,29 +121,51 @@ const getTransactionCategory = (type, obj) => {
   }
 };
 
-const migrateTransactions = (realm, categoryIdsMap) => {
+const migrateTransactions = (realm, categoryIdsMap, dataImport) => {
   const transactionTypes = ['Investment', 'Lending', 'Income', 'Expense'];
 
   transactionTypes.forEach(type => {
     const oldObjects = realm.objects(type);
     oldObjects.forEach(obj => {
-      realm.create(
-        'Transaction',
-        {
-          _id: obj._id,
-          amount: obj.value,
-          type: type?.toUpperCase(),
-          category: realm.objectForPrimaryKey(
-            'Category',
-            categoryIdsMap[obj.type.name],
-          ),
-          addedOn: obj.addedOn,
-          modifiedOn: obj.addedOn,
-          notes: obj.notes,
-          from: null,
-        },
-        'modified',
-      );
+      if (dataImport) {
+        realm.write(() => {
+          realm.create(
+            'Transaction',
+            {
+              _id: obj._id,
+              amount: obj.value,
+              type: type?.toUpperCase(),
+              category: realm.objectForPrimaryKey(
+                'Category',
+                categoryIdsMap[obj.type.name],
+              ),
+              addedOn: obj.addedOn,
+              modifiedOn: obj.addedOn,
+              notes: obj.notes,
+              from: null,
+            },
+            'modified',
+          );
+        });
+      } else {
+        realm.create(
+          'Transaction',
+          {
+            _id: obj._id,
+            amount: obj.value,
+            type: type?.toUpperCase(),
+            category: realm.objectForPrimaryKey(
+              'Category',
+              categoryIdsMap[obj.type.name],
+            ),
+            addedOn: obj.addedOn,
+            modifiedOn: obj.addedOn,
+            notes: obj.notes,
+            from: null,
+          },
+          'modified',
+        );
+      }
     });
   });
 };
