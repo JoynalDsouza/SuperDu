@@ -60,22 +60,20 @@ const migrateToCategorySchema = realm => {
 
   categoryTypes.forEach(type => {
     const oldObjects = realm.objects(type);
-    realm.write(() => {
-      oldObjects.forEach(obj => {
-        const _id = obj?._id || new BSON.ObjectID();
-        categoryIdsMap[obj.name] = _id;
-        realm.create(
-          'Category',
-          {
-            _id,
-            name: obj.name,
-            type: categoryMap[type],
-            isActive: obj.isActive,
-            transactionCategory: getTransactionCategory(type, obj),
-          },
-          'modified',
-        );
-      });
+    oldObjects.forEach(obj => {
+      const _id = obj?._id || new BSON.ObjectID();
+      categoryIdsMap[obj.name] = _id;
+      realm.create(
+        'Category',
+        {
+          _id,
+          name: obj.name,
+          type: categoryMap[type],
+          isActive: obj.isActive,
+          transactionCategory: getTransactionCategory(type, obj),
+        },
+        'modified',
+      );
     });
   });
 
@@ -100,26 +98,24 @@ const migrateTransactions = (realm, categoryIdsMap) => {
 
   transactionTypes.forEach(type => {
     const oldObjects = realm.objects(type);
-    realm.write(() => {
-      oldObjects.forEach(obj => {
-        realm.create(
-          'Transaction',
-          {
-            _id: obj._id,
-            amount: obj.value,
-            type: type?.toUpperCase(),
-            category: realm.objectForPrimaryKey(
-              'Category',
-              categoryIdsMap[obj.type.name],
-            ),
-            addedOn: obj.addedOn,
-            modifiedOn: obj.addedOn,
-            notes: obj.notes,
-            from: null,
-          },
-          'modified',
-        );
-      });
+    oldObjects.forEach(obj => {
+      realm.create(
+        'Transaction',
+        {
+          _id: obj._id,
+          amount: obj.value,
+          type: type?.toUpperCase(),
+          category: realm.objectForPrimaryKey(
+            'Category',
+            categoryIdsMap[obj.type.name],
+          ),
+          addedOn: obj.addedOn,
+          modifiedOn: obj.addedOn,
+          notes: obj.notes,
+          from: null,
+        },
+        'modified',
+      );
     });
   });
 };
