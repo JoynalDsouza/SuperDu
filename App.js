@@ -5,11 +5,10 @@ import Navigation from './src/Navigation/navigation';
 
 import schemas from './src/realm/models/schemas';
 import {RealmProvider} from '@realm/react';
-import {BSON} from 'realm';
-import {ExpenseType} from './src/realm/models/User';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {applyMigration} from './src/realm/migration';
 
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 6;
 
 function App() {
   LogBox.ignoreAllLogs();
@@ -20,101 +19,23 @@ function App() {
         schema={schemas}
         schemaVersion={SCHEMA_VERSION}
         deleteRealmIfMigrationNeeded={false}
-        onFirstOpen={realm => {
-          realm.create(ExpenseType, {
-            _id: new BSON.ObjectID(),
-            name: 'Grocery',
-            isActive: true,
-          });
-          realm.create(ExpenseType, {
-            _id: new BSON.ObjectID(),
-
-            name: 'Food',
-            isActive: true,
-          });
-          realm.create(ExpenseType, {
-            _id: new BSON.ObjectID(),
-
-            name: 'Commute',
-            isActive: true,
-          });
-        }}
         onMigration={(oldRealm, newRealm) => {
           if (oldRealm.schemaVersion < 2) {
-            const oldObjects = oldRealm.objects('Expense');
-            const newObjects = newRealm.objects('Expense');
-            for (let i = 0; i < oldObjects.length; i++) {
-              newObjects[i].notes = '';
-            }
+            applyMigration(newRealm, 2);
           }
           if (oldRealm.schemaVersion < 3) {
-            const changed = ['Investment', 'Lending', 'Income'];
-            changed.forEach(type => {
-              const oldObjects = oldRealm.objects(type);
-              const newObjects = newRealm.objects(type);
-              for (let i = 0; i < oldObjects.length; i++) {
-                newObjects[i].notes = '';
-              }
-            });
+            applyMigration(newRealm, 3);
           }
           if (oldRealm.schemaVersion < 4) {
+            applyMigration(newRealm, 4);
           }
 
           if (oldRealm.schemaVersion < 5) {
+            applyMigration(newRealm, 5);
           }
 
           if (oldRealm.schemaVersion < 6) {
-            const categoryChanged = [
-              'ExpenseType',
-              'IncomeType',
-              'InvestmentType',
-              'LendingType',
-            ];
-
-            const categoryMap = {
-              ExpenseType: 'EXPENSE',
-              IncomeType: 'INCOME',
-              InvestmentType: 'INVESTMENT',
-              LendingType: 'LENDING',
-            };
-
-            const categoryIdsMap = {};
-
-            categoryChanged.forEach(type => {
-              const oldObjects = oldRealm.objects(type);
-              for (let i = 0; i < oldObjects.length; i++) {
-                const _id = new BSON.ObjectID();
-                categoryIdsMap[oldObjects[i].name] = _id;
-                newRealm.create('Category', {
-                  _id: _id,
-                  name: oldObjects[i].name,
-                  type: categoryMap[type],
-                  isActive: oldObjects[i].isActive,
-                });
-              }
-            });
-
-            const changed = ['Investment', 'Lending', 'Income', 'Expense'];
-
-            changed.forEach(type => {
-              const oldObjects = oldRealm.objects(type);
-
-              for (let i = 0; i < oldObjects.length; i++) {
-                newRealm.create('Transaction', {
-                  _id: new BSON.ObjectID(),
-                  amount: oldObjects[i].value,
-                  type: type?.toUpperCase(),
-                  category: newRealm.objectForPrimaryKey(
-                    'Category',
-                    categoryIdsMap[oldObjects[i].type.name],
-                  ),
-                  addedOn: oldObjects[i].addedOn,
-                  modifiedOn: oldObjects[i].addedOn,
-                  notes: oldObjects[i].notes,
-                  from: null,
-                });
-              }
-            });
+            applyMigration(newRealm, 6);
           }
         }}>
         <SafeAreaView style={{flex: 1}}>
