@@ -33,7 +33,7 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = ({
   title,
   onPress,
-  debounceTime = 500,
+  debounceTime = 100,
   style,
   textStyle,
   children,

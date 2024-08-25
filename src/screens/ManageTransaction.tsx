@@ -26,6 +26,7 @@ import {
   TRANSACTION_TYPES,
 } from '../utils/constants/transactions';
 import ScreenHeader from '../components/common/ScreenHeader';
+import AddTypeInputModal from '../components/Modal/AddTypeInputModal';
 
 const ManageTransaction = ({route}) => {
   const {transactionId}: ManageTransactionParams = route.params;
@@ -43,6 +44,8 @@ const ManageTransaction = ({route}) => {
     selectedCategory: '',
     addedOn: currentDate,
   });
+
+  const [addNewModalVisible, setAddNewModalVisible] = useState(false);
 
   const [date, setDate] = useState(currentDate);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -118,7 +121,6 @@ const ManageTransaction = ({route}) => {
 
   const onAddTransaction = () => {
     try {
-      if (!Number(amount)) return alertError('Please enter a number amount');
       let calculatedValue = amount;
 
       if (amount.startsWith('=')) {
@@ -184,6 +186,52 @@ const ManageTransaction = ({route}) => {
       });
 
       rootNavigate();
+    } catch (error) {}
+  };
+
+  const handleSelectCategory = category => {
+    try {
+      if (category._id === 'NEW_CATEGORY') {
+        setAddNewModalVisible(true);
+      } else {
+        setSelectedCategory(category);
+      }
+    } catch (error) {}
+  };
+
+  const handleAddNewCategory = ({value, categoryType}) => {
+    try {
+      const checkCategoryExists = filteredCategories.find(
+        item => item.name.toLowerCase() === value.toLowerCase(),
+      );
+      if (checkCategoryExists) {
+        if (!checkCategoryExists.isActive) {
+          realm.write(() => {
+            checkCategoryExists.isActive = true;
+            checkCategoryExists.transactionCategory = categoryType || '';
+          });
+        }
+        setSelectedCategory(checkCategoryExists);
+      } else {
+        const _id = new BSON.ObjectId();
+
+        realm.write(() => {
+          realm.create('Category', {
+            _id: _id,
+            name: value,
+            image: '',
+            type: selectedTransactionType.value,
+            transactionCategory: categoryType || '',
+            isActive: true,
+          });
+        });
+
+        const category = realm.objectForPrimaryKey(Category, _id);
+
+        setSelectedCategory(category);
+      }
+
+      setAddNewModalVisible(false);
     } catch (error) {}
   };
 
@@ -309,9 +357,13 @@ const ManageTransaction = ({route}) => {
           valueField={'_id'}
           selectedTextStyle={{
             color: 'white',
+            textTransform: 'capitalize',
           }}
           value={selectedCategory}
-          data={filteredCategories as any}
+          data={[
+            {name: '+ Add New', _id: 'NEW_CATEGORY'},
+            ...filteredCategories,
+          ]}
           renderItem={category => {
             return (
               <View
@@ -326,12 +378,14 @@ const ManageTransaction = ({route}) => {
                     paddingHorizontal: 8,
                   },
                 ]}>
-                <Text>{category?.name}</Text>
+                <Text style={{textTransform: 'capitalize'}}>
+                  {category?.name}
+                </Text>
               </View>
             );
           }}
           onChange={category => {
-            setSelectedCategory(category);
+            handleSelectCategory(category);
           }}></Dropdown>
       </View>
 
@@ -381,6 +435,13 @@ const ManageTransaction = ({route}) => {
           />
         </View>
       )}
+
+      <AddTypeInputModal
+        visible={addNewModalVisible}
+        setVisible={setAddNewModalVisible}
+        type={selectedTransactionType.value}
+        handleAddNewCategory={handleAddNewCategory}
+      />
     </View>
   );
 };

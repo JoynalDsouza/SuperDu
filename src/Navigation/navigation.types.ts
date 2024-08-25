@@ -11,6 +11,7 @@ export type StackParamList = {
   HomeScreen: undefined;
   Home: undefined;
   ManageTransaction: ManageTransactionParams;
+  ManageCategories: undefined;
 };
 
 export type NavigationParams = Partial<StackParamList & TabParamList>;

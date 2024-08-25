@@ -22,6 +22,7 @@ import {
 } from './navigation.types';
 import TransactionsScreen from '../screens/TransactionsScreen';
 import Text from '../components/common/Text';
+import ManageCategories from '../screens/ManageCategories';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -130,6 +131,7 @@ const Navigation: React.FC = () => {
           component={ManageTransaction}
           initialParams={{transactionId: undefined}}
         />
+        <Stack.Screen name="ManageCategories" component={ManageCategories} />
       </Stack.Navigator>
     </NavigationContainer>
   );
