@@ -85,7 +85,7 @@ const migrateToCategorySchema = realm => {
 const getTransactionCategory = (type, obj) => {
   switch (type) {
     case 'ExpenseType':
-      return obj?.category || '';
+      return obj?.category || 'NEED';
     case 'LendingType':
     case 'InvestmentType':
       return 'SAVINGS';

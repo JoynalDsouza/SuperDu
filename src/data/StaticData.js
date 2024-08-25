@@ -1,1 +1,0 @@
-export const EXPENSE_CATEGORIES = ['SAVINGS', 'NEED', 'WANT'];

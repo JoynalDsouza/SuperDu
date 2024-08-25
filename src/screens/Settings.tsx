@@ -6,6 +6,7 @@ import {useRealm} from '@realm/react';
 import {PRIMARY_BACKGROUND} from '../design/theme';
 import ScreenHeader from '../components/common/ScreenHeader';
 import {rootNavigate} from '../Navigation/navigation';
+import {VERSION_NAME} from '../data/StaticData';
 
 export default function Settings() {
   const realm = useRealm();
@@ -40,7 +41,9 @@ export default function Settings() {
       </View>
 
       <View>
-        <Text style={{color: 'white', textAlign: 'center'}}>Version 1.0.0</Text>
+        <Text style={{color: 'white', textAlign: 'center'}}>
+          Version {VERSION_NAME}
+        </Text>
       </View>
     </View>
   );

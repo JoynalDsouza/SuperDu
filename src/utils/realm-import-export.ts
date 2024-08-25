@@ -5,6 +5,7 @@ import DocumentPicker from 'react-native-document-picker';
 import {BSON} from 'realm';
 import {Platform} from 'react-native';
 import {applyMigration} from '../realm/migration';
+import {VERSION_NAME} from '../data/StaticData';
 
 export const exportRealmData = async realm => {
   try {
@@ -19,22 +20,16 @@ export const exportRealmData = async realm => {
       exportData.data[schema.name] = Array.from(objects);
     });
     const exportJson = JSON.stringify(exportData);
+
+    const fileName = `Super-Du-Export-${VERSION_NAME}.json`;
     // Save to file
     const filePath =
       Platform.OS == 'android'
-        ? `${RNFS.DownloadDirectoryPath}/export.json`
-        : `${RNFS.DocumentDirectoryPath}/export.json`;
+        ? `${RNFS.DownloadDirectoryPath}/${fileName}`
+        : `${RNFS.DocumentDirectoryPath}/${fileName}`;
 
     await RNFS.writeFile(filePath, exportJson, 'utf8');
-    // Share the file
-    // await Share.open({
-    //   title: 'Share Data',
-    //   url: `file://${filePath}`,
-    //   type: 'application/json',
-    // });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const importRealmData = async realm => {
