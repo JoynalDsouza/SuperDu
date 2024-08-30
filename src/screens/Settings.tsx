@@ -38,6 +38,17 @@ export default function Settings() {
             exportRealmData(realm);
           }}
         />
+        {__DEV__ && (
+          <Button
+            type="primary"
+            title="Delete App Data"
+            onPress={() => {
+              realm.write(() => {
+                realm.deleteAll();
+              });
+            }}
+          />
+        )}
       </View>
 
       <View>

@@ -47,6 +47,7 @@ export const importRealmData = async realm => {
     realm.write(() => {
       schemas.forEach(schema => {
         const data = importData.data[schema.name];
+
         if (data) {
           data.forEach(item => {
             const newItem = {
@@ -55,6 +56,13 @@ export const importRealmData = async realm => {
 
             if (item?._id) {
               newItem._id = new BSON.ObjectID(item._id);
+              if (schema?.name == 'Transaction') {
+                if (newItem?.category?._id) {
+                  newItem.category._id = new BSON.ObjectID(
+                    newItem.category._id,
+                  );
+                }
+              }
             }
             realm.create(schema.name, newItem, 'modified');
           });
