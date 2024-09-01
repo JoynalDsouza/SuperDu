@@ -29,7 +29,10 @@ const TransactionsScreen = ({route}) => {
     TRANSACTION_FILTER_INITIAL_STATE,
   );
 
-  const Transactions = useQuery(Transaction).sorted('addedOn', true);
+  const Transactions = useQuery(Transaction).sorted(
+    'addedOn',
+    filters.startDate ? false : true,
+  );
 
   // Step 1: Filter transactions by selected types (if any types are selected)
   let filteredTransactions = Transactions;
@@ -72,7 +75,10 @@ const TransactionsScreen = ({route}) => {
     // filters.endDate,
   ]);
 
-  const hasFilters = filters.types.length > 0;
+  const hasFilters =
+    filters.types.length > 0 ||
+    filters.startDate != undefined ||
+    filters.endDate != undefined;
 
   return (
     <>
@@ -112,54 +118,113 @@ const TransactionsScreen = ({route}) => {
         {hasFilters && (
           <View>
             <Text>Transaction Filters</Text>
-            {Object.keys(filters).map(key => {
-              if (filters[key].length > 0) {
-                return (
-                  <Pressable
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
-                      <Text>{key == 'types' ? 'Type' : key} : </Text>
-                      <Button
-                        type="link"
-                        title={`${filters[key]?.length} filter${
-                          filters[key].length === 1 ? '' : 's'
-                        } applied`}
-                        style={{
-                          paddingHorizontal: 0,
-                        }}
-                        onPress={() => {
-                          setOpenTransactionFilter(true);
-                        }}></Button>
-                    </View>
-                    <Button
-                      type="link"
-                      textStyle={{
-                        color: ERROR_RED,
-                      }}
-                      title={'Clear'}
-                      onPress={() => {
-                        setFilters({
-                          ...filters,
-                          [key]: [],
-                        });
-                      }}
-                    />
-                  </Pressable>
-                );
-              } else {
-                return null;
-              }
-            })}
+
+            {/* Render Type Filter */}
+            {filters.types.length > 0 && (
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Type: </Text>
+                  <Button
+                    type="link"
+                    title={`${filters.types.length} filter${
+                      filters.types.length === 1 ? '' : 's'
+                    } applied`}
+                    style={{paddingHorizontal: 0}}
+                    onPress={() => {
+                      setOpenTransactionFilter(true);
+                    }}
+                  />
+                </View>
+                <Button
+                  type="link"
+                  textStyle={{color: ERROR_RED}}
+                  title={'Clear'}
+                  onPress={() => {
+                    setFilters({...filters, types: []});
+                  }}
+                />
+              </Pressable>
+            )}
+
+            {/* Render Start Date Filter */}
+            {filters.startDate && (
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Start Date: </Text>
+                  <Button
+                    type="link"
+                    title={`${filters.startDate.toDateString()}`}
+                    style={{paddingHorizontal: 0}}
+                    onPress={() => {
+                      setOpenTransactionFilter(true);
+                    }}
+                  />
+                </View>
+                <Button
+                  type="link"
+                  textStyle={{color: ERROR_RED}}
+                  title={'Clear'}
+                  onPress={() => {
+                    setFilters({...filters, startDate: null});
+                  }}
+                />
+              </Pressable>
+            )}
+
+            {/* Render End Date Filter */}
+            {filters.endDate && (
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text>End Date: </Text>
+                  <Button
+                    type="link"
+                    title={`${filters.endDate.toDateString()}`}
+                    style={{paddingHorizontal: 0}}
+                    onPress={() => {
+                      setOpenTransactionFilter(true);
+                    }}
+                  />
+                </View>
+                <Button
+                  type="link"
+                  textStyle={{color: ERROR_RED}}
+                  title={'Clear'}
+                  onPress={() => {
+                    setFilters({...filters, endDate: null});
+                  }}
+                />
+              </Pressable>
+            )}
           </View>
         )}
+
         <FlatList
           showsVerticalScrollIndicator={false}
           data={filteredTransactions}
