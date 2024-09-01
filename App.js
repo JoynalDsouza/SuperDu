@@ -1,5 +1,12 @@
-import React from 'react';
-import {LogBox, SafeAreaView, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Alert,
+  DeviceEventEmitter,
+  LogBox,
+  PermissionsAndroid,
+  SafeAreaView,
+  StyleSheet,
+} from 'react-native';
 
 import Navigation from './src/Navigation/navigation';
 
