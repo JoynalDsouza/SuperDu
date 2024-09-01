@@ -1,6 +1,6 @@
 import {FlatList, Pressable, StyleSheet, View} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
-import {ERROR_RED, PRIMARY_BACKGROUND} from '../design/theme';
+import {ERROR_RED, LIGHT_SLATE_GREY, PRIMARY_BACKGROUND} from '../design/theme';
 import ScreenHeader from '../components/common/ScreenHeader';
 import {useQuery} from '@realm/react';
 import {Transaction} from '../realm/models/Account';
@@ -29,22 +29,32 @@ const TransactionsScreen = ({route}) => {
     TRANSACTION_FILTER_INITIAL_STATE,
   );
 
-  // useEffect(() => {
-  //   if (startDate && endDate) {
-  //     setFilters({
-  //       ...filters,
-  //       startDate: new Date(startDate),
-  //       endDate: new Date(endDate),
-  //     });
-  //   }
-  // }, []);
-
   const Transactions = useQuery(Transaction).sorted('addedOn', true);
 
-  const filteredTransactions =
-    filters.types.length > 0
-      ? Transactions.filtered('type IN $0', filters.types)
-      : Transactions;
+  // Step 1: Filter transactions by selected types (if any types are selected)
+  let filteredTransactions = Transactions;
+
+  if (filters.types.length > 0) {
+    filteredTransactions = filteredTransactions.filtered(
+      'type IN $0',
+      filters.types,
+    );
+  }
+
+  // Step 2: Apply date range filtering (if startDate or endDate is specified)
+  if (filters.startDate) {
+    filteredTransactions = filteredTransactions.filtered(
+      'addedOn >= $0',
+      filters.startDate,
+    );
+  }
+
+  if (filters.endDate) {
+    filteredTransactions = filteredTransactions.filtered(
+      'addedOn <= $0',
+      filters.endDate,
+    );
+  }
 
   const {
     daysWithoutExpenses,
@@ -153,8 +163,34 @@ const TransactionsScreen = ({route}) => {
         <FlatList
           showsVerticalScrollIndicator={false}
           data={filteredTransactions}
+          ListEmptyComponent={() => (
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+              }}>
+              <Text
+                style={{
+                  fontSize: 50,
+                  lineHeight: 60,
+                }}>
+                🚫
+              </Text>
+              <Text>No transactions found</Text>
+            </View>
+          )}
           keyExtractor={item => item._id.toString()}
-          ItemSeparatorComponent={() => <View style={{height: 8}} />}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 1,
+                backgroundColor: LIGHT_SLATE_GREY, // Separator line color
+                marginVertical: 8,
+              }}
+            />
+          )}
           renderItem={({item}) => {
             const {_id, type, category, addedOn, amount} = item;
             return (

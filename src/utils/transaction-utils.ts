@@ -30,7 +30,7 @@ export const getOverviewStats = (
       EXPENSES.map(expense => moment(expense.addedOn).format('YYYY-MM-DD')),
     );
 
-    const daysWithoutExpenses = daysToConsider - expenseDates.size;
+    const daysWithoutExpenses = daysToConsider - expenseDates.size + 1;
 
     // Calculate totals in one loop
     let totalExpense = 0;

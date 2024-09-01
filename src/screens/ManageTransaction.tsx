@@ -9,7 +9,7 @@ import {
 import React, {useEffect, useMemo, useState} from 'react';
 import {BSON} from 'realm';
 import Text from '../components/common/Text';
-import {ERROR_RED, PRIMARY_BACKGROUND} from '../design/theme';
+import {PRIMARY_BACKGROUND} from '../design/theme';
 import Button from '../components/common/Button';
 import {rootNavigate} from '../Navigation/navigation';
 import {ManageTransactionParams} from 'Navigation/navigation.types';
@@ -27,6 +27,7 @@ import {
 } from '../utils/constants/transactions';
 import ScreenHeader from '../components/common/ScreenHeader';
 import AddTypeInputModal from '../components/Modal/AddTypeInputModal';
+import SelectChip from '../components/common/SelectChip';
 
 const ManageTransaction = ({route}) => {
   const {transactionId}: ManageTransactionParams = route.params;
@@ -296,39 +297,23 @@ const ManageTransaction = ({route}) => {
         </TouchableOpacity>
       </View>
 
-      <View style={{flexDirection: 'row', gap: 8, alignItems: 'center'}}>
+      <View style={{flexDirection: 'column', gap: 8}}>
         <Text>Transaction Type : </Text>
-        <Dropdown
-          style={{flex: 1}}
-          labelField={'name'}
-          valueField={'value'}
-          selectedTextStyle={{
-            color: 'white',
-          }}
-          value={selectedTransactionType}
-          data={transactionTypeDropdownData}
-          renderItem={category => {
+
+        <View style={{flexDirection: 'row', gap: 8, flexWrap: 'wrap'}}>
+          {transactionTypeDropdownData.map(item => {
             return (
-              <View
-                key={category.name}
-                style={[
-                  {
-                    backgroundColor: 'black',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    paddingVertical: 8,
-                    paddingHorizontal: 8,
-                  },
-                ]}>
-                <Text>{category?.name}</Text>
-              </View>
+              <SelectChip
+                title={item.name}
+                isSelected={selectedTransactionType.value === item.value}
+                onPress={() => {
+                  setSelectedTransactionType(item);
+                  setSelectedCategory(null);
+                }}
+              />
             );
-          }}
-          onChange={category => {
-            setSelectedTransactionType(category);
-            setSelectedCategory(null);
-          }}></Dropdown>
+          })}
+        </View>
       </View>
 
       <View style={{flexDirection: 'row', gap: 8, alignItems: 'center'}}>

@@ -26,10 +26,18 @@ const FinancialSummary: React.FC<FinancialSummaryProps> = ({
   totalInvestment,
   totalBalance,
 }) => {
-  const expensePercentage = (totalExpense / totalIncome) * 100;
-  const lendingPercentage = (totalLending / totalIncome) * 100;
-  const investmentPercentage = (totalInvestment / totalIncome) * 100;
-  const balancePercentage = (totalBalance / totalIncome) * 100;
+  const expensePercentage = totalIncome
+    ? (totalExpense / totalIncome) * 100
+    : 0;
+  const lendingPercentage = totalIncome
+    ? (totalLending / totalIncome) * 100
+    : 0;
+  const investmentPercentage = totalIncome
+    ? (totalInvestment / totalIncome) * 100
+    : 0;
+  const balancePercentage = totalIncome
+    ? (totalBalance / totalIncome) * 100
+    : 0;
 
   return (
     <View style={styles.section}>

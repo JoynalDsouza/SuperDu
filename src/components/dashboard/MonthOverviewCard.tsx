@@ -37,12 +37,12 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
     .sorted('addedOn', true);
 
   const {
-    daysWithoutExpenses,
-    totalIncome,
-    totalExpense,
-    totalLending,
-    totalInvestment,
-    totalBalance,
+    daysWithoutExpenses = 0,
+    totalIncome = 0,
+    totalExpense = 0,
+    totalLending = 0,
+    totalInvestment = 0,
+    totalBalance = 0,
   } = useMemo(() => {
     return getOverviewStats(
       Transactions,
