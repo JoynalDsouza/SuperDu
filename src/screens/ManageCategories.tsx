@@ -31,6 +31,7 @@ import {
 } from '../utils/constants/transactions';
 import ScreenHeader from '../components/common/ScreenHeader';
 import AddTypeInputModal from '../components/Modal/AddTypeInputModal';
+import SelectChip from '../components/common/SelectChip';
 
 const ManageCategories = ({route}) => {
   const realm = useRealm();
@@ -119,38 +120,23 @@ const ManageCategories = ({route}) => {
         title={`${selectedTransactionType.value} Categories`}
       />
 
-      <View style={{flexDirection: 'row', gap: 8, alignItems: 'center'}}>
+      <View style={{flexDirection: 'column', gap: 8}}>
         <Text>Transaction Type : </Text>
-        <Dropdown
-          style={{flex: 1}}
-          labelField={'name'}
-          valueField={'value'}
-          selectedTextStyle={{
-            color: 'white',
-          }}
-          value={selectedTransactionType}
-          data={transactionTypeDropdownData}
-          renderItem={category => {
+
+        <View style={{flexDirection: 'row', gap: 8, flexWrap: 'wrap'}}>
+          {transactionTypeDropdownData.map(item => {
             return (
-              <View
-                key={category.name}
-                style={[
-                  {
-                    backgroundColor: 'black',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    paddingVertical: 8,
-                    paddingHorizontal: 8,
-                  },
-                ]}>
-                <Text>{category?.name}</Text>
-              </View>
+              <SelectChip
+                title={item.name}
+                isSelected={selectedTransactionType.value === item.value}
+                onPress={() => {
+                  setSelectedTransactionType(item);
+                  // setSelectedCategory(null);
+                }}
+              />
             );
-          }}
-          onChange={category => {
-            setSelectedTransactionType(category);
-          }}></Dropdown>
+          })}
+        </View>
       </View>
 
       <FlatList
