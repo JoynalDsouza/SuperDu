@@ -7,7 +7,7 @@ const HomeScreen = ({navigation}) => {
       <View style={styles.container}>
         <View style={{paddingVertical: 6, backgroundColor: 'grey'}}>
           <Text style={{paddingHorizontal: 10, color: 'white'}}>
-            Hello, {'Joy'}
+            Hello, YOU
           </Text>
         </View>
       </View>

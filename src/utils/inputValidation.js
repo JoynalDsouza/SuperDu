@@ -1,6 +1,6 @@
 import {isValidAlphaNumeric, isValidEmail} from './regex';
 
-export const vaildateInput = (type, value) => {
+export const validateInput = (type, value) => {
   if (type === 'email') {
     if (!value) {
       return 'Email is required';

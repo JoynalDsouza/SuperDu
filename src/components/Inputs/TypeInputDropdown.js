@@ -117,11 +117,11 @@ const TypeInputDropdown = ({
               ]}
               onPress={() => onSelectItem(item)}>
               <Text>{item?.name}</Text>
-              {item?.value !== 'add new' && (
+              {/* {item?.value !== 'add new' && (
                 <TouchableOpacity onPress={() => onRemovePress(item.name)}>
                   <Text style={{fontSize: 12, color: 'red'}}>Remove</Text>
                 </TouchableOpacity>
-              )}
+              )} */}
             </Pressable>
           );
         }}
