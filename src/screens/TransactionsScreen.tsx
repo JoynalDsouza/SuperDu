@@ -172,6 +172,41 @@ const TransactionsScreen = ({route}) => {
               </Pressable>
             )}
 
+            {filters.categories.length > 0 && (
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Categories: </Text>
+                  <Button
+                    type="link"
+                    title={`${filters.categories.length} filter${
+                      filters.categories.length === 1 ? '' : 's'
+                    } applied`}
+                    style={{paddingHorizontal: 0}}
+                    onPress={() => {
+                      setOpenTransactionFilter(true);
+                    }}
+                  />
+                </View>
+                <Button
+                  type="link"
+                  textStyle={{color: ERROR_RED}}
+                  title={'Clear'}
+                  onPress={() => {
+                    setFilters({...filters, categories: []});
+                  }}
+                />
+              </Pressable>
+            )}
+
             {/* Render Start Date Filter */}
             {filters.startDate && (
               <Pressable
