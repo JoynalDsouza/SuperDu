@@ -3,11 +3,8 @@ import {View, Text} from 'react-native';
 import InputBox from '../common/InputBox';
 import Button from '../common/Button';
 import {useQuery, useRealm} from '@realm/react';
-import {Expense} from '../../realm/models/Account';
-import {ExpenseType} from '../../realm/models/User';
 import {BSON} from 'realm';
 import TypeInputDropdown from './TypeInputDropdown';
-import TypeCard from '../cards/TypeCard';
 import {alertError} from '../../utils/alertError';
 
 const AddType = ({modelType, model, title, date}) => {

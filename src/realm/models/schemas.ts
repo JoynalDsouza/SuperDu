@@ -14,6 +14,9 @@ import {
   Investment,
   Budget,
   BudgetType,
+  Category,
+  AccountDetails,
+  Transaction,
 } from './Account';
 
 const userSchemas = [
@@ -32,6 +35,9 @@ const accountSchemas = [
   Investment,
   Budget,
   BudgetType,
+  Category,
+  AccountDetails,
+  Transaction,
 ];
 
 const schemas = [...userSchemas, ...accountSchemas];

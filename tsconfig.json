@@ -5,7 +5,12 @@
     "paths": {
       "*": ["src/*"],
       "tests": ["tests/*"],
-      "@components/*": ["src/components/*"]
-    }
+      "@components/*": ["src/components/*", "src/screens/*"]
+    },
+    "jsx": "react",
+    "module": "es6",
+    "target": "es6",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
   }
 }
