@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert, AlertOptions} from 'react-native';
 
 type AlertDialogProps = {
   /**
@@ -32,7 +32,7 @@ type AlertDialogProps = {
   /**
    * **customButtons**: Custom buttons to be displayed in the alert dialog
    * **/
-  customButtons?: {text: string; onPress: () => void}[];
+  customButtons?: AlertOptions[];
 };
 
 export const showAlertDialog = ({

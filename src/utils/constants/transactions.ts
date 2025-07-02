@@ -33,6 +33,7 @@ export const TRANSACTION_TYPE_ICON = {
 
 export const TRANSACTION_FILTER_INITIAL_STATE = {
   types: [],
+  categories: [],
   startDate: undefined,
   endDate: undefined,
 };

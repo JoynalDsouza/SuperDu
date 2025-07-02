@@ -15,6 +15,7 @@ import {showAlertDialog} from '../utils/alert-utils';
 import Text from '../components/common/Text';
 import Button from '../components/common/Button';
 import {TransactionsParams} from '../Navigation/navigation.types';
+import {BSON} from 'realm';
 
 const TransactionsScreen = ({route}) => {
   const {startDate, endDate}: TransactionsParams = route?.params;
@@ -44,7 +45,19 @@ const TransactionsScreen = ({route}) => {
     );
   }
 
-  // Step 2: Apply date range filtering (if startDate or endDate is specified)
+  // Step 2: Filter transactions by selected categories (if any categories are selected)
+  if (filters.categories.length > 0) {
+    // Convert category ID strings to ObjectIds for Realm query
+    const categoryObjectIds = filters.categories.map(
+      id => new BSON.ObjectId(id),
+    );
+    filteredTransactions = filteredTransactions.filtered(
+      'category._id IN $0',
+      categoryObjectIds,
+    );
+  }
+
+  // Step 3: Apply date range filtering (if startDate or endDate is specified)
   if (filters.startDate) {
     filteredTransactions = filteredTransactions.filtered(
       'addedOn >= $0',
@@ -71,12 +84,14 @@ const TransactionsScreen = ({route}) => {
   }, [
     filteredTransactions?.length,
     filters.types,
+    filters.categories,
     // filters.startDate,
     // filters.endDate,
   ]);
 
   const hasFilters =
     filters.types.length > 0 ||
+    filters.categories.length > 0 ||
     filters.startDate != undefined ||
     filters.endDate != undefined;
 
@@ -106,6 +121,8 @@ const TransactionsScreen = ({route}) => {
                   showAlertDialog({
                     title: 'Overview not available',
                     message: 'Please clear the filters to view the overview',
+                    positiveButtonTitle: 'OK',
+                    onPositiveButtonPress: () => {},
                   });
                   return;
                 }
