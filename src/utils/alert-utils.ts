@@ -33,6 +33,7 @@ type AlertDialogProps = {
    * **customButtons**: Custom buttons to be displayed in the alert dialog
    * **/
   customButtons?: AlertOptions[];
+  defaultButtonText?: string; // Default text for the positive button if not provided
 };
 
 export const showAlertDialog = ({
@@ -43,6 +44,7 @@ export const showAlertDialog = ({
   onPositiveButtonPress = () => {},
   onNegativeButtonPress = () => {},
   customButtons,
+  defaultButtonText = 'OK',
 }: AlertDialogProps) => {
   try {
     const buttons = [];
@@ -61,6 +63,13 @@ export const showAlertDialog = ({
     if (positiveButtonTitle) {
       buttons.push({
         text: positiveButtonTitle,
+        onPress: onPositiveButtonPress,
+      });
+    }
+
+    if (!positiveButtonTitle && !negativeButtonTitle && !customButtons) {
+      buttons.push({
+        text: defaultButtonText,
         onPress: onPositiveButtonPress,
       });
     }
