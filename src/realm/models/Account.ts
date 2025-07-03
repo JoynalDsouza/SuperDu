@@ -9,6 +9,13 @@ import {
 
 export type CategoryType = 'INVESTMENT' | 'EXPENSE' | 'INCOME' | 'LENDING';
 
+export enum CategoryTypeEnum {
+  INVESTMENT = 'INVESTMENT',
+  EXPENSE = 'EXPENSE',
+  INCOME = 'INCOME',
+  LENDING = 'LENDING',
+}
+
 export type TransactionCategory = 'NEED' | 'WANT' | 'SAVINGS';
 
 class Asset extends Object<Asset> {

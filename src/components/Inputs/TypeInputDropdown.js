@@ -41,56 +41,6 @@ const TypeInputDropdown = ({
 
   const realm = useRealm();
 
-  const removeType = (schemaName, value) => {
-    try {
-      if (value) {
-        const typeExsits = realm.objectForPrimaryKey(
-          schemaName,
-          value?.toLowerCase(),
-        );
-        if (typeExsits?.name) {
-          realm.write(() => {
-            realm.create(
-              schemaName,
-              {
-                name: typeExsits.name,
-                isActive: false,
-              },
-              'modified',
-            );
-          });
-
-          if (type === value) {
-            setType('');
-          }
-        }
-      }
-    } catch (e) {
-      alertError(e);
-    }
-  };
-
-  const onRemovePress = value => {
-    if (value) {
-      switch (type) {
-        case 'expense':
-          removeType('ExpenseType', value);
-          break;
-        case 'income':
-          removeType('IncomeType', value);
-          break;
-        case 'investment':
-          removeType('InvestmentType', value);
-          break;
-        case 'lending':
-          removeType('LendingType', value);
-          break;
-        default:
-          break;
-      }
-    }
-  };
-
   return (
     <View>
       <Dropdown

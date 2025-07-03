@@ -6,6 +6,8 @@ import {BSON} from 'realm';
 import {Platform} from 'react-native';
 import {applyMigration} from '../realm/migration';
 import {VERSION_NAME} from '../data/StaticData';
+import {showAlertDialog} from './alert-utils';
+import moment from 'moment';
 
 export const exportRealmData = async realm => {
   try {
@@ -21,7 +23,10 @@ export const exportRealmData = async realm => {
     });
     const exportJson = JSON.stringify(exportData);
 
-    const fileName = `Super-Du-Export-${VERSION_NAME}.json`;
+    const date = moment().format('DD-MMMM-YYYY');
+
+    const fileName = `Super-Du-Export-${VERSION_NAME}-${date}.json`;
+
     // Save to file
     const filePath =
       Platform.OS == 'android'
@@ -29,7 +34,16 @@ export const exportRealmData = async realm => {
         : `${RNFS.DocumentDirectoryPath}/${fileName}`;
 
     await RNFS.writeFile(filePath, exportJson, 'utf8');
-  } catch (error) {}
+    showAlertDialog({
+      title: 'Export Successful',
+      message: `Data exported successfully to ${filePath}`,
+    });
+  } catch (error) {
+    showAlertDialog({
+      title: 'Error',
+      message: 'Failed to export data. Please try again.',
+    });
+  }
 };
 
 export const importRealmData = async realm => {

@@ -3,9 +3,12 @@ import {View, Text} from 'react-native';
 import InputBox from '../common/InputBox';
 import Button from '../common/Button';
 import {useQuery, useRealm} from '@realm/react';
-import {Budget, Expense} from '../../realm/models/Account';
-import {ExpenseType} from '../../realm/models/User';
-import {BSON} from 'realm';
+import {
+  Budget,
+  Category,
+  CategoryTypeEnum,
+  Expense,
+} from '../../realm/models/Account';
 import TypeInputDropdown from './TypeInputDropdown';
 import {alertError} from '../../utils/alertError';
 
@@ -20,10 +23,10 @@ const AddBudget = ({
 
   const realm = useRealm();
 
-  const EXPENSE_TYPES = useQuery(ExpenseType, type => {
-    return type.sorted('name');
-  });
-  const filteredExpenseTypes = EXPENSE_TYPES.filtered('isActive = true');
+  const filteredExpenseTypes = useQuery(Category).filtered(
+    'isActive == true && type == $0',
+    CategoryTypeEnum.EXPENSE,
+  );
 
   const addBudget = () => {
     try {
