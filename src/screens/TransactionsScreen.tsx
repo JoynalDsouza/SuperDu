@@ -317,6 +317,7 @@ const TransactionsScreen = ({route}) => {
                 category={category.name}
                 addedOn={addedOn}
                 amount={amount}
+                notes={item.notes}
               />
             );
           }}

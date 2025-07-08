@@ -39,6 +39,7 @@ const RecentTransactions = () => {
               addedOn={addedOn}
               amount={amount}
               id={item._id.toString()}
+              notes={item.notes}
             />
           );
         }}

@@ -25,6 +25,7 @@ type TransactionCardProps = {
   category: string;
   addedOn: Date;
   amount: number;
+  notes?: string;
 };
 
 const TransactionCard: React.FC<TransactionCardProps> = ({
@@ -33,6 +34,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   category,
   addedOn,
   amount,
+  notes,
 }) => {
   const renderLeftActions = (
     progress: Animated.AnimatedInterpolation<string | number>,
@@ -102,6 +104,11 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         <Text variant="b1" style={styles.transactionType}>
           {TRANSACTION_TYPE_ICON[type]} {type}: {category}
         </Text>
+        {!!notes && (
+          <Text variant="b2" style={styles.notes} numberOfLines={2}>
+            {notes}
+          </Text>
+        )}
         <Text variant="caption" style={styles.transactionDate}>
           {addedOn.toDateString()}
         </Text>
@@ -144,6 +151,9 @@ const styles = StyleSheet.create({
   },
   transactionDate: {
     color: SECONDARY_TEXT,
+  },
+  notes: {
+    opacity: 0.8,
   },
   leftAction: {
     flex: 1,
