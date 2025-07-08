@@ -43,6 +43,8 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
     totalLending = 0,
     totalInvestment = 0,
     totalBalance = 0,
+    averageDailyExpense = 0,
+    todayExpense = 0,
   } = useMemo(() => {
     return getOverviewStats(
       Transactions,
@@ -55,6 +57,8 @@ const MonthOverviewCard: React.FC<MonthOverviewCardProps> = ({
     <View style={styles.container}>
       <Text style={styles.title}>{MONTHS[selectedMonth]} Month Overview</Text>
       <FinancialSummary
+        todayExpense={todayExpense}
+        averageDailyExpense={averageDailyExpense}
         daysWithoutExpenses={daysWithoutExpenses}
         totalIncome={totalIncome}
         totalExpense={totalExpense}

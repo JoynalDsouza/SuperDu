@@ -16,9 +16,13 @@ interface FinancialSummaryProps {
   totalLending: number;
   totalInvestment: number;
   totalBalance: number;
+  todayExpense?: number;
+  averageDailyExpense?: number;
 }
 
 const FinancialSummary: React.FC<FinancialSummaryProps> = ({
+  todayExpense,
+  averageDailyExpense,
   daysWithoutExpenses,
   totalIncome,
   totalExpense,
@@ -41,7 +45,15 @@ const FinancialSummary: React.FC<FinancialSummaryProps> = ({
 
   return (
     <View style={styles.section}>
-      <Text variant="h1">Days Without Expense: {daysWithoutExpenses}</Text>
+      {!!todayExpense && (
+        <Text variant="h2">Today: {formatToINR(todayExpense)}</Text>
+      )}
+      {!!averageDailyExpense && (
+        <Text variant="b1">
+          Average Expenses: {formatToINR(averageDailyExpense)}
+        </Text>
+      )}
+      <Text variant="b1">Days Without Expense: {daysWithoutExpenses}</Text>
 
       <Text variant="b1">Total Income: {formatToINR(totalIncome)}</Text>
 

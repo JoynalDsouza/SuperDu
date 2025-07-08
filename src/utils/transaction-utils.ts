@@ -57,6 +57,11 @@ export const getOverviewStats = (
 
     const totalSpending = totalExpense + totalLending + totalInvestment;
     const totalBalance = totalIncome - totalSpending;
+    const todayExpense = EXPENSES.filter(expense =>
+      moment(expense.addedOn).isSame(moment(), 'day'),
+    ).reduce((sum, expense) => sum + expense.amount, 0);
+
+    const averageDailyExpense = totalExpense / (daysToConsider || 1); // Avoid division by zero
 
     return {
       daysWithoutExpenses,
@@ -65,6 +70,8 @@ export const getOverviewStats = (
       totalLending,
       totalInvestment,
       totalBalance,
+      averageDailyExpense,
+      todayExpense,
     };
   } catch (error) {
     return {
@@ -74,6 +81,8 @@ export const getOverviewStats = (
       totalLending: 0,
       totalInvestment: 0,
       totalBalance: 0,
+      averageDailyExpense: 0,
+      todayExpense: 0,
     };
   }
 };
