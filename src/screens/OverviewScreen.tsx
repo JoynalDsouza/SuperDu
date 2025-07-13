@@ -20,6 +20,7 @@ import {
   getIncomeAllocation,
 } from '../utils/overview-utils';
 import BudgetTable from '../components/budget/BudgetTable';
+import BudgetAnalyticsPreview from '../components/budget/BudgetAnalyticsPreview';
 import AllocationTable from '../components/overview/AllocationTable';
 import MonthOverviewCard from '../components/dashboard/MonthOverviewCard';
 import {
@@ -58,13 +59,13 @@ const Overview = () => {
   const BUDGET = useObject(Budget, `${selectedMonth}/${selectedYear}`);
 
   const startOfMonth = moment()
-    .year(selectedYear)
-    .month(selectedMonth - 1)
+    .year(Number(selectedYear))
+    .month(Number(selectedMonth) - 1)
     .startOf('month');
 
   const endOfMonth = moment()
-    .year(selectedYear)
-    .month(selectedMonth - 1)
+    .year(Number(selectedYear))
+    .month(Number(selectedMonth) - 1)
     .endOf('month');
 
   const filteredExpenses = useMemo(
@@ -205,9 +206,25 @@ const Overview = () => {
         </View>
       </View>
 
+      {!!Object.keys(comparison).length && (
+        <BudgetTable
+          budgetData={comparison}
+          containerStyles={{
+            marginTop: 20,
+            marginBottom: 20,
+          }}
+        />
+      )}
       <MonthOverviewCard
-        selectedMonth={selectedMonth}
-        selectedYear={selectedYear}
+        selectedMonth={Number(selectedMonth)}
+        selectedYear={Number(selectedYear)}
+      />
+
+      {/* Budget Analytics Preview */}
+      <BudgetAnalyticsPreview
+        selectedMonth={Number(selectedMonth)}
+        selectedYear={Number(selectedYear)}
+        budgetData={comparison}
       />
 
       <Button
@@ -220,15 +237,6 @@ const Overview = () => {
           });
         }}></Button>
 
-      {!!Object.keys(comparison).length && (
-        <BudgetTable
-          budgetData={comparison}
-          containerStyles={{
-            marginTop: 20,
-            marginBottom: 20,
-          }}
-        />
-      )}
       <View style={{backgroundColor: LIGHT_SLATE_GREY, padding: 16}}>
         <AddBudget
           date={`${selectedMonth}/${selectedYear}`}

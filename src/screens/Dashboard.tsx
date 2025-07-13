@@ -9,6 +9,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import MonthOverViewCard from '../components/dashboard/MonthOverviewCard';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
+import AnalyticsPreview from '../components/dashboard/AnalyticsPreview';
 import {getMonth, getYear} from '../utils/moment';
 import {PRIMARY_BACKGROUND} from '../design/theme';
 import Button from '../components/common/Button';
@@ -89,6 +90,10 @@ const Dashboard = () => {
                 }}
               />,
             ],
+          },
+          {
+            key: 'analytics-preview',
+            data: [<AnalyticsPreview />],
           },
           {
             key: 'recent-transactions',

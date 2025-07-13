@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   NavigationContainer,
+  NavigationContainerRef,
   CommonActions,
   StackActions,
-  NavigationContainerRef,
   ParamListBase,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -14,6 +14,7 @@ import Overview from '../screens/OverviewScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ManageTransaction from '../screens/ManageTransaction';
 import Settings from '../screens/Settings';
+import AnalyticsScreen from '../screens/AnalyticsScreen';
 import {PRIMARY_BACKGROUND, SUCCESS_GREEN} from '../design/theme';
 import {
   NavigationActionType,
@@ -103,6 +104,13 @@ function MyTabs() {
           tabBarIcon: () => <Text fontSize={20}>💵</Text>,
         }}
         initialParams={{startDate: undefined, endDate: undefined}}
+      />
+      <Tab.Screen
+        name="Analytics"
+        component={AnalyticsScreen}
+        options={{
+          tabBarIcon: () => <Text fontSize={20}>📊</Text>,
+        }}
       />
       <Tab.Screen
         name="Settings"
