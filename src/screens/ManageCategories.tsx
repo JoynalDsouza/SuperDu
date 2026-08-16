@@ -23,7 +23,6 @@ import {useQuery, useRealm} from '@realm/react';
 import {Category, CategoryType, Transaction} from '../realm/models/Account';
 import {alertError} from '../utils/alertError';
 import {getDate} from '../utils/moment';
-import DateTimePicker from 'react-native-ui-datepicker';
 import {showAlertDialog} from '../utils/alert-utils';
 import {
   TRANSACTION_COLOR,

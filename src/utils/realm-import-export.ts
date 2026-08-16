@@ -1,7 +1,7 @@
 import {SCHEMA_VERSION} from '../../App';
 import schemas from '../realm/models/schemas';
 import RNFS from 'react-native-fs';
-import DocumentPicker from 'react-native-document-picker';
+import {pick} from '@react-native-documents/picker';
 import {BSON} from 'realm';
 import {Platform} from 'react-native';
 import {applyMigration} from '../realm/migration';
@@ -49,12 +49,13 @@ export const exportRealmData = async realm => {
 export const importRealmData = async realm => {
   try {
     // Pick a JSON file
-    const result = await DocumentPicker.pickSingle({
-      type: [DocumentPicker.types.allFiles],
+    const [pickResult] = await pick({
+      allowMultiSelection: false,
     });
 
+    const result = pickResult.uri;
     // Read file content
-    const fileContent = await RNFS.readFile(result.uri, 'utf8');
+    const fileContent = await RNFS.readFile(result, 'utf8');
     const importData = JSON.parse(fileContent);
 
     // Write data to Realm
@@ -99,8 +100,9 @@ export const importRealmData = async realm => {
       }
     }
   } catch (error) {
-    if (!DocumentPicker.isCancel(error)) {
-      // console.error('Error importing Realm data:', error);
-    }
+    showAlertDialog({
+      title: 'Error',
+      message: 'Failed to import data. Please ensure the file is valid.',
+    });
   }
 };

@@ -6,15 +6,15 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import MonthOverViewCard from '../components/dashboard/MonthOverviewCard';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
-import {getMonth, getYear} from '../utils/moment';
-import {PRIMARY_BACKGROUND} from '../design/theme';
+import { getMonth, getYear } from '../utils/moment';
+import { PRIMARY_BACKGROUND } from '../design/theme';
 import Button from '../components/common/Button';
-import {rootNavigate} from '../Navigation/navigation';
+import { rootNavigate } from '../Navigation/navigation';
 
-import {getNativeMessages} from '../utils/sms-reader-utils';
+import { getNativeMessages } from '../utils/sms-reader-utils';
 
 const Dashboard = () => {
   const currentMonth = getMonth(new Date());
@@ -61,13 +61,15 @@ const Dashboard = () => {
       style={{
         flex: 1,
         backgroundColor: PRIMARY_BACKGROUND,
-      }}>
+      }}
+    >
       {/* <Button
         title="GET MESSAGES"
         onPress={() => {
           getNativeMessages();
         }}
       /> */}
+      *{' '}
       <SectionList
         sections={[
           {
@@ -95,7 +97,7 @@ const Dashboard = () => {
             data: [<RecentTransactions />],
           },
         ]}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return item;
         }}
       />
@@ -104,5 +106,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-const styles = StyleSheet.create({});

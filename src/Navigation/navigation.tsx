@@ -6,15 +6,14 @@ import {
   NavigationContainerRef,
   ParamListBase,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from '../screens/LoginScreen';
 import Dashboard from '../screens/Dashboard';
 import Overview from '../screens/OverviewScreen';
-import HomeScreen from '../screens/HomeScreen';
 import ManageTransaction from '../screens/ManageTransaction';
 import Settings from '../screens/Settings';
-import {PRIMARY_BACKGROUND, SUCCESS_GREEN} from '../design/theme';
+import { PRIMARY_BACKGROUND, SUCCESS_GREEN } from '../design/theme';
 import {
   NavigationActionType,
   StackParamList,
@@ -51,7 +50,7 @@ export function rootNavigate<T extends keyof (StackParamList & TabParamList)>(
         navigationRef.current.dispatch(
           CommonActions.reset({
             index: 1,
-            routes: [{name, params}],
+            routes: [{ name, params }],
           }),
         );
       } else if (action === 'back') {
@@ -75,12 +74,16 @@ function MyTabs() {
     <Tab.Navigator
       initialRouteName="Dashboard"
       screenOptions={{
+        tabBarStyle: {
+          backgroundColor: PRIMARY_BACKGROUND,
+        },
         headerShown: false,
         tabBarAllowFontScaling: true,
         tabBarActiveTintColor: SUCCESS_GREEN,
         tabBarInactiveBackgroundColor: PRIMARY_BACKGROUND,
         tabBarActiveBackgroundColor: PRIMARY_BACKGROUND,
-      }}>
+      }}
+    >
       <Tab.Screen
         name="Dashboard"
         component={Dashboard}
@@ -102,7 +105,7 @@ function MyTabs() {
         options={{
           tabBarIcon: () => <Text fontSize={20}>💵</Text>,
         }}
-        initialParams={{startDate: undefined, endDate: undefined}}
+        initialParams={{ startDate: undefined, endDate: undefined }}
       />
       <Tab.Screen
         name="Settings"
@@ -122,14 +125,14 @@ const Navigation: React.FC = () => {
         initialRouteName="Login"
         screenOptions={{
           headerShown: false,
-        }}>
+        }}
+      >
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Home" component={MyTabs} />
         <Stack.Screen
           name="ManageTransaction"
           component={ManageTransaction}
-          initialParams={{transactionId: undefined}}
+          initialParams={{ transactionId: undefined }}
         />
         <Stack.Screen name="ManageCategories" component={ManageCategories} />
       </Stack.Navigator>
