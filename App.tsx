@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {LogBox, SafeAreaView, StyleSheet} from 'react-native';
+import {LogBox, StyleSheet} from 'react-native';
 
 import Navigation from './src/Navigation/navigation';
 
@@ -7,6 +7,7 @@ import schemas from './src/realm/models/schemas';
 import {RealmProvider} from '@realm/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {applyMigration} from './src/realm/migration';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
 export const SCHEMA_VERSION = 6;
 
@@ -38,9 +39,11 @@ function App() {
             applyMigration(newRealm, 6);
           }
         }}>
-        <SafeAreaView style={{flex: 1}}>
-          <Navigation />
-        </SafeAreaView>
+        <SafeAreaProvider>
+          <SafeAreaView style={{flex: 1, backgroundColor: '#121212'}}>
+            <Navigation />
+          </SafeAreaView>
+        </SafeAreaProvider>
       </RealmProvider>
     </GestureHandlerRootView>
   );
