@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,12 +8,12 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Text from '../components/common/Text';
-import {getMonth, getYear, getYearsBetween} from '../utils/moment';
-import {useObject, useQuery, useRealm} from '@realm/react';
-import {Budget, Category, Transaction} from '../realm/models/Account';
-import {MONTHS} from '../utils/constants/Months';
+import { getMonth, getYear, getYearsBetween } from '../utils/moment';
+import { useObject, useQuery, useRealm } from '@realm/react';
+import { Budget, Category, Transaction } from '../realm/models/Account';
+import { MONTHS } from '../utils/constants/Months';
 import CustomDropdownPicker from '../components/common/CustomDropdownPicker';
-import {User} from '../realm/models/User';
+import { User } from '../realm/models/User';
 import AddBudget from '../components/Inputs/AddBudget';
 import {
   calculateExpensesComparison,
@@ -28,7 +28,7 @@ import {
   PRIMARY_BACKGROUND,
 } from '../design/theme';
 import Button from '../components/common/Button';
-import {rootNavigate} from '../Navigation/navigation';
+import { rootNavigate } from '../Navigation/navigation';
 
 const Overview = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -175,24 +175,27 @@ const Overview = () => {
     <ScrollView
       contentContainerStyle={{
         backgroundColor: PRIMARY_BACKGROUND,
-      }}>
+      }}
+    >
       <View
         style={{
           flexDirection: 'row',
           gap: 10,
           marginBottom: 20,
           backgroundColor: ELECTRIC_BLUE,
-        }}>
-        <View style={{flex: 2}}>
+        }}
+      >
+        <View style={{ flex: 2 }}>
           <Text>Select Month</Text>
           <CustomDropdownPicker
             items={MONTHS}
             value={selectedMonth}
             setValue={item => setSelectedMonth(item.value)}
-            placeholder="Select Month"></CustomDropdownPicker>
+            placeholder="Select Month"
+          ></CustomDropdownPicker>
         </View>
 
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <Text>Select Year</Text>
           <CustomDropdownPicker
             items={YEARS}
@@ -201,7 +204,8 @@ const Overview = () => {
               setSelectedYear(item.name);
             }}
             valueField="name"
-            placeholder="Select Year"></CustomDropdownPicker>
+            placeholder="Select Year"
+          ></CustomDropdownPicker>
         </View>
       </View>
 
@@ -212,13 +216,14 @@ const Overview = () => {
 
       <Button
         title="See Transactions"
-        style={{marginHorizontal: 16}}
+        style={{ marginHorizontal: 16 }}
         onPress={() => {
           rootNavigate('Transactions', 'navigate', {
             startDate: startOfMonth.toISOString(),
             endDate: endOfMonth.toISOString(),
           });
-        }}></Button>
+        }}
+      ></Button>
 
       {!!Object.keys(comparison).length && (
         <BudgetTable
@@ -229,7 +234,7 @@ const Overview = () => {
           }}
         />
       )}
-      <View style={{backgroundColor: LIGHT_SLATE_GREY, padding: 16}}>
+      <View style={{ backgroundColor: LIGHT_SLATE_GREY, padding: 16 }}>
         <AddBudget
           date={`${selectedMonth}/${selectedYear}`}
           setCounter={setCounter}
